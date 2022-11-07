@@ -1,0 +1,63 @@
+--------------- Build Started: 05/07/2020 20:28:52 Project: Design01_Rx, Configuration: ARM GCC 5.4-2016-q2-update Debug ---------------
+The code generation step is up to date.
+arm-none-eabi-gcc.exe -mcpu=cortex-m3 -mthumb -I.\Source\asw -I.\Source\bsw -I.\Source\bsw\FreeRTOS\include -I.\Source\bsw\FreeRTOS\src -I.\Source\bsw\LCD_Driver -I.\Source\bsw\LCD_Library -I. -IGenerated_Source\PSoC5 -Wa,-alh=.\CortexM3\ARM_GCC_541\Debug/main.lst -g -D DEBUG -D CY_CORE_ID=0 -Wall -ffunction-sections -ffat-lto-objects -Og -c Source\asw\main.c -o .\CortexM3\ARM_GCC_541\Debug\main.o
+Source\asw\main.c: In function 'CAN_Rx_tsk':
+Source\asw\main.c:59:15: warning: unused variable 'pc2' [-Wunused-variable]
+     uint16_t *pc2 = Lidar_data2;
+               ^
+Source\asw\main.c:58:15: warning: unused variable 'pc1' [-Wunused-variable]
+     uint16_t *pc1 = Lidar_data1;
+               ^
+Source\asw\main.c:57:10: warning: unused variable 'data' [-Wunused-variable]
+     char data[30];
+          ^
+Source\asw\main.c: In function 'data_print':
+Source\asw\main.c:91:25: warning: implicit declaration of function 'itoa' [-Wimplicit-function-declaration]
+                         itoa(*dataset , data, 10);
+                         ^
+Source\asw\main.c:79:17: warning: unused variable 'data_hh' [-Wunused-variable]
+         uint8_t data_hh=0;
+                 ^
+Source\asw\main.c:78:13: warning: unused variable 'data_ll' [-Wunused-variable]
+     uint8_t data_ll=0;
+             ^
+Source\asw\main.c: In function 'main':
+Source\asw\main.c:134:5: warning: implicit declaration of function 'prvHardwareSetup' [-Wimplicit-function-declaration]
+     prvHardwareSetup();
+     ^
+Source\asw\main.c:148:28: warning: pointer targets in passing argument 2 of 'xTaskCreate' differ in signedness [-Wpointer-sign]
+     xTaskCreate(CAN_Rx_tsk,(signed portCHAR *) "CAN_Rx_tsk",configMINIMAL_STACK_SIZE,NULL,tskIDLE_PRIORITY+1,&CANRxTASKHandler);
+                            ^
+In file included from Source\asw\main.c:14:0:
+.\Source\bsw\FreeRTOS\include/task.h:330:13: note: expected 'const char * const' but argument is of type 'signed char *'
+  BaseType_t xTaskCreate( TaskFunction_t pxTaskCode,
+             ^
+Source\asw\main.c:151:35: warning: pointer targets in passing argument 2 of 'xTaskCreate' differ in signedness [-Wpointer-sign]
+     xTaskCreate(CAN_Remote_Tx_tsk,(signed portCHAR *) "CAN_Remote_Tx_tsk",configMINIMAL_STACK_SIZE,NULL,tskIDLE_PRIORITY+2,&CANRemoteTxTASKHanler);
+                                   ^
+In file included from Source\asw\main.c:14:0:
+.\Source\bsw\FreeRTOS\include/task.h:330:13: note: expected 'const char * const' but argument is of type 'signed char *'
+  BaseType_t xTaskCreate( TaskFunction_t pxTaskCode,
+             ^
+Source\asw\main.c: At top level:
+Source\asw\main.c:159:6: warning: conflicting types for 'prvHardwareSetup'
+ void prvHardwareSetup( void )
+      ^
+Source\asw\main.c:134:5: note: previous implicit declaration of 'prvHardwareSetup' was here
+     prvHardwareSetup();
+     ^
+Source\asw\main.c: In function 'packet_fill':
+Source\asw\main.c:215:10: warning: unused variable 'data' [-Wunused-variable]
+     char data[30];
+          ^
+arm-none-eabi-ar.exe -rs .\CortexM3\ARM_GCC_541\Debug\Design01_Rx.a .\CortexM3\ARM_GCC_541\Debug\UART_LOG.o .\CortexM3\ARM_GCC_541\Debug\UART_LOG_PM.o .\CortexM3\ARM_GCC_541\Debug\UART_LOG_INT.o .\CortexM3\ARM_GCC_541\Debug\UART_LOG_BOOT.o .\CortexM3\ARM_GCC_541\Debug\UART_LOG_IntClock.o .\CortexM3\ARM_GCC_541\Debug\cy_em_eeprom.o .\CortexM3\ARM_GCC_541\Debug\CyDmac.o .\CortexM3\ARM_GCC_541\Debug\CyFlash.o .\CortexM3\ARM_GCC_541\Debug\CyLib.o .\CortexM3\ARM_GCC_541\Debug\cyPm.o .\CortexM3\ARM_GCC_541\Debug\CySpc.o .\CortexM3\ARM_GCC_541\Debug\cyutils.o .\CortexM3\ARM_GCC_541\Debug\TX_1.o .\CortexM3\ARM_GCC_541\Debug\RX_1.o .\CortexM3\ARM_GCC_541\Debug\CAN_Rx.o .\CortexM3\ARM_GCC_541\Debug\CAN_Rx_INT.o .\CortexM3\ARM_GCC_541\Debug\CAN_Rx_PM.o .\CortexM3\ARM_GCC_541\Debug\CAN_Rx_TX_RX_func.o .\CortexM3\ARM_GCC_541\Debug\SEVEN_A.o .\CortexM3\ARM_GCC_541\Debug\SEVEN_B.o .\CortexM3\ARM_GCC_541\Debug\SEVEN_C.o .\CortexM3\ARM_GCC_541\Debug\SEVEN_D.o .\CortexM3\ARM_GCC_541\Debug\SEVEN_E.o .\CortexM3\ARM_GCC_541\Debug\SEVEN_F.o .\CortexM3\ARM_GCC_541\Debug\SEVEN_G.o .\CortexM3\ARM_GCC_541\Debug\SEVEN_DP.o .\CortexM3\ARM_GCC_541\Debug\SEVEN_SELECT.o .\CortexM3\ARM_GCC_541\Debug\SEVEN_reg.o .\CortexM3\ARM_GCC_541\Debug\SEVEN_reg_PM.o .\CortexM3\ARM_GCC_541\Debug\RED_LED.o .\CortexM3\ARM_GCC_541\Debug\SPIM.o .\CortexM3\ARM_GCC_541\Debug\SPIM_PM.o .\CortexM3\ARM_GCC_541\Debug\SPIM_INT.o .\CortexM3\ARM_GCC_541\Debug\SCL.o .\CortexM3\ARM_GCC_541\Debug\RST.o .\CortexM3\ARM_GCC_541\Debug\RS.o .\CortexM3\ARM_GCC_541\Debug\SI.o .\CortexM3\ARM_GCC_541\Debug\Clock_1.o .\CortexM3\ARM_GCC_541\Debug\CS.o .\CortexM3\ARM_GCC_541\Debug\LED.o .\CortexM3\ARM_GCC_541\Debug\GREEN_LED.o .\CortexM3\ARM_GCC_541\Debug\YELLOW_LED.o .\CortexM3\ARM_GCC_541\Debug\CyBootAsmGnu.o
+arm-none-eabi-ar.exe: creating .\CortexM3\ARM_GCC_541\Debug\Design01_Rx.a
+arm-none-eabi-gcc.exe -Wl,--start-group -o "C:\Users\Reza\Documents\PSoC Creator\CAN_Application_01\Design01_Rx.cydsn\CortexM3\ARM_GCC_541\Debug\Design01_Rx.elf" .\CortexM3\ARM_GCC_541\Debug\seven.o .\CortexM3\ARM_GCC_541\Debug\main.o .\CortexM3\ARM_GCC_541\Debug\ugui_st7735.o .\CortexM3\ARM_GCC_541\Debug\ugui.o .\CortexM3\ARM_GCC_541\Debug\croutine.o .\CortexM3\ARM_GCC_541\Debug\event_groups.o .\CortexM3\ARM_GCC_541\Debug\heap_1.o .\CortexM3\ARM_GCC_541\Debug\list.o .\CortexM3\ARM_GCC_541\Debug\mpu_wrappers.o .\CortexM3\ARM_GCC_541\Debug\port.o .\CortexM3\ARM_GCC_541\Debug\queue.o .\CortexM3\ARM_GCC_541\Debug\stream_buffer.o .\CortexM3\ARM_GCC_541\Debug\tasks.o .\CortexM3\ARM_GCC_541\Debug\timers.o .\CortexM3\ARM_GCC_541\Debug\cyfitter_cfg.o .\CortexM3\ARM_GCC_541\Debug\cymetadata.o .\CortexM3\ARM_GCC_541\Debug\Cm3Start.o .\CortexM3\ARM_GCC_541\Debug\Design01_Rx.a "C:\Program Files (x86)\Cypress\PSoC Creator\4.2\PSoC Creator\psoc\content\cycomponentlibrary\CyComponentLibrary.cylib\CortexM3\ARM_GCC_541\Debug\CyComponentLibrary.a" -mcpu=cortex-m3 -mthumb -L Generated_Source\PSoC5 -Wl,-Map,.\CortexM3\ARM_GCC_541\Debug/Design01_Rx.map -T Generated_Source\PSoC5\cm3gcc.ld -specs=nano.specs -Wl,--gc-sections -g -ffunction-sections -Og -ffat-lto-objects -Wl,--end-group
+cyelftool.exe -C "C:\Users\Reza\Documents\PSoC Creator\CAN_Application_01\Design01_Rx.cydsn\CortexM3\ARM_GCC_541\Debug\Design01_Rx.elf" --flash_row_size 256 --flash_size 262144 --flash_offset 0x00000000
+No ELF section .cychecksum found, creating one
+Application checksum calculated and stored in ELF section .cychecksum
+Checksum calculated and stored in ELF section .cymeta
+cyelftool.exe -S "C:\Users\Reza\Documents\PSoC Creator\CAN_Application_01\Design01_Rx.cydsn\CortexM3\ARM_GCC_541\Debug\Design01_Rx.elf"
+Flash used: 9934 of 262144 bytes (3.8%).
+SRAM used: 36785 of 65536 bytes (56.1%). Stack: 2048 bytes. Heap: 128 bytes.
+--------------- Build Succeeded: 05/07/2020 20:28:55 ---------------

@@ -1,0 +1,47 @@
+--------------- Build Started: 05/07/2020 20:30:29 Project: Design01_Tx, Configuration: ARM GCC 5.4-2016-q2-update Debug ---------------
+The code generation step is up to date.
+arm-none-eabi-gcc.exe -mcpu=cortex-m3 -mthumb -I.\Source\asw -I.\Source\bsw\FreeRTOS\include -I.\Source\bsw\FreeRTOS\src -I.\Source\bsw\LCD_Driver -I.\Source\bsw\LCD_Library -I.\Source\bsw -I. -IGenerated_Source\PSoC5 -Wa,-alh=.\CortexM3\ARM_GCC_541\Debug/main.lst -g -D DEBUG -D CY_CORE_ID=0 -Wall -ffunction-sections -ffat-lto-objects -Og -c Source\asw\main.c -o .\CortexM3\ARM_GCC_541\Debug\main.o
+Source\asw\main.c: In function 'CAN_Tx_tsk':
+Source\asw\main.c:77:31: warning: passing argument 2 of 'packet_fill' from incompatible pointer type [-Wincompatible-pointer-types]
+         packet_fill(&sentdata,&MESSAGE,0);
+                               ^
+Source\asw\main.c:47:6: note: expected 'uint8 * {aka unsigned char *}' but argument is of type 'uint8 (*)[1] {aka unsigned char (*)[1]}'
+ void packet_fill(CAN_Tx_DATA_BYTES_MSG *Data, uint8 *Message,uint8 datalength);
+      ^
+Source\asw\main.c:65:11: warning: unused variable 'j' [-Wunused-variable]
+     uint8 j=1;
+           ^
+Source\asw\main.c:64:10: warning: unused variable 'data' [-Wunused-variable]
+     char data[20];
+          ^
+Source\asw\main.c: In function 'main':
+Source\asw\main.c:85:5: warning: implicit declaration of function 'prvHardwareSetup' [-Wimplicit-function-declaration]
+     prvHardwareSetup();
+     ^
+Source\asw\main.c:96:28: warning: pointer targets in passing argument 2 of 'xTaskCreate' differ in signedness [-Wpointer-sign]
+     xTaskCreate(CAN_Tx_tsk,(signed portCHAR *) "CAN_Tx_tsk",configMINIMAL_STACK_SIZE,NULL,tskIDLE_PRIORITY+2,&CANTxTASKHandler);
+                            ^
+In file included from Source\asw\main.c:14:0:
+.\Source\bsw\FreeRTOS\include/task.h:330:13: note: expected 'const char * const' but argument is of type 'signed char *'
+  BaseType_t xTaskCreate( TaskFunction_t pxTaskCode,
+             ^
+Source\asw\main.c: At top level:
+Source\asw\main.c:106:6: warning: conflicting types for 'prvHardwareSetup'
+ void prvHardwareSetup( void )
+      ^
+Source\asw\main.c:85:5: note: previous implicit declaration of 'prvHardwareSetup' was here
+     prvHardwareSetup();
+     ^
+Source\asw\main.c: In function 'packet_fill':
+Source\asw\main.c:162:10: warning: unused variable 'data' [-Wunused-variable]
+     char data[30];
+          ^
+arm-none-eabi-gcc.exe -mcpu=cortex-m3 -mthumb -I.\Source\asw -I.\Source\bsw\FreeRTOS\include -I.\Source\bsw\FreeRTOS\src -I.\Source\bsw\LCD_Driver -I.\Source\bsw\LCD_Library -I.\Source\bsw -I. -IGenerated_Source\PSoC5 -Wa,-alh=.\CortexM3\ARM_GCC_541\Debug/CAN_Tx_TX_RX_func.lst -g -D DEBUG -D CY_CORE_ID=0 -Wall -ffunction-sections -ffat-lto-objects -Og -c Generated_Source\PSoC5\CAN_Tx_TX_RX_func.c -o .\CortexM3\ARM_GCC_541\Debug\CAN_Tx_TX_RX_func.o
+arm-none-eabi-ar.exe -rs .\CortexM3\ARM_GCC_541\Debug\Design01_Tx.a .\CortexM3\ARM_GCC_541\Debug\UART_LOG.o .\CortexM3\ARM_GCC_541\Debug\UART_LOG_PM.o .\CortexM3\ARM_GCC_541\Debug\UART_LOG_INT.o .\CortexM3\ARM_GCC_541\Debug\UART_LOG_BOOT.o .\CortexM3\ARM_GCC_541\Debug\UART_LOG_IntClock.o .\CortexM3\ARM_GCC_541\Debug\cy_em_eeprom.o .\CortexM3\ARM_GCC_541\Debug\CyDmac.o .\CortexM3\ARM_GCC_541\Debug\CyFlash.o .\CortexM3\ARM_GCC_541\Debug\CyLib.o .\CortexM3\ARM_GCC_541\Debug\cyPm.o .\CortexM3\ARM_GCC_541\Debug\CySpc.o .\CortexM3\ARM_GCC_541\Debug\cyutils.o .\CortexM3\ARM_GCC_541\Debug\TX_1.o .\CortexM3\ARM_GCC_541\Debug\RX_1.o .\CortexM3\ARM_GCC_541\Debug\CAN_Tx.o .\CortexM3\ARM_GCC_541\Debug\CAN_Tx_INT.o .\CortexM3\ARM_GCC_541\Debug\CAN_Tx_PM.o .\CortexM3\ARM_GCC_541\Debug\CAN_Tx_TX_RX_func.o .\CortexM3\ARM_GCC_541\Debug\Red_Led.o .\CortexM3\ARM_GCC_541\Debug\CyBootAsmGnu.o
+arm-none-eabi-ar.exe: creating .\CortexM3\ARM_GCC_541\Debug\Design01_Tx.a
+arm-none-eabi-gcc.exe -Wl,--start-group -o "C:\Users\Reza\Documents\PSoC Creator\CAN_Application_01\Design01_Tx.cydsn\CortexM3\ARM_GCC_541\Debug\Design01_Tx.elf" .\CortexM3\ARM_GCC_541\Debug\seven.o .\CortexM3\ARM_GCC_541\Debug\main.o .\CortexM3\ARM_GCC_541\Debug\ugui_st7735.o .\CortexM3\ARM_GCC_541\Debug\ugui.o .\CortexM3\ARM_GCC_541\Debug\croutine.o .\CortexM3\ARM_GCC_541\Debug\event_groups.o .\CortexM3\ARM_GCC_541\Debug\heap_1.o .\CortexM3\ARM_GCC_541\Debug\list.o .\CortexM3\ARM_GCC_541\Debug\mpu_wrappers.o .\CortexM3\ARM_GCC_541\Debug\port.o .\CortexM3\ARM_GCC_541\Debug\queue.o .\CortexM3\ARM_GCC_541\Debug\stream_buffer.o .\CortexM3\ARM_GCC_541\Debug\tasks.o .\CortexM3\ARM_GCC_541\Debug\timers.o .\CortexM3\ARM_GCC_541\Debug\cyfitter_cfg.o .\CortexM3\ARM_GCC_541\Debug\cymetadata.o .\CortexM3\ARM_GCC_541\Debug\Cm3Start.o .\CortexM3\ARM_GCC_541\Debug\Design01_Tx.a "C:\Program Files (x86)\Cypress\PSoC Creator\4.2\PSoC Creator\psoc\content\cycomponentlibrary\CyComponentLibrary.cylib\CortexM3\ARM_GCC_541\Debug\CyComponentLibrary.a" -mcpu=cortex-m3 -mthumb -L Generated_Source\PSoC5 -Wl,-Map,.\CortexM3\ARM_GCC_541\Debug/Design01_Tx.map -T Generated_Source\PSoC5\cm3gcc.ld -specs=nano.specs -Wl,--gc-sections -g -ffunction-sections -Og -ffat-lto-objects -Wl,--end-group
+.\CortexM3\ARM_GCC_541\Debug\Design01_Tx.a(CAN_Tx_TX_RX_func.o): In function `CAN_Tx_ReceiveMsg0':
+C:\Users\Reza\Documents\PSoC Creator\CAN_Application_01\Design01_Tx.cydsn/Generated_Source\PSoC5/CAN_Tx_TX_RX_func.c:685: undefined reference to `bRTRreceive'
+collect2.exe: error: ld returned 1 exit status
+The command 'arm-none-eabi-gcc.exe' failed with exit code '1'.
+--------------- Build Failed: 05/07/2020 20:30:31 ---------------

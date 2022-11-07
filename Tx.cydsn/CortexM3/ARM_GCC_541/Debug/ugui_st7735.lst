@@ -1,0 +1,4412 @@
+ARM GAS  C:\Users\Reza\AppData\Local\Temp\ccXaA36W.s 			page 1
+
+
+   1              		.syntax unified
+   2              		.cpu cortex-m3
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.thumb
+  14              		.syntax unified
+  15              		.file	"ugui_st7735.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.section	.text.Display_Reset,"ax",%progbits
+  20              		.align	2
+  21              		.global	Display_Reset
+  22              		.thumb
+  23              		.thumb_func
+  24              		.type	Display_Reset, %function
+  25              	Display_Reset:
+  26              	.LFB64:
+  27              		.file 1 "Source\\bsw\\LCD_Driver\\ugui_st7735.c"
+   1:Source\bsw\LCD_Driver/ugui_st7735.c **** /*******************************************************************************
+   2:Source\bsw\LCD_Driver/ugui_st7735.c **** * File Name: ugui_st7735.c
+   3:Source\bsw\LCD_Driver/ugui_st7735.c **** *
+   4:Source\bsw\LCD_Driver/ugui_st7735.c **** * Description:
+   5:Source\bsw\LCD_Driver/ugui_st7735.c **** *  This is a driver for the uGui graphical library developed by 
+   6:Source\bsw\LCD_Driver/ugui_st7735.c **** *  Achim Döbler.
+   7:Source\bsw\LCD_Driver/ugui_st7735.c **** *  It is for ST7735 graphic controller found in a lot of low cost graphics 
+   8:Source\bsw\LCD_Driver/ugui_st7735.c **** *  chinese displays an to be used with PSoC microcontrollers from Cypress.
+   9:Source\bsw\LCD_Driver/ugui_st7735.c **** *  At the time of writting this, developing and testing with PSoC 4 micros.
+  10:Source\bsw\LCD_Driver/ugui_st7735.c **** *  Will test it with other PSoC micros as soon as i can.
+  11:Source\bsw\LCD_Driver/ugui_st7735.c **** *
+  12:Source\bsw\LCD_Driver/ugui_st7735.c **** * Note:
+  13:Source\bsw\LCD_Driver/ugui_st7735.c **** *  For more information about uGui...
+  14:Source\bsw\LCD_Driver/ugui_st7735.c **** *  Website: http://www.embeddedlightning.com/ugui/
+  15:Source\bsw\LCD_Driver/ugui_st7735.c **** *  Git: https://github.com/achimdoebler/UGUI
+  16:Source\bsw\LCD_Driver/ugui_st7735.c **** *  Forum: http://www.embeddedlightning.com/forum/
+  17:Source\bsw\LCD_Driver/ugui_st7735.c **** *  PDF Reference manual (excellent): http://www.embeddedlightning.com/download/reference-guide/?wpd
+  18:Source\bsw\LCD_Driver/ugui_st7735.c **** *
+  19:Source\bsw\LCD_Driver/ugui_st7735.c **** *  Thanks to Achim Döbler for such a god job.
+  20:Source\bsw\LCD_Driver/ugui_st7735.c **** *
+  21:Source\bsw\LCD_Driver/ugui_st7735.c **** * Log version:
+  22:Source\bsw\LCD_Driver/ugui_st7735.c **** *  1.0 - April, 2016.       First version.
+  23:Source\bsw\LCD_Driver/ugui_st7735.c **** *
+  24:Source\bsw\LCD_Driver/ugui_st7735.c **** ********************************************************************************
+  25:Source\bsw\LCD_Driver/ugui_st7735.c **** * Copyright (c) 2015 Jesús Rodríguez Cacabelos
+  26:Source\bsw\LCD_Driver/ugui_st7735.c **** * This driver follows the same license than the uGui library.
+  27:Source\bsw\LCD_Driver/ugui_st7735.c **** * http:
+  28:Source\bsw\LCD_Driver/ugui_st7735.c **** *******************************************************************************/
+  29:Source\bsw\LCD_Driver/ugui_st7735.c **** 
+  30:Source\bsw\LCD_Driver/ugui_st7735.c **** //#include "ugui_config.h"
+ARM GAS  C:\Users\Reza\AppData\Local\Temp\ccXaA36W.s 			page 2
+
+
+  31:Source\bsw\LCD_Driver/ugui_st7735.c **** #include <project.h>
+  32:Source\bsw\LCD_Driver/ugui_st7735.c **** #include "ugui.h"
+  33:Source\bsw\LCD_Driver/ugui_st7735.c **** #include "ugui_st7735.h"
+  34:Source\bsw\LCD_Driver/ugui_st7735.c **** 
+  35:Source\bsw\LCD_Driver/ugui_st7735.c **** /* *** Function prototypes. *** */
+  36:Source\bsw\LCD_Driver/ugui_st7735.c **** void Display_Reset();
+  37:Source\bsw\LCD_Driver/ugui_st7735.c **** void Display_WriteCommand(uint8 command);
+  38:Source\bsw\LCD_Driver/ugui_st7735.c **** void Display_WriteData(uint8 data[], uint8 length);
+  39:Source\bsw\LCD_Driver/ugui_st7735.c **** 
+  40:Source\bsw\LCD_Driver/ugui_st7735.c **** void Display_Init()
+  41:Source\bsw\LCD_Driver/ugui_st7735.c **** {
+  42:Source\bsw\LCD_Driver/ugui_st7735.c ****     uint8 loop;
+  43:Source\bsw\LCD_Driver/ugui_st7735.c ****     
+  44:Source\bsw\LCD_Driver/ugui_st7735.c ****     // { command, datalength, ... data ..., delay }
+  45:Source\bsw\LCD_Driver/ugui_st7735.c ****     uint8 configdata[19][20] = {
+  46:Source\bsw\LCD_Driver/ugui_st7735.c ****         {0x11, 0, 120},
+  47:Source\bsw\LCD_Driver/ugui_st7735.c ****         {0xB1, 3, 0x01, 0x2C, 0x2D, 0},
+  48:Source\bsw\LCD_Driver/ugui_st7735.c ****         {0xB2, 3, 0x01, 0x2C, 0x2D, 0},
+  49:Source\bsw\LCD_Driver/ugui_st7735.c ****         {0xB3, 6, 0x01, 0x2C, 0x2D, 0x01, 0x2C, 0x2D, 0},
+  50:Source\bsw\LCD_Driver/ugui_st7735.c ****         {0xB4, 1, 0x07, 0},
+  51:Source\bsw\LCD_Driver/ugui_st7735.c ****         {0xB6, 2, 0xB4, 0xF0, 0},
+  52:Source\bsw\LCD_Driver/ugui_st7735.c ****         {0xC0, 3, 0xA2, 0x02,  0x04, 0},
+  53:Source\bsw\LCD_Driver/ugui_st7735.c ****         {0xC1, 1, 0xC5, 0},
+  54:Source\bsw\LCD_Driver/ugui_st7735.c ****         {0xC2, 2, 0x0A, 0x00, 0},
+  55:Source\bsw\LCD_Driver/ugui_st7735.c ****         {0xC3, 2, 0x8A, 0x2A},
+  56:Source\bsw\LCD_Driver/ugui_st7735.c ****         {0xC4, 2, 0x8A, 0xEE}, 
+  57:Source\bsw\LCD_Driver/ugui_st7735.c ****         {0xC5, 1, 0x04, 0},
+  58:Source\bsw\LCD_Driver/ugui_st7735.c ****         {0x36, 1, 0xC8, 0},
+  59:Source\bsw\LCD_Driver/ugui_st7735.c ****         {0xE0, 17, 0x0f, 0x1A, 0x0f, 0x18, 0x2f, 0x28, 0x20, 0x22, 0x1f,
+  60:Source\bsw\LCD_Driver/ugui_st7735.c ****                    0x1b, 0x23, 0x37, 0x00, 0x07, 0x02, 0x10, 0},
+  61:Source\bsw\LCD_Driver/ugui_st7735.c ****         {0xE1, 16, 0x0f, 0x1b, 0x0f, 0x17, 0x33, 0x2c, 0x29, 0x2e, 0x30,
+  62:Source\bsw\LCD_Driver/ugui_st7735.c ****                    0x30, 0x39, 0x3f, 0x00, 0x07, 0x03, 0x10, 0},
+  63:Source\bsw\LCD_Driver/ugui_st7735.c ****         {0x2A, 4, 0x00, 0x02, 0x00, 0x81, 0},
+  64:Source\bsw\LCD_Driver/ugui_st7735.c ****         {0x2B, 4, 0x00, 0x01, 0x00, 0xa0, 0},
+  65:Source\bsw\LCD_Driver/ugui_st7735.c **** #if defined USE_COLOR_RGB565        
+  66:Source\bsw\LCD_Driver/ugui_st7735.c ****         {0x3A, 1, 0x05, 0},
+  67:Source\bsw\LCD_Driver/ugui_st7735.c **** #endif
+  68:Source\bsw\LCD_Driver/ugui_st7735.c **** #if defined USE_COLOR_RGB888        
+  69:Source\bsw\LCD_Driver/ugui_st7735.c ****         {0x3A, 1, 0x06, 0},
+  70:Source\bsw\LCD_Driver/ugui_st7735.c **** #endif
+  71:Source\bsw\LCD_Driver/ugui_st7735.c ****         {0x29, 0, 0}};
+  72:Source\bsw\LCD_Driver/ugui_st7735.c ****     
+  73:Source\bsw\LCD_Driver/ugui_st7735.c ****     /* *** Initialize hardware. **** */
+  74:Source\bsw\LCD_Driver/ugui_st7735.c ****     RST_Write(1);                    // DISP_RESET is active low. So initialize it to high level.
+  75:Source\bsw\LCD_Driver/ugui_st7735.c ****     RS_Write(1);                       // DISP_CD. Ready for data mode, the most
+  76:Source\bsw\LCD_Driver/ugui_st7735.c ****                                             //          common mode.
+  77:Source\bsw\LCD_Driver/ugui_st7735.c ****     
+  78:Source\bsw\LCD_Driver/ugui_st7735.c ****     SPIM_Start();                            // Initialize SPI bus.
+  79:Source\bsw\LCD_Driver/ugui_st7735.c ****         
+  80:Source\bsw\LCD_Driver/ugui_st7735.c ****     /* *** Initialize display. *** */
+  81:Source\bsw\LCD_Driver/ugui_st7735.c ****     Display_Reset();
+  82:Source\bsw\LCD_Driver/ugui_st7735.c ****     
+  83:Source\bsw\LCD_Driver/ugui_st7735.c ****     for (loop = 0; loop < 19; loop++)
+  84:Source\bsw\LCD_Driver/ugui_st7735.c ****     {
+  85:Source\bsw\LCD_Driver/ugui_st7735.c ****         Display_WriteCommand(configdata[loop][0]);
+  86:Source\bsw\LCD_Driver/ugui_st7735.c ****         Display_WriteData(&configdata[loop][2], configdata[loop][1]);
+  87:Source\bsw\LCD_Driver/ugui_st7735.c ****         
+ARM GAS  C:\Users\Reza\AppData\Local\Temp\ccXaA36W.s 			page 3
+
+
+  88:Source\bsw\LCD_Driver/ugui_st7735.c ****         if (configdata[loop][configdata[loop][1] + 2] != 0)
+  89:Source\bsw\LCD_Driver/ugui_st7735.c ****             CyDelay(configdata[loop][configdata[loop][1] + 2]);
+  90:Source\bsw\LCD_Driver/ugui_st7735.c ****     }
+  91:Source\bsw\LCD_Driver/ugui_st7735.c ****    
+  92:Source\bsw\LCD_Driver/ugui_st7735.c ****     // Initialize global structure and set PSET to this.PSET. 
+  93:Source\bsw\LCD_Driver/ugui_st7735.c ****     UG_Init(&gui7735, Display_PSet, DISPLAY_WIDTH, DISPLAY_HEIGHT); 
+  94:Source\bsw\LCD_Driver/ugui_st7735.c ****     
+  95:Source\bsw\LCD_Driver/ugui_st7735.c ****     // Register acceleratos.
+  96:Source\bsw\LCD_Driver/ugui_st7735.c ****     UG_DriverRegister(DRIVER_FILL_FRAME, (void*)HW_FillFrame);
+  97:Source\bsw\LCD_Driver/ugui_st7735.c ****     UG_DriverRegister(DRIVER_DRAW_LINE, (void*)HW_DrawLine);
+  98:Source\bsw\LCD_Driver/ugui_st7735.c **** }
+  99:Source\bsw\LCD_Driver/ugui_st7735.c **** 
+ 100:Source\bsw\LCD_Driver/ugui_st7735.c **** void Display_Reset()
+ 101:Source\bsw\LCD_Driver/ugui_st7735.c **** {
+  28              		.loc 1 101 0
+  29              		.cfi_startproc
+  30              		@ args = 0, pretend = 0, frame = 0
+  31              		@ frame_needed = 0, uses_anonymous_args = 0
+  32 0000 08B5     		push	{r3, lr}
+  33              		.cfi_def_cfa_offset 8
+  34              		.cfi_offset 3, -8
+  35              		.cfi_offset 14, -4
+ 102:Source\bsw\LCD_Driver/ugui_st7735.c ****     RST_Write(0); CyDelay(50);
+  36              		.loc 1 102 0
+  37 0002 0020     		movs	r0, #0
+  38 0004 FFF7FEFF 		bl	RST_Write
+  39              	.LVL0:
+  40 0008 3220     		movs	r0, #50
+  41 000a FFF7FEFF 		bl	CyDelay
+  42              	.LVL1:
+ 103:Source\bsw\LCD_Driver/ugui_st7735.c ****     RST_Write(1); CyDelay(120);
+  43              		.loc 1 103 0
+  44 000e 0120     		movs	r0, #1
+  45 0010 FFF7FEFF 		bl	RST_Write
+  46              	.LVL2:
+  47 0014 7820     		movs	r0, #120
+  48 0016 FFF7FEFF 		bl	CyDelay
+  49              	.LVL3:
+  50 001a 08BD     		pop	{r3, pc}
+  51              		.cfi_endproc
+  52              	.LFE64:
+  53              		.size	Display_Reset, .-Display_Reset
+  54              		.section	.text.Display_WriteCommand,"ax",%progbits
+  55              		.align	2
+  56              		.global	Display_WriteCommand
+  57              		.thumb
+  58              		.thumb_func
+  59              		.type	Display_WriteCommand, %function
+  60              	Display_WriteCommand:
+  61              	.LFB65:
+ 104:Source\bsw\LCD_Driver/ugui_st7735.c **** }
+ 105:Source\bsw\LCD_Driver/ugui_st7735.c **** 
+ 106:Source\bsw\LCD_Driver/ugui_st7735.c **** void Display_WriteCommand(uint8 command)
+ 107:Source\bsw\LCD_Driver/ugui_st7735.c **** {
+  62              		.loc 1 107 0
+  63              		.cfi_startproc
+  64              		@ args = 0, pretend = 0, frame = 0
+ARM GAS  C:\Users\Reza\AppData\Local\Temp\ccXaA36W.s 			page 4
+
+
+  65              		@ frame_needed = 0, uses_anonymous_args = 0
+  66              	.LVL4:
+  67 0000 10B5     		push	{r4, lr}
+  68              		.cfi_def_cfa_offset 8
+  69              		.cfi_offset 4, -8
+  70              		.cfi_offset 14, -4
+  71 0002 0446     		mov	r4, r0
+ 108:Source\bsw\LCD_Driver/ugui_st7735.c ****     /* *** Clear CD line for command mode. *** */
+ 109:Source\bsw\LCD_Driver/ugui_st7735.c ****     RS_Write(0);
+  72              		.loc 1 109 0
+  73 0004 0020     		movs	r0, #0
+  74              	.LVL5:
+  75 0006 FFF7FEFF 		bl	RS_Write
+  76              	.LVL6:
+ 110:Source\bsw\LCD_Driver/ugui_st7735.c **** 
+ 111:Source\bsw\LCD_Driver/ugui_st7735.c ****     SPIM_WriteTxData(command);
+  77              		.loc 1 111 0
+  78 000a 2046     		mov	r0, r4
+  79 000c FFF7FEFF 		bl	SPIM_WriteTxData
+  80              	.LVL7:
+  81 0010 10BD     		pop	{r4, pc}
+  82              		.cfi_endproc
+  83              	.LFE65:
+  84              		.size	Display_WriteCommand, .-Display_WriteCommand
+  85 0012 00BF     		.section	.text.Display_WriteData,"ax",%progbits
+  86              		.align	2
+  87              		.global	Display_WriteData
+  88              		.thumb
+  89              		.thumb_func
+  90              		.type	Display_WriteData, %function
+  91              	Display_WriteData:
+  92              	.LFB66:
+ 112:Source\bsw\LCD_Driver/ugui_st7735.c ****     
+ 113:Source\bsw\LCD_Driver/ugui_st7735.c ****     // White until all data in TX buffer has been sent.
+ 114:Source\bsw\LCD_Driver/ugui_st7735.c ****     // Microcontroller is faster than SPI data rate. We have to 
+ 115:Source\bsw\LCD_Driver/ugui_st7735.c ****     // wait to avoid changing state of CD line before all data has
+ 116:Source\bsw\LCD_Driver/ugui_st7735.c ****     // been sent.
+ 117:Source\bsw\LCD_Driver/ugui_st7735.c ****    // while (mmSPI_SpiUartGetTxBufferSize() > 0) {};
+ 118:Source\bsw\LCD_Driver/ugui_st7735.c ****     
+ 119:Source\bsw\LCD_Driver/ugui_st7735.c ****     /* *** Let CD line ready for data mode. *** */
+ 120:Source\bsw\LCD_Driver/ugui_st7735.c ****     //mmDisplayCD_Write(1);
+ 121:Source\bsw\LCD_Driver/ugui_st7735.c **** }
+ 122:Source\bsw\LCD_Driver/ugui_st7735.c **** 
+ 123:Source\bsw\LCD_Driver/ugui_st7735.c **** void Display_WriteData(uint8 data[], uint8 length)
+ 124:Source\bsw\LCD_Driver/ugui_st7735.c **** {
+  93              		.loc 1 124 0
+  94              		.cfi_startproc
+  95              		@ args = 0, pretend = 0, frame = 0
+  96              		@ frame_needed = 0, uses_anonymous_args = 0
+  97              	.LVL8:
+  98 0000 38B5     		push	{r3, r4, r5, lr}
+  99              		.cfi_def_cfa_offset 16
+ 100              		.cfi_offset 3, -16
+ 101              		.cfi_offset 4, -12
+ 102              		.cfi_offset 5, -8
+ 103              		.cfi_offset 14, -4
+ 104 0002 0446     		mov	r4, r0
+ARM GAS  C:\Users\Reza\AppData\Local\Temp\ccXaA36W.s 			page 5
+
+
+ 105 0004 0D46     		mov	r5, r1
+ 125:Source\bsw\LCD_Driver/ugui_st7735.c ****     /* *** CD line is managed in Display_WriteCommand function.
+ 126:Source\bsw\LCD_Driver/ugui_st7735.c ****            This way we make this funtion faster. *** */
+ 127:Source\bsw\LCD_Driver/ugui_st7735.c ****     //mmDisplayCD_Write(1);
+ 128:Source\bsw\LCD_Driver/ugui_st7735.c ****     RS_Write(1);
+ 106              		.loc 1 128 0
+ 107 0006 0120     		movs	r0, #1
+ 108              	.LVL9:
+ 109 0008 FFF7FEFF 		bl	RS_Write
+ 110              	.LVL10:
+ 129:Source\bsw\LCD_Driver/ugui_st7735.c **** 
+ 130:Source\bsw\LCD_Driver/ugui_st7735.c ****     // If there is some pending data in TX buffer, wait.
+ 131:Source\bsw\LCD_Driver/ugui_st7735.c ****     //while (mmSPI_SpiUartGetTxBufferSize() > 0) {};
+ 132:Source\bsw\LCD_Driver/ugui_st7735.c **** 
+ 133:Source\bsw\LCD_Driver/ugui_st7735.c ****     SPIM_PutArray(data, length);
+ 111              		.loc 1 133 0
+ 112 000c 2946     		mov	r1, r5
+ 113 000e 2046     		mov	r0, r4
+ 114 0010 FFF7FEFF 		bl	SPIM_PutArray
+ 115              	.LVL11:
+ 116 0014 38BD     		pop	{r3, r4, r5, pc}
+ 117              		.cfi_endproc
+ 118              	.LFE66:
+ 119              		.size	Display_WriteData, .-Display_WriteData
+ 120 0016 00BF     		.section	.text.Display_Init,"ax",%progbits
+ 121              		.align	2
+ 122              		.global	Display_Init
+ 123              		.thumb
+ 124              		.thumb_func
+ 125              		.type	Display_Init, %function
+ 126              	Display_Init:
+ 127              	.LFB63:
+  41:Source\bsw\LCD_Driver/ugui_st7735.c ****     uint8 loop;
+ 128              		.loc 1 41 0
+ 129              		.cfi_startproc
+ 130              		@ args = 0, pretend = 0, frame = 384
+ 131              		@ frame_needed = 0, uses_anonymous_args = 0
+ 132 0000 2DE9F041 		push	{r4, r5, r6, r7, r8, lr}
+ 133              		.cfi_def_cfa_offset 24
+ 134              		.cfi_offset 4, -24
+ 135              		.cfi_offset 5, -20
+ 136              		.cfi_offset 6, -16
+ 137              		.cfi_offset 7, -12
+ 138              		.cfi_offset 8, -8
+ 139              		.cfi_offset 14, -4
+ 140 0004 E0B0     		sub	sp, sp, #384
+ 141              		.cfi_def_cfa_offset 408
+  45:Source\bsw\LCD_Driver/ugui_st7735.c ****         {0x11, 0, 120},
+ 142              		.loc 1 45 0
+ 143 0006 4FF4BE72 		mov	r2, #380
+ 144 000a 0021     		movs	r1, #0
+ 145 000c 01A8     		add	r0, sp, #4
+ 146 000e FFF7FEFF 		bl	memset
+ 147              	.LVL12:
+ 148 0012 1125     		movs	r5, #17
+ 149 0014 8DF80450 		strb	r5, [sp, #4]
+ 150 0018 7823     		movs	r3, #120
+ARM GAS  C:\Users\Reza\AppData\Local\Temp\ccXaA36W.s 			page 6
+
+
+ 151 001a 8DF80630 		strb	r3, [sp, #6]
+ 152 001e B123     		movs	r3, #177
+ 153 0020 8DF81830 		strb	r3, [sp, #24]
+ 154 0024 0320     		movs	r0, #3
+ 155 0026 8DF81900 		strb	r0, [sp, #25]
+ 156 002a 0124     		movs	r4, #1
+ 157 002c 8DF81A40 		strb	r4, [sp, #26]
+ 158 0030 2C22     		movs	r2, #44
+ 159 0032 8DF81B20 		strb	r2, [sp, #27]
+ 160 0036 2D23     		movs	r3, #45
+ 161 0038 8DF81C30 		strb	r3, [sp, #28]
+ 162 003c B221     		movs	r1, #178
+ 163 003e 8DF82C10 		strb	r1, [sp, #44]
+ 164 0042 8DF82D00 		strb	r0, [sp, #45]
+ 165 0046 8DF82E40 		strb	r4, [sp, #46]
+ 166 004a 8DF82F20 		strb	r2, [sp, #47]
+ 167 004e 8DF83030 		strb	r3, [sp, #48]
+ 168 0052 B321     		movs	r1, #179
+ 169 0054 8DF84010 		strb	r1, [sp, #64]
+ 170 0058 0621     		movs	r1, #6
+ 171 005a 8DF84110 		strb	r1, [sp, #65]
+ 172 005e 8DF84240 		strb	r4, [sp, #66]
+ 173 0062 8DF84320 		strb	r2, [sp, #67]
+ 174 0066 8DF84430 		strb	r3, [sp, #68]
+ 175 006a 8DF84540 		strb	r4, [sp, #69]
+ 176 006e 8DF84620 		strb	r2, [sp, #70]
+ 177 0072 8DF84730 		strb	r3, [sp, #71]
+ 178 0076 B421     		movs	r1, #180
+ 179 0078 8DF85410 		strb	r1, [sp, #84]
+ 180 007c 8DF85540 		strb	r4, [sp, #85]
+ 181 0080 0727     		movs	r7, #7
+ 182 0082 8DF85670 		strb	r7, [sp, #86]
+ 183 0086 B623     		movs	r3, #182
+ 184 0088 8DF86830 		strb	r3, [sp, #104]
+ 185 008c 0223     		movs	r3, #2
+ 186 008e 8DF86930 		strb	r3, [sp, #105]
+ 187 0092 8DF86A10 		strb	r1, [sp, #106]
+ 188 0096 F021     		movs	r1, #240
+ 189 0098 8DF86B10 		strb	r1, [sp, #107]
+ 190 009c C021     		movs	r1, #192
+ 191 009e 8DF87C10 		strb	r1, [sp, #124]
+ 192 00a2 8DF87D00 		strb	r0, [sp, #125]
+ 193 00a6 A221     		movs	r1, #162
+ 194 00a8 8DF87E10 		strb	r1, [sp, #126]
+ 195 00ac 8DF87F30 		strb	r3, [sp, #127]
+ 196 00b0 0421     		movs	r1, #4
+ 197 00b2 8DF88010 		strb	r1, [sp, #128]
+ 198 00b6 C126     		movs	r6, #193
+ 199 00b8 8DF89060 		strb	r6, [sp, #144]
+ 200 00bc 8DF89140 		strb	r4, [sp, #145]
+ 201 00c0 C526     		movs	r6, #197
+ 202 00c2 8DF89260 		strb	r6, [sp, #146]
+ 203 00c6 4FF0C20E 		mov	lr, #194
+ 204 00ca 8DF8A4E0 		strb	lr, [sp, #164]
+ 205 00ce 8DF8A530 		strb	r3, [sp, #165]
+ 206 00d2 4FF00A0E 		mov	lr, #10
+ 207 00d6 8DF8A6E0 		strb	lr, [sp, #166]
+ARM GAS  C:\Users\Reza\AppData\Local\Temp\ccXaA36W.s 			page 7
+
+
+ 208 00da 4FF0C30E 		mov	lr, #195
+ 209 00de 8DF8B8E0 		strb	lr, [sp, #184]
+ 210 00e2 8DF8B930 		strb	r3, [sp, #185]
+ 211 00e6 4FF08A0C 		mov	ip, #138
+ 212 00ea 8DF8BAC0 		strb	ip, [sp, #186]
+ 213 00ee 4FF02A0E 		mov	lr, #42
+ 214 00f2 8DF8BBE0 		strb	lr, [sp, #187]
+ 215 00f6 4FF0C408 		mov	r8, #196
+ 216 00fa 8DF8CC80 		strb	r8, [sp, #204]
+ 217 00fe 8DF8CD30 		strb	r3, [sp, #205]
+ 218 0102 8DF8CEC0 		strb	ip, [sp, #206]
+ 219 0106 4FF0EE0C 		mov	ip, #238
+ 220 010a 8DF8CFC0 		strb	ip, [sp, #207]
+ 221 010e 8DF8E060 		strb	r6, [sp, #224]
+ 222 0112 8DF8E140 		strb	r4, [sp, #225]
+ 223 0116 8DF8E210 		strb	r1, [sp, #226]
+ 224 011a 3626     		movs	r6, #54
+ 225 011c 8DF8F460 		strb	r6, [sp, #244]
+ 226 0120 8DF8F540 		strb	r4, [sp, #245]
+ 227 0124 C826     		movs	r6, #200
+ 228 0126 8DF8F660 		strb	r6, [sp, #246]
+ 229 012a E026     		movs	r6, #224
+ 230 012c 8DF80861 		strb	r6, [sp, #264]
+ 231 0130 8DF80951 		strb	r5, [sp, #265]
+ 232 0134 0F25     		movs	r5, #15
+ 233 0136 8DF80A51 		strb	r5, [sp, #266]
+ 234 013a 1A26     		movs	r6, #26
+ 235 013c 8DF80B61 		strb	r6, [sp, #267]
+ 236 0140 8DF80C51 		strb	r5, [sp, #268]
+ 237 0144 1826     		movs	r6, #24
+ 238 0146 8DF80D61 		strb	r6, [sp, #269]
+ 239 014a 2F26     		movs	r6, #47
+ 240 014c 8DF80E61 		strb	r6, [sp, #270]
+ 241 0150 2826     		movs	r6, #40
+ 242 0152 8DF80F61 		strb	r6, [sp, #271]
+ 243 0156 2026     		movs	r6, #32
+ 244 0158 8DF81061 		strb	r6, [sp, #272]
+ 245 015c 2226     		movs	r6, #34
+ 246 015e 8DF81161 		strb	r6, [sp, #273]
+ 247 0162 1F26     		movs	r6, #31
+ 248 0164 8DF81261 		strb	r6, [sp, #274]
+ 249 0168 4FF01B0C 		mov	ip, #27
+ 250 016c 8DF813C1 		strb	ip, [sp, #275]
+ 251 0170 2326     		movs	r6, #35
+ 252 0172 8DF81461 		strb	r6, [sp, #276]
+ 253 0176 3726     		movs	r6, #55
+ 254 0178 8DF81561 		strb	r6, [sp, #277]
+ 255 017c 8DF81771 		strb	r7, [sp, #279]
+ 256 0180 8DF81831 		strb	r3, [sp, #280]
+ 257 0184 1026     		movs	r6, #16
+ 258 0186 8DF81961 		strb	r6, [sp, #281]
+ 259 018a 4FF0E108 		mov	r8, #225
+ 260 018e 8DF81C81 		strb	r8, [sp, #284]
+ 261 0192 8DF81D61 		strb	r6, [sp, #285]
+ 262 0196 8DF81E51 		strb	r5, [sp, #286]
+ 263 019a 8DF81FC1 		strb	ip, [sp, #287]
+ 264 019e 8DF82051 		strb	r5, [sp, #288]
+ARM GAS  C:\Users\Reza\AppData\Local\Temp\ccXaA36W.s 			page 8
+
+
+ 265 01a2 1725     		movs	r5, #23
+ 266 01a4 8DF82151 		strb	r5, [sp, #289]
+ 267 01a8 3325     		movs	r5, #51
+ 268 01aa 8DF82251 		strb	r5, [sp, #290]
+ 269 01ae 8DF82321 		strb	r2, [sp, #291]
+ 270 01b2 2922     		movs	r2, #41
+ 271 01b4 8DF82421 		strb	r2, [sp, #292]
+ 272 01b8 2E25     		movs	r5, #46
+ 273 01ba 8DF82551 		strb	r5, [sp, #293]
+ 274 01be 3025     		movs	r5, #48
+ 275 01c0 8DF82651 		strb	r5, [sp, #294]
+ 276 01c4 8DF82751 		strb	r5, [sp, #295]
+ 277 01c8 3925     		movs	r5, #57
+ 278 01ca 8DF82851 		strb	r5, [sp, #296]
+ 279 01ce 3F25     		movs	r5, #63
+ 280 01d0 8DF82951 		strb	r5, [sp, #297]
+ 281 01d4 8DF82B71 		strb	r7, [sp, #299]
+ 282 01d8 8DF82C01 		strb	r0, [sp, #300]
+ 283 01dc 8DF82D61 		strb	r6, [sp, #301]
+ 284 01e0 8DF830E1 		strb	lr, [sp, #304]
+ 285 01e4 8DF83111 		strb	r1, [sp, #305]
+ 286 01e8 8DF83331 		strb	r3, [sp, #307]
+ 287 01ec 8123     		movs	r3, #129
+ 288 01ee 8DF83531 		strb	r3, [sp, #309]
+ 289 01f2 2B23     		movs	r3, #43
+ 290 01f4 8DF84431 		strb	r3, [sp, #324]
+ 291 01f8 8DF84511 		strb	r1, [sp, #325]
+ 292 01fc 8DF84741 		strb	r4, [sp, #327]
+ 293 0200 A023     		movs	r3, #160
+ 294 0202 8DF84931 		strb	r3, [sp, #329]
+ 295 0206 3A23     		movs	r3, #58
+ 296 0208 8DF85831 		strb	r3, [sp, #344]
+ 297 020c 8DF85941 		strb	r4, [sp, #345]
+ 298 0210 0523     		movs	r3, #5
+ 299 0212 8DF85A31 		strb	r3, [sp, #346]
+ 300 0216 8DF86C21 		strb	r2, [sp, #364]
+  74:Source\bsw\LCD_Driver/ugui_st7735.c ****     RS_Write(1);                       // DISP_CD. Ready for data mode, the most
+ 301              		.loc 1 74 0
+ 302 021a 2046     		mov	r0, r4
+ 303 021c FFF7FEFF 		bl	RST_Write
+ 304              	.LVL13:
+  75:Source\bsw\LCD_Driver/ugui_st7735.c ****                                             //          common mode.
+ 305              		.loc 1 75 0
+ 306 0220 2046     		mov	r0, r4
+ 307 0222 FFF7FEFF 		bl	RS_Write
+ 308              	.LVL14:
+  78:Source\bsw\LCD_Driver/ugui_st7735.c ****         
+ 309              		.loc 1 78 0
+ 310 0226 FFF7FEFF 		bl	SPIM_Start
+ 311              	.LVL15:
+  81:Source\bsw\LCD_Driver/ugui_st7735.c ****     
+ 312              		.loc 1 81 0
+ 313 022a FFF7FEFF 		bl	Display_Reset
+ 314              	.LVL16:
+  83:Source\bsw\LCD_Driver/ugui_st7735.c ****     {
+ 315              		.loc 1 83 0
+ 316 022e 0024     		movs	r4, #0
+ARM GAS  C:\Users\Reza\AppData\Local\Temp\ccXaA36W.s 			page 9
+
+
+ 317 0230 16E0     		b	.L8
+ 318              	.LVL17:
+ 319              	.L10:
+  85:Source\bsw\LCD_Driver/ugui_st7735.c ****         Display_WriteData(&configdata[loop][2], configdata[loop][1]);
+ 320              		.loc 1 85 0
+ 321 0232 01AE     		add	r6, sp, #4
+ 322 0234 A500     		lsls	r5, r4, #2
+ 323 0236 2A19     		adds	r2, r5, r4
+ 324 0238 9300     		lsls	r3, r2, #2
+ 325 023a F718     		adds	r7, r6, r3
+ 326 023c F05C     		ldrb	r0, [r6, r3]	@ zero_extendqisi2
+ 327 023e FFF7FEFF 		bl	Display_WriteCommand
+ 328              	.LVL18:
+  86:Source\bsw\LCD_Driver/ugui_st7735.c ****         
+ 329              		.loc 1 86 0
+ 330 0242 2B19     		adds	r3, r5, r4
+ 331 0244 9800     		lsls	r0, r3, #2
+ 332 0246 0230     		adds	r0, r0, #2
+ 333 0248 7978     		ldrb	r1, [r7, #1]	@ zero_extendqisi2
+ 334 024a 3044     		add	r0, r0, r6
+ 335 024c FFF7FEFF 		bl	Display_WriteData
+ 336              	.LVL19:
+  88:Source\bsw\LCD_Driver/ugui_st7735.c ****             CyDelay(configdata[loop][configdata[loop][1] + 2]);
+ 337              		.loc 1 88 0
+ 338 0250 7A78     		ldrb	r2, [r7, #1]	@ zero_extendqisi2
+ 339 0252 0232     		adds	r2, r2, #2
+ 340 0254 B85C     		ldrb	r0, [r7, r2]	@ zero_extendqisi2
+ 341 0256 08B1     		cbz	r0, .L9
+  89:Source\bsw\LCD_Driver/ugui_st7735.c ****     }
+ 342              		.loc 1 89 0
+ 343 0258 FFF7FEFF 		bl	CyDelay
+ 344              	.LVL20:
+ 345              	.L9:
+  83:Source\bsw\LCD_Driver/ugui_st7735.c ****     {
+ 346              		.loc 1 83 0 discriminator 2
+ 347 025c 0134     		adds	r4, r4, #1
+ 348              	.LVL21:
+ 349 025e E4B2     		uxtb	r4, r4
+ 350              	.LVL22:
+ 351              	.L8:
+  83:Source\bsw\LCD_Driver/ugui_st7735.c ****     {
+ 352              		.loc 1 83 0 is_stmt 0 discriminator 1
+ 353 0260 122C     		cmp	r4, #18
+ 354 0262 E6D9     		bls	.L10
+  93:Source\bsw\LCD_Driver/ugui_st7735.c ****     
+ 355              		.loc 1 93 0 is_stmt 1
+ 356 0264 A023     		movs	r3, #160
+ 357 0266 8022     		movs	r2, #128
+ 358 0268 0749     		ldr	r1, .L12
+ 359 026a 0848     		ldr	r0, .L12+4
+ 360 026c FFF7FEFF 		bl	UG_Init
+ 361              	.LVL23:
+  96:Source\bsw\LCD_Driver/ugui_st7735.c ****     UG_DriverRegister(DRIVER_DRAW_LINE, (void*)HW_DrawLine);
+ 362              		.loc 1 96 0
+ 363 0270 0749     		ldr	r1, .L12+8
+ 364 0272 0120     		movs	r0, #1
+ 365 0274 FFF7FEFF 		bl	UG_DriverRegister
+ARM GAS  C:\Users\Reza\AppData\Local\Temp\ccXaA36W.s 			page 10
+
+
+ 366              	.LVL24:
+  97:Source\bsw\LCD_Driver/ugui_st7735.c **** }
+ 367              		.loc 1 97 0
+ 368 0278 0649     		ldr	r1, .L12+12
+ 369 027a 0020     		movs	r0, #0
+ 370 027c FFF7FEFF 		bl	UG_DriverRegister
+ 371              	.LVL25:
+  98:Source\bsw\LCD_Driver/ugui_st7735.c **** 
+ 372              		.loc 1 98 0
+ 373 0280 60B0     		add	sp, sp, #384
+ 374              		.cfi_def_cfa_offset 24
+ 375              		@ sp needed
+ 376 0282 BDE8F081 		pop	{r4, r5, r6, r7, r8, pc}
+ 377              	.LVL26:
+ 378              	.L13:
+ 379 0286 00BF     		.align	2
+ 380              	.L12:
+ 381 0288 00000000 		.word	Display_PSet
+ 382 028c 00000000 		.word	gui7735
+ 383 0290 00000000 		.word	HW_FillFrame
+ 384 0294 00000000 		.word	HW_DrawLine
+ 385              		.cfi_endproc
+ 386              	.LFE63:
+ 387              		.size	Display_Init, .-Display_Init
+ 388              		.section	.text.Display_PSet,"ax",%progbits
+ 389              		.align	2
+ 390              		.global	Display_PSet
+ 391              		.thumb
+ 392              		.thumb_func
+ 393              		.type	Display_PSet, %function
+ 394              	Display_PSet:
+ 395              	.LFB67:
+ 134:Source\bsw\LCD_Driver/ugui_st7735.c **** }
+ 135:Source\bsw\LCD_Driver/ugui_st7735.c **** 
+ 136:Source\bsw\LCD_Driver/ugui_st7735.c **** 
+ 137:Source\bsw\LCD_Driver/ugui_st7735.c **** void Display_PSet(UG_S16 x, UG_S16 y, UG_COLOR c)
+ 138:Source\bsw\LCD_Driver/ugui_st7735.c **** {
+ 396              		.loc 1 138 0
+ 397              		.cfi_startproc
+ 398              		@ args = 0, pretend = 0, frame = 8
+ 399              		@ frame_needed = 0, uses_anonymous_args = 0
+ 400              	.LVL27:
+ 139:Source\bsw\LCD_Driver/ugui_st7735.c ****     UG_U16 color;
+ 140:Source\bsw\LCD_Driver/ugui_st7735.c ****     uint8 ddata[4];
+ 141:Source\bsw\LCD_Driver/ugui_st7735.c **** 
+ 142:Source\bsw\LCD_Driver/ugui_st7735.c ****     if((x < 0) ||(x >= DISPLAY_WIDTH) || (y < 0) || (y >= DISPLAY_HEIGHT)) return;
+ 401              		.loc 1 142 0
+ 402 0000 83B2     		uxth	r3, r0
+ 403 0002 7F2B     		cmp	r3, #127
+ 404 0004 43D8     		bhi	.L18
+ 405              		.loc 1 142 0 is_stmt 0 discriminator 1
+ 406 0006 0029     		cmp	r1, #0
+ 407 0008 41DB     		blt	.L18
+ 408              		.loc 1 142 0 discriminator 2
+ 409 000a 9F29     		cmp	r1, #159
+ 410 000c 3FDC     		bgt	.L18
+ 138:Source\bsw\LCD_Driver/ugui_st7735.c ****     UG_U16 color;
+ARM GAS  C:\Users\Reza\AppData\Local\Temp\ccXaA36W.s 			page 11
+
+
+ 411              		.loc 1 138 0 is_stmt 1
+ 412 000e F0B5     		push	{r4, r5, r6, r7, lr}
+ 413              		.cfi_def_cfa_offset 20
+ 414              		.cfi_offset 4, -20
+ 415              		.cfi_offset 5, -16
+ 416              		.cfi_offset 6, -12
+ 417              		.cfi_offset 7, -8
+ 418              		.cfi_offset 14, -4
+ 419 0010 83B0     		sub	sp, sp, #12
+ 420              		.cfi_def_cfa_offset 32
+ 421 0012 1646     		mov	r6, r2
+ 422 0014 0D46     		mov	r5, r1
+ 423 0016 0446     		mov	r4, r0
+ 143:Source\bsw\LCD_Driver/ugui_st7735.c **** 
+ 144:Source\bsw\LCD_Driver/ugui_st7735.c ****     Display_WriteCommand(0x2A);
+ 424              		.loc 1 144 0
+ 425 0018 2A20     		movs	r0, #42
+ 426              	.LVL28:
+ 427 001a FFF7FEFF 		bl	Display_WriteCommand
+ 428              	.LVL29:
+ 145:Source\bsw\LCD_Driver/ugui_st7735.c ****     ddata[0] = 0x00; ddata[1] = x; ddata[2] = 0x00; ddata[3] = x + 1;
+ 429              		.loc 1 145 0
+ 430 001e 0027     		movs	r7, #0
+ 431 0020 8DF80470 		strb	r7, [sp, #4]
+ 432 0024 E0B2     		uxtb	r0, r4
+ 433 0026 8DF80500 		strb	r0, [sp, #5]
+ 434 002a 8DF80670 		strb	r7, [sp, #6]
+ 435 002e 0130     		adds	r0, r0, #1
+ 436 0030 8DF80700 		strb	r0, [sp, #7]
+ 146:Source\bsw\LCD_Driver/ugui_st7735.c ****     Display_WriteData(ddata, 4);
+ 437              		.loc 1 146 0
+ 438 0034 0421     		movs	r1, #4
+ 439 0036 0DEB0100 		add	r0, sp, r1
+ 440 003a FFF7FEFF 		bl	Display_WriteData
+ 441              	.LVL30:
+ 147:Source\bsw\LCD_Driver/ugui_st7735.c **** 
+ 148:Source\bsw\LCD_Driver/ugui_st7735.c ****     Display_WriteCommand(0x2B);
+ 442              		.loc 1 148 0
+ 443 003e 2B20     		movs	r0, #43
+ 444 0040 FFF7FEFF 		bl	Display_WriteCommand
+ 445              	.LVL31:
+ 149:Source\bsw\LCD_Driver/ugui_st7735.c ****     ddata[0] = 0x00; ddata[1] = y; ddata[2] = 0x00; ddata[3] = y + 1;
+ 446              		.loc 1 149 0
+ 447 0044 8DF80470 		strb	r7, [sp, #4]
+ 448 0048 E9B2     		uxtb	r1, r5
+ 449 004a 8DF80510 		strb	r1, [sp, #5]
+ 450 004e 8DF80670 		strb	r7, [sp, #6]
+ 451 0052 0131     		adds	r1, r1, #1
+ 452 0054 8DF80710 		strb	r1, [sp, #7]
+ 150:Source\bsw\LCD_Driver/ugui_st7735.c ****     Display_WriteData(ddata, 4);
+ 453              		.loc 1 150 0
+ 454 0058 0421     		movs	r1, #4
+ 455 005a 0DEB0100 		add	r0, sp, r1
+ 456 005e FFF7FEFF 		bl	Display_WriteData
+ 457              	.LVL32:
+ 151:Source\bsw\LCD_Driver/ugui_st7735.c **** 
+ 152:Source\bsw\LCD_Driver/ugui_st7735.c ****     Display_WriteCommand(0x2C);
+ARM GAS  C:\Users\Reza\AppData\Local\Temp\ccXaA36W.s 			page 12
+
+
+ 458              		.loc 1 152 0
+ 459 0062 2C20     		movs	r0, #44
+ 460 0064 FFF7FEFF 		bl	Display_WriteCommand
+ 461              	.LVL33:
+ 153:Source\bsw\LCD_Driver/ugui_st7735.c **** 
+ 154:Source\bsw\LCD_Driver/ugui_st7735.c **** #if defined USE_COLOR_RGB565
+ 155:Source\bsw\LCD_Driver/ugui_st7735.c ****     
+ 156:Source\bsw\LCD_Driver/ugui_st7735.c ****     color = (c & 0xF800) >> 11;
+ 157:Source\bsw\LCD_Driver/ugui_st7735.c ****     color = color | (c & 0x07E0);
+ 462              		.loc 1 157 0
+ 463 0068 06F4FC62 		and	r2, r6, #2016
+ 464 006c 42EAD622 		orr	r2, r2, r6, lsr #11
+ 465              	.LVL34:
+ 158:Source\bsw\LCD_Driver/ugui_st7735.c ****     color = color | ((c & 0x001F) << 11);
+ 466              		.loc 1 158 0
+ 467 0070 42EAC626 		orr	r6, r2, r6, lsl #11
+ 468 0074 36B2     		sxth	r6, r6
+ 469              	.LVL35:
+ 159:Source\bsw\LCD_Driver/ugui_st7735.c ****     
+ 160:Source\bsw\LCD_Driver/ugui_st7735.c ****     ddata[0] = (color >> 8); ddata[1] = color;
+ 470              		.loc 1 160 0
+ 471 0076 C6F30723 		ubfx	r3, r6, #8, #8
+ 472 007a 8DF80430 		strb	r3, [sp, #4]
+ 473 007e 8DF80560 		strb	r6, [sp, #5]
+ 161:Source\bsw\LCD_Driver/ugui_st7735.c ****     Display_WriteData(ddata, 2);
+ 474              		.loc 1 161 0
+ 475 0082 0221     		movs	r1, #2
+ 476 0084 01A8     		add	r0, sp, #4
+ 477 0086 FFF7FEFF 		bl	Display_WriteData
+ 478              	.LVL36:
+ 162:Source\bsw\LCD_Driver/ugui_st7735.c ****     
+ 163:Source\bsw\LCD_Driver/ugui_st7735.c **** #endif    
+ 164:Source\bsw\LCD_Driver/ugui_st7735.c **** 
+ 165:Source\bsw\LCD_Driver/ugui_st7735.c **** #if defined USE_COLOR_RGB888
+ 166:Source\bsw\LCD_Driver/ugui_st7735.c ****     
+ 167:Source\bsw\LCD_Driver/ugui_st7735.c ****     ddata[0] = (uint8)(c);
+ 168:Source\bsw\LCD_Driver/ugui_st7735.c ****     ddata[1] = (uint8)(c >> 8);
+ 169:Source\bsw\LCD_Driver/ugui_st7735.c ****     ddata[2] = (uint8)(c >> 16);
+ 170:Source\bsw\LCD_Driver/ugui_st7735.c ****     
+ 171:Source\bsw\LCD_Driver/ugui_st7735.c ****     Display_WriteData(ddata, 3); 
+ 172:Source\bsw\LCD_Driver/ugui_st7735.c ****     
+ 173:Source\bsw\LCD_Driver/ugui_st7735.c **** #endif    
+ 174:Source\bsw\LCD_Driver/ugui_st7735.c **** 
+ 175:Source\bsw\LCD_Driver/ugui_st7735.c **** }
+ 479              		.loc 1 175 0
+ 480 008a 03B0     		add	sp, sp, #12
+ 481              		.cfi_def_cfa_offset 20
+ 482              		@ sp needed
+ 483 008c F0BD     		pop	{r4, r5, r6, r7, pc}
+ 484              	.LVL37:
+ 485              	.L18:
+ 486              		.cfi_def_cfa_offset 0
+ 487              		.cfi_restore 4
+ 488              		.cfi_restore 5
+ 489              		.cfi_restore 6
+ 490              		.cfi_restore 7
+ 491              		.cfi_restore 14
+ARM GAS  C:\Users\Reza\AppData\Local\Temp\ccXaA36W.s 			page 13
+
+
+ 492 008e 7047     		bx	lr
+ 493              		.cfi_endproc
+ 494              	.LFE67:
+ 495              		.size	Display_PSet, .-Display_PSet
+ 496              		.section	.text.HW_FillFrame,"ax",%progbits
+ 497              		.align	2
+ 498              		.global	HW_FillFrame
+ 499              		.thumb
+ 500              		.thumb_func
+ 501              		.type	HW_FillFrame, %function
+ 502              	HW_FillFrame:
+ 503              	.LFB68:
+ 176:Source\bsw\LCD_Driver/ugui_st7735.c **** 
+ 177:Source\bsw\LCD_Driver/ugui_st7735.c **** UG_RESULT HW_FillFrame(UG_S16 x1, UG_S16 y1, UG_S16 x2, UG_S16 y2, UG_COLOR c)
+ 178:Source\bsw\LCD_Driver/ugui_st7735.c **** {
+ 504              		.loc 1 178 0
+ 505              		.cfi_startproc
+ 506              		@ args = 4, pretend = 0, frame = 8
+ 507              		@ frame_needed = 0, uses_anonymous_args = 0
+ 508              	.LVL38:
+ 509 0000 2DE9F047 		push	{r4, r5, r6, r7, r8, r9, r10, lr}
+ 510              		.cfi_def_cfa_offset 32
+ 511              		.cfi_offset 4, -32
+ 512              		.cfi_offset 5, -28
+ 513              		.cfi_offset 6, -24
+ 514              		.cfi_offset 7, -20
+ 515              		.cfi_offset 8, -16
+ 516              		.cfi_offset 9, -12
+ 517              		.cfi_offset 10, -8
+ 518              		.cfi_offset 14, -4
+ 519 0004 82B0     		sub	sp, sp, #8
+ 520              		.cfi_def_cfa_offset 40
+ 521 0006 BDF82860 		ldrh	r6, [sp, #40]
+ 179:Source\bsw\LCD_Driver/ugui_st7735.c ****     uint8 loopx, loopy;
+ 180:Source\bsw\LCD_Driver/ugui_st7735.c ****     UG_U16 color;
+ 181:Source\bsw\LCD_Driver/ugui_st7735.c ****     uint8 ddata[4];
+ 182:Source\bsw\LCD_Driver/ugui_st7735.c ****     
+ 183:Source\bsw\LCD_Driver/ugui_st7735.c ****     if((x1 < 0) ||(x1 >= DISPLAY_WIDTH) || (y1 < 0) || (y1 >= DISPLAY_HEIGHT)) return UG_RESULT_FAI
+ 522              		.loc 1 183 0
+ 523 000a 84B2     		uxth	r4, r0
+ 524 000c 7F2C     		cmp	r4, #127
+ 525 000e 59D8     		bhi	.L24
+ 526              		.loc 1 183 0 is_stmt 0 discriminator 2
+ 527 0010 0029     		cmp	r1, #0
+ 528 0012 5ADB     		blt	.L25
+ 529              		.loc 1 183 0 discriminator 4
+ 530 0014 9F29     		cmp	r1, #159
+ 531 0016 5BDC     		bgt	.L26
+ 184:Source\bsw\LCD_Driver/ugui_st7735.c ****     if((x2 < 0) ||(x2 >= DISPLAY_WIDTH) || (y2 < 0) || (y2 >= DISPLAY_HEIGHT)) return UG_RESULT_FAI
+ 532              		.loc 1 184 0 is_stmt 1
+ 533 0018 94B2     		uxth	r4, r2
+ 534 001a 7F2C     		cmp	r4, #127
+ 535 001c 5BD8     		bhi	.L27
+ 536              		.loc 1 184 0 is_stmt 0 discriminator 2
+ 537 001e 002B     		cmp	r3, #0
+ 538 0020 5CDB     		blt	.L28
+ 539              		.loc 1 184 0 discriminator 4
+ARM GAS  C:\Users\Reza\AppData\Local\Temp\ccXaA36W.s 			page 14
+
+
+ 540 0022 9F2B     		cmp	r3, #159
+ 541 0024 5DDC     		bgt	.L29
+ 542 0026 1D46     		mov	r5, r3
+ 543 0028 9246     		mov	r10, r2
+ 544 002a 8946     		mov	r9, r1
+ 545 002c 8046     		mov	r8, r0
+ 185:Source\bsw\LCD_Driver/ugui_st7735.c **** 
+ 186:Source\bsw\LCD_Driver/ugui_st7735.c ****     Display_WriteCommand(0x2A);
+ 546              		.loc 1 186 0 is_stmt 1
+ 547 002e 2A20     		movs	r0, #42
+ 548              	.LVL39:
+ 549 0030 FFF7FEFF 		bl	Display_WriteCommand
+ 550              	.LVL40:
+ 187:Source\bsw\LCD_Driver/ugui_st7735.c ****     ddata[0] = 0x00; ddata[1] = x1; ddata[2] = 0x00; ddata[3] = x2;
+ 551              		.loc 1 187 0
+ 552 0034 0024     		movs	r4, #0
+ 553              	.LVL41:
+ 554 0036 8DF80440 		strb	r4, [sp, #4]
+ 555 003a 5FFA88F8 		uxtb	r8, r8
+ 556 003e 8DF80580 		strb	r8, [sp, #5]
+ 557 0042 8DF80640 		strb	r4, [sp, #6]
+ 558 0046 8DF807A0 		strb	r10, [sp, #7]
+ 188:Source\bsw\LCD_Driver/ugui_st7735.c ****     Display_WriteData(ddata, 4);
+ 559              		.loc 1 188 0
+ 560 004a 0421     		movs	r1, #4
+ 561 004c 0DEB0100 		add	r0, sp, r1
+ 562 0050 FFF7FEFF 		bl	Display_WriteData
+ 563              	.LVL42:
+ 189:Source\bsw\LCD_Driver/ugui_st7735.c **** 
+ 190:Source\bsw\LCD_Driver/ugui_st7735.c ****     Display_WriteCommand(0x2B);
+ 564              		.loc 1 190 0
+ 565 0054 2B20     		movs	r0, #43
+ 566 0056 FFF7FEFF 		bl	Display_WriteCommand
+ 567              	.LVL43:
+ 191:Source\bsw\LCD_Driver/ugui_st7735.c ****     ddata[0] = 0x00; ddata[1] = y1; ddata[2] = 0x00; ddata[3] = y2;
+ 568              		.loc 1 191 0
+ 569 005a 8DF80440 		strb	r4, [sp, #4]
+ 570 005e 5FFA89F9 		uxtb	r9, r9
+ 571 0062 8DF80590 		strb	r9, [sp, #5]
+ 572 0066 8DF80640 		strb	r4, [sp, #6]
+ 573 006a 8DF80750 		strb	r5, [sp, #7]
+ 192:Source\bsw\LCD_Driver/ugui_st7735.c ****     Display_WriteData(ddata, 4);
+ 574              		.loc 1 192 0
+ 575 006e 0421     		movs	r1, #4
+ 576 0070 0DEB0100 		add	r0, sp, r1
+ 577 0074 FFF7FEFF 		bl	Display_WriteData
+ 578              	.LVL44:
+ 193:Source\bsw\LCD_Driver/ugui_st7735.c **** 
+ 194:Source\bsw\LCD_Driver/ugui_st7735.c ****     Display_WriteCommand(0x2C);    
+ 579              		.loc 1 194 0
+ 580 0078 2C20     		movs	r0, #44
+ 581 007a FFF7FEFF 		bl	Display_WriteCommand
+ 582              	.LVL45:
+ 195:Source\bsw\LCD_Driver/ugui_st7735.c ****     
+ 196:Source\bsw\LCD_Driver/ugui_st7735.c **** #if defined USE_COLOR_RGB565
+ 197:Source\bsw\LCD_Driver/ugui_st7735.c ****     
+ 198:Source\bsw\LCD_Driver/ugui_st7735.c ****     color = (c & 0xF800) >> 11;
+ARM GAS  C:\Users\Reza\AppData\Local\Temp\ccXaA36W.s 			page 15
+
+
+ 199:Source\bsw\LCD_Driver/ugui_st7735.c ****     color = color | (c & 0x07E0);
+ 583              		.loc 1 199 0
+ 584 007e 06F4FC63 		and	r3, r6, #2016
+ 585 0082 43EAD623 		orr	r3, r3, r6, lsr #11
+ 586              	.LVL46:
+ 200:Source\bsw\LCD_Driver/ugui_st7735.c ****     color = color | ((c & 0x001F) << 11);
+ 587              		.loc 1 200 0
+ 588 0086 43EAC626 		orr	r6, r3, r6, lsl #11
+ 589 008a 36B2     		sxth	r6, r6
+ 590 008c B7B2     		uxth	r7, r6
+ 591              	.LVL47:
+ 201:Source\bsw\LCD_Driver/ugui_st7735.c ****     
+ 202:Source\bsw\LCD_Driver/ugui_st7735.c ****     for (loopx = x1; loopx < (x2 + 1); loopx++)
+ 592              		.loc 1 202 0
+ 593 008e 13E0     		b	.L21
+ 594              	.LVL48:
+ 595              	.L22:
+ 203:Source\bsw\LCD_Driver/ugui_st7735.c ****     {
+ 204:Source\bsw\LCD_Driver/ugui_st7735.c ****         for (loopy = y1; loopy < (y2 + 1); loopy++)
+ 205:Source\bsw\LCD_Driver/ugui_st7735.c ****         {
+ 206:Source\bsw\LCD_Driver/ugui_st7735.c ****             ddata[0] = (color >> 8); ddata[1] = color;
+ 596              		.loc 1 206 0 discriminator 3
+ 597 0090 3B0A     		lsrs	r3, r7, #8
+ 598 0092 8DF80430 		strb	r3, [sp, #4]
+ 599 0096 8DF80560 		strb	r6, [sp, #5]
+ 207:Source\bsw\LCD_Driver/ugui_st7735.c ****             Display_WriteData(ddata, 2); 
+ 600              		.loc 1 207 0 discriminator 3
+ 601 009a 0221     		movs	r1, #2
+ 602 009c 01A8     		add	r0, sp, #4
+ 603 009e FFF7FEFF 		bl	Display_WriteData
+ 604              	.LVL49:
+ 204:Source\bsw\LCD_Driver/ugui_st7735.c ****         {
+ 605              		.loc 1 204 0 discriminator 3
+ 606 00a2 0134     		adds	r4, r4, #1
+ 607              	.LVL50:
+ 608 00a4 E4B2     		uxtb	r4, r4
+ 609              	.LVL51:
+ 610 00a6 00E0     		b	.L23
+ 611              	.LVL52:
+ 612              	.L30:
+ 613 00a8 4C46     		mov	r4, r9
+ 614              	.L23:
+ 615              	.LVL53:
+ 204:Source\bsw\LCD_Driver/ugui_st7735.c ****         {
+ 616              		.loc 1 204 0 is_stmt 0 discriminator 1
+ 617 00aa 691C     		adds	r1, r5, #1
+ 618 00ac 8C42     		cmp	r4, r1
+ 619 00ae EFDB     		blt	.L22
+ 202:Source\bsw\LCD_Driver/ugui_st7735.c ****     {
+ 620              		.loc 1 202 0 is_stmt 1 discriminator 2
+ 621 00b0 08F10108 		add	r8, r8, #1
+ 622              	.LVL54:
+ 623 00b4 5FFA88F8 		uxtb	r8, r8
+ 624              	.LVL55:
+ 625              	.L21:
+ 202:Source\bsw\LCD_Driver/ugui_st7735.c ****     {
+ 626              		.loc 1 202 0 is_stmt 0 discriminator 1
+ARM GAS  C:\Users\Reza\AppData\Local\Temp\ccXaA36W.s 			page 16
+
+
+ 627 00b8 0AF10103 		add	r3, r10, #1
+ 628 00bc 9845     		cmp	r8, r3
+ 629 00be F3DB     		blt	.L30
+ 208:Source\bsw\LCD_Driver/ugui_st7735.c ****         }
+ 209:Source\bsw\LCD_Driver/ugui_st7735.c ****     }
+ 210:Source\bsw\LCD_Driver/ugui_st7735.c ****     
+ 211:Source\bsw\LCD_Driver/ugui_st7735.c **** #endif    
+ 212:Source\bsw\LCD_Driver/ugui_st7735.c **** 
+ 213:Source\bsw\LCD_Driver/ugui_st7735.c **** #if defined USE_COLOR_RGB888
+ 214:Source\bsw\LCD_Driver/ugui_st7735.c ****     
+ 215:Source\bsw\LCD_Driver/ugui_st7735.c ****     ddata[0] = (uint8)(c);
+ 216:Source\bsw\LCD_Driver/ugui_st7735.c ****     ddata[1] = (uint8)(c >> 8);
+ 217:Source\bsw\LCD_Driver/ugui_st7735.c ****     ddata[2] = (uint8)(c >> 16);
+ 218:Source\bsw\LCD_Driver/ugui_st7735.c ****     
+ 219:Source\bsw\LCD_Driver/ugui_st7735.c ****     for (loopx = x1; loopx < (x2 + 1); loopx++)
+ 220:Source\bsw\LCD_Driver/ugui_st7735.c ****     {
+ 221:Source\bsw\LCD_Driver/ugui_st7735.c ****         for (loopy = y1; loopy < (y2 + 1); loopy++)
+ 222:Source\bsw\LCD_Driver/ugui_st7735.c ****         {
+ 223:Source\bsw\LCD_Driver/ugui_st7735.c ****             Display_WriteData(ddata, 3); 
+ 224:Source\bsw\LCD_Driver/ugui_st7735.c ****         }
+ 225:Source\bsw\LCD_Driver/ugui_st7735.c ****     }
+ 226:Source\bsw\LCD_Driver/ugui_st7735.c ****     
+ 227:Source\bsw\LCD_Driver/ugui_st7735.c **** #endif    
+ 228:Source\bsw\LCD_Driver/ugui_st7735.c ****     
+ 229:Source\bsw\LCD_Driver/ugui_st7735.c ****     return UG_RESULT_OK;
+ 630              		.loc 1 229 0 is_stmt 1
+ 631 00c0 0020     		movs	r0, #0
+ 632 00c2 10E0     		b	.L20
+ 633              	.LVL56:
+ 634              	.L24:
+ 183:Source\bsw\LCD_Driver/ugui_st7735.c ****     if((x2 < 0) ||(x2 >= DISPLAY_WIDTH) || (y2 < 0) || (y2 >= DISPLAY_HEIGHT)) return UG_RESULT_FAI
+ 635              		.loc 1 183 0
+ 636 00c4 4FF0FF30 		mov	r0, #-1
+ 637              	.LVL57:
+ 638 00c8 0DE0     		b	.L20
+ 639              	.LVL58:
+ 640              	.L25:
+ 641 00ca 4FF0FF30 		mov	r0, #-1
+ 642              	.LVL59:
+ 643 00ce 0AE0     		b	.L20
+ 644              	.LVL60:
+ 645              	.L26:
+ 646 00d0 4FF0FF30 		mov	r0, #-1
+ 647              	.LVL61:
+ 648 00d4 07E0     		b	.L20
+ 649              	.LVL62:
+ 650              	.L27:
+ 184:Source\bsw\LCD_Driver/ugui_st7735.c **** 
+ 651              		.loc 1 184 0
+ 652 00d6 4FF0FF30 		mov	r0, #-1
+ 653              	.LVL63:
+ 654 00da 04E0     		b	.L20
+ 655              	.LVL64:
+ 656              	.L28:
+ 657 00dc 4FF0FF30 		mov	r0, #-1
+ 658              	.LVL65:
+ 659 00e0 01E0     		b	.L20
+ARM GAS  C:\Users\Reza\AppData\Local\Temp\ccXaA36W.s 			page 17
+
+
+ 660              	.LVL66:
+ 661              	.L29:
+ 662 00e2 4FF0FF30 		mov	r0, #-1
+ 663              	.LVL67:
+ 664              	.L20:
+ 230:Source\bsw\LCD_Driver/ugui_st7735.c **** }
+ 665              		.loc 1 230 0
+ 666 00e6 02B0     		add	sp, sp, #8
+ 667              		.cfi_def_cfa_offset 32
+ 668              		@ sp needed
+ 669 00e8 BDE8F087 		pop	{r4, r5, r6, r7, r8, r9, r10, pc}
+ 670              		.cfi_endproc
+ 671              	.LFE68:
+ 672              		.size	HW_FillFrame, .-HW_FillFrame
+ 673              		.section	.text.HW_DrawLine,"ax",%progbits
+ 674              		.align	2
+ 675              		.global	HW_DrawLine
+ 676              		.thumb
+ 677              		.thumb_func
+ 678              		.type	HW_DrawLine, %function
+ 679              	HW_DrawLine:
+ 680              	.LFB69:
+ 231:Source\bsw\LCD_Driver/ugui_st7735.c **** 
+ 232:Source\bsw\LCD_Driver/ugui_st7735.c **** UG_RESULT HW_DrawLine( UG_S16 x1 , UG_S16 y1 , UG_S16 x2 , UG_S16 y2 , UG_COLOR c )
+ 233:Source\bsw\LCD_Driver/ugui_st7735.c **** {
+ 681              		.loc 1 233 0
+ 682              		.cfi_startproc
+ 683              		@ args = 4, pretend = 0, frame = 0
+ 684              		@ frame_needed = 0, uses_anonymous_args = 0
+ 685              	.LVL68:
+ 686 0000 10B5     		push	{r4, lr}
+ 687              		.cfi_def_cfa_offset 8
+ 688              		.cfi_offset 4, -8
+ 689              		.cfi_offset 14, -4
+ 690 0002 82B0     		sub	sp, sp, #8
+ 691              		.cfi_def_cfa_offset 16
+ 234:Source\bsw\LCD_Driver/ugui_st7735.c ****     if((x1 < 0) ||(x1 >= DISPLAY_WIDTH) || (y1 < 0) || (y1 >= DISPLAY_HEIGHT)) return UG_RESULT_FAI
+ 692              		.loc 1 234 0
+ 693 0004 84B2     		uxth	r4, r0
+ 694 0006 7F2C     		cmp	r4, #127
+ 695 0008 15D8     		bhi	.L35
+ 696              		.loc 1 234 0 is_stmt 0 discriminator 2
+ 697 000a 0029     		cmp	r1, #0
+ 698 000c 16DB     		blt	.L36
+ 699              		.loc 1 234 0 discriminator 4
+ 700 000e 9F29     		cmp	r1, #159
+ 701 0010 17DC     		bgt	.L37
+ 235:Source\bsw\LCD_Driver/ugui_st7735.c ****     if((x2 < 0) ||(x2 >= DISPLAY_WIDTH) || (y2 < 0) || (y2 >= DISPLAY_HEIGHT)) return UG_RESULT_FAI
+ 702              		.loc 1 235 0 is_stmt 1
+ 703 0012 94B2     		uxth	r4, r2
+ 704 0014 7F2C     		cmp	r4, #127
+ 705 0016 17D8     		bhi	.L38
+ 706              		.loc 1 235 0 is_stmt 0 discriminator 2
+ 707 0018 002B     		cmp	r3, #0
+ 708 001a 18DB     		blt	.L39
+ 709              		.loc 1 235 0 discriminator 4
+ 710 001c 9F2B     		cmp	r3, #159
+ARM GAS  C:\Users\Reza\AppData\Local\Temp\ccXaA36W.s 			page 18
+
+
+ 711 001e 19DC     		bgt	.L40
+ 236:Source\bsw\LCD_Driver/ugui_st7735.c ****     
+ 237:Source\bsw\LCD_Driver/ugui_st7735.c ****     // If it is a vertical or a horizontal line, draw it.
+ 238:Source\bsw\LCD_Driver/ugui_st7735.c ****     // If not, then use original drawline routine.
+ 239:Source\bsw\LCD_Driver/ugui_st7735.c ****     if ((x1 == x2) || (y1 == y2)) 
+ 712              		.loc 1 239 0 is_stmt 1
+ 713 0020 9042     		cmp	r0, r2
+ 714 0022 01D0     		beq	.L34
+ 715              		.loc 1 239 0 is_stmt 0 discriminator 1
+ 716 0024 9942     		cmp	r1, r3
+ 717 0026 18D1     		bne	.L41
+ 718              	.L34:
+ 240:Source\bsw\LCD_Driver/ugui_st7735.c ****     {
+ 241:Source\bsw\LCD_Driver/ugui_st7735.c ****         HW_FillFrame(x1, y1, x2, y2, c);
+ 719              		.loc 1 241 0 is_stmt 1
+ 720 0028 BDF81040 		ldrh	r4, [sp, #16]
+ 721 002c 0094     		str	r4, [sp]
+ 722 002e FFF7FEFF 		bl	HW_FillFrame
+ 723              	.LVL69:
+ 242:Source\bsw\LCD_Driver/ugui_st7735.c ****         return UG_RESULT_OK;
+ 724              		.loc 1 242 0
+ 725 0032 0020     		movs	r0, #0
+ 726 0034 13E0     		b	.L33
+ 727              	.LVL70:
+ 728              	.L35:
+ 234:Source\bsw\LCD_Driver/ugui_st7735.c ****     if((x2 < 0) ||(x2 >= DISPLAY_WIDTH) || (y2 < 0) || (y2 >= DISPLAY_HEIGHT)) return UG_RESULT_FAI
+ 729              		.loc 1 234 0
+ 730 0036 4FF0FF30 		mov	r0, #-1
+ 731              	.LVL71:
+ 732 003a 10E0     		b	.L33
+ 733              	.LVL72:
+ 734              	.L36:
+ 735 003c 4FF0FF30 		mov	r0, #-1
+ 736              	.LVL73:
+ 737 0040 0DE0     		b	.L33
+ 738              	.LVL74:
+ 739              	.L37:
+ 740 0042 4FF0FF30 		mov	r0, #-1
+ 741              	.LVL75:
+ 742 0046 0AE0     		b	.L33
+ 743              	.LVL76:
+ 744              	.L38:
+ 235:Source\bsw\LCD_Driver/ugui_st7735.c ****     
+ 745              		.loc 1 235 0
+ 746 0048 4FF0FF30 		mov	r0, #-1
+ 747              	.LVL77:
+ 748 004c 07E0     		b	.L33
+ 749              	.LVL78:
+ 750              	.L39:
+ 751 004e 4FF0FF30 		mov	r0, #-1
+ 752              	.LVL79:
+ 753 0052 04E0     		b	.L33
+ 754              	.LVL80:
+ 755              	.L40:
+ 756 0054 4FF0FF30 		mov	r0, #-1
+ 757              	.LVL81:
+ 758 0058 01E0     		b	.L33
+ARM GAS  C:\Users\Reza\AppData\Local\Temp\ccXaA36W.s 			page 19
+
+
+ 759              	.LVL82:
+ 760              	.L41:
+ 243:Source\bsw\LCD_Driver/ugui_st7735.c ****     }
+ 244:Source\bsw\LCD_Driver/ugui_st7735.c ****     
+ 245:Source\bsw\LCD_Driver/ugui_st7735.c ****     return UG_RESULT_FAIL;
+ 761              		.loc 1 245 0
+ 762 005a 4FF0FF30 		mov	r0, #-1
+ 763              	.LVL83:
+ 764              	.L33:
+ 246:Source\bsw\LCD_Driver/ugui_st7735.c **** }
+ 765              		.loc 1 246 0
+ 766 005e 02B0     		add	sp, sp, #8
+ 767              		.cfi_def_cfa_offset 8
+ 768              		@ sp needed
+ 769 0060 10BD     		pop	{r4, pc}
+ 770              		.cfi_endproc
+ 771              	.LFE69:
+ 772              		.size	HW_DrawLine, .-HW_DrawLine
+ 773              		.comm	gui7735,100,4
+ 774 0062 00BF     		.text
+ 775              	.Letext0:
+ 776              		.file 2 "c:\\program files (x86)\\cypress\\psoc creator\\4.2\\psoc creator\\import\\gnu\\arm\\5.4.
+ 777              		.file 3 "c:\\program files (x86)\\cypress\\psoc creator\\4.2\\psoc creator\\import\\gnu\\arm\\5.4.
+ 778              		.file 4 "Generated_Source\\PSoC5/cytypes.h"
+ 779              		.file 5 ".\\Source\\bsw\\LCD_Library/ugui_config.h"
+ 780              		.file 6 ".\\Source\\bsw\\LCD_Library/ugui.h"
+ 781              		.file 7 "Generated_Source\\PSoC5/core_cm3.h"
+ 782              		.file 8 "Source\\bsw\\LCD_Driver\\ugui_st7735.h"
+ 783              		.file 9 "Generated_Source\\PSoC5/CyLib.h"
+ 784              		.section	.debug_info,"",%progbits
+ 785              	.Ldebug_info0:
+ 786 0000 2D0C0000 		.4byte	0xc2d
+ 787 0004 0400     		.2byte	0x4
+ 788 0006 00000000 		.4byte	.Ldebug_abbrev0
+ 789 000a 04       		.byte	0x4
+ 790 000b 01       		.uleb128 0x1
+ 791 000c 82010000 		.4byte	.LASF114
+ 792 0010 0C       		.byte	0xc
+ 793 0011 8B000000 		.4byte	.LASF115
+ 794 0015 FB020000 		.4byte	.LASF116
+ 795 0019 00000000 		.4byte	.Ldebug_ranges0+0
+ 796 001d 00000000 		.4byte	0
+ 797 0021 00000000 		.4byte	.Ldebug_line0
+ 798 0025 02       		.uleb128 0x2
+ 799 0026 71030000 		.4byte	.LASF0
+ 800 002a 02       		.byte	0x2
+ 801 002b 1B       		.byte	0x1b
+ 802 002c 30000000 		.4byte	0x30
+ 803 0030 03       		.uleb128 0x3
+ 804 0031 01       		.byte	0x1
+ 805 0032 06       		.byte	0x6
+ 806 0033 B2040000 		.4byte	.LASF2
+ 807 0037 02       		.uleb128 0x2
+ 808 0038 0B040000 		.4byte	.LASF1
+ 809 003c 02       		.byte	0x2
+ 810 003d 1D       		.byte	0x1d
+ 811 003e 42000000 		.4byte	0x42
+ARM GAS  C:\Users\Reza\AppData\Local\Temp\ccXaA36W.s 			page 20
+
+
+ 812 0042 03       		.uleb128 0x3
+ 813 0043 01       		.byte	0x1
+ 814 0044 08       		.byte	0x8
+ 815 0045 50040000 		.4byte	.LASF3
+ 816 0049 02       		.uleb128 0x2
+ 817 004a CA020000 		.4byte	.LASF4
+ 818 004e 02       		.byte	0x2
+ 819 004f 29       		.byte	0x29
+ 820 0050 54000000 		.4byte	0x54
+ 821 0054 03       		.uleb128 0x3
+ 822 0055 02       		.byte	0x2
+ 823 0056 05       		.byte	0x5
+ 824 0057 BB030000 		.4byte	.LASF5
+ 825 005b 02       		.uleb128 0x2
+ 826 005c 3F010000 		.4byte	.LASF6
+ 827 0060 02       		.byte	0x2
+ 828 0061 2B       		.byte	0x2b
+ 829 0062 66000000 		.4byte	0x66
+ 830 0066 03       		.uleb128 0x3
+ 831 0067 02       		.byte	0x2
+ 832 0068 07       		.byte	0x7
+ 833 0069 BE040000 		.4byte	.LASF7
+ 834 006d 02       		.uleb128 0x2
+ 835 006e 68000000 		.4byte	.LASF8
+ 836 0072 02       		.byte	0x2
+ 837 0073 3F       		.byte	0x3f
+ 838 0074 78000000 		.4byte	0x78
+ 839 0078 03       		.uleb128 0x3
+ 840 0079 04       		.byte	0x4
+ 841 007a 05       		.byte	0x5
+ 842 007b C5030000 		.4byte	.LASF9
+ 843 007f 03       		.uleb128 0x3
+ 844 0080 04       		.byte	0x4
+ 845 0081 07       		.byte	0x7
+ 846 0082 23040000 		.4byte	.LASF10
+ 847 0086 03       		.uleb128 0x3
+ 848 0087 08       		.byte	0x8
+ 849 0088 05       		.byte	0x5
+ 850 0089 AF020000 		.4byte	.LASF11
+ 851 008d 03       		.uleb128 0x3
+ 852 008e 08       		.byte	0x8
+ 853 008f 07       		.byte	0x7
+ 854 0090 28010000 		.4byte	.LASF12
+ 855 0094 04       		.uleb128 0x4
+ 856 0095 04       		.byte	0x4
+ 857 0096 05       		.byte	0x5
+ 858 0097 696E7400 		.ascii	"int\000"
+ 859 009b 03       		.uleb128 0x3
+ 860 009c 04       		.byte	0x4
+ 861 009d 07       		.byte	0x7
+ 862 009e 41000000 		.4byte	.LASF13
+ 863 00a2 02       		.uleb128 0x2
+ 864 00a3 EA000000 		.4byte	.LASF14
+ 865 00a7 03       		.byte	0x3
+ 866 00a8 14       		.byte	0x14
+ 867 00a9 25000000 		.4byte	0x25
+ 868 00ad 02       		.uleb128 0x2
+ARM GAS  C:\Users\Reza\AppData\Local\Temp\ccXaA36W.s 			page 21
+
+
+ 869 00ae 86020000 		.4byte	.LASF15
+ 870 00b2 03       		.byte	0x3
+ 871 00b3 18       		.byte	0x18
+ 872 00b4 37000000 		.4byte	0x37
+ 873 00b8 02       		.uleb128 0x2
+ 874 00b9 20010000 		.4byte	.LASF16
+ 875 00bd 03       		.byte	0x3
+ 876 00be 20       		.byte	0x20
+ 877 00bf 49000000 		.4byte	0x49
+ 878 00c3 02       		.uleb128 0x2
+ 879 00c4 8D030000 		.4byte	.LASF17
+ 880 00c8 03       		.byte	0x3
+ 881 00c9 24       		.byte	0x24
+ 882 00ca 5B000000 		.4byte	0x5b
+ 883 00ce 02       		.uleb128 0x2
+ 884 00cf 43040000 		.4byte	.LASF18
+ 885 00d3 03       		.byte	0x3
+ 886 00d4 2C       		.byte	0x2c
+ 887 00d5 6D000000 		.4byte	0x6d
+ 888 00d9 05       		.uleb128 0x5
+ 889 00da EC040000 		.4byte	.LASF19
+ 890 00de 04       		.byte	0x4
+ 891 00df E401     		.2byte	0x1e4
+ 892 00e1 42000000 		.4byte	0x42
+ 893 00e5 03       		.uleb128 0x3
+ 894 00e6 04       		.byte	0x4
+ 895 00e7 04       		.byte	0x4
+ 896 00e8 FD000000 		.4byte	.LASF20
+ 897 00ec 03       		.uleb128 0x3
+ 898 00ed 08       		.byte	0x8
+ 899 00ee 04       		.byte	0x4
+ 900 00ef F2040000 		.4byte	.LASF21
+ 901 00f3 03       		.uleb128 0x3
+ 902 00f4 01       		.byte	0x1
+ 903 00f5 08       		.byte	0x8
+ 904 00f6 52020000 		.4byte	.LASF22
+ 905 00fa 03       		.uleb128 0x3
+ 906 00fb 08       		.byte	0x8
+ 907 00fc 04       		.byte	0x4
+ 908 00fd 81030000 		.4byte	.LASF23
+ 909 0101 03       		.uleb128 0x3
+ 910 0102 04       		.byte	0x4
+ 911 0103 07       		.byte	0x7
+ 912 0104 1A040000 		.4byte	.LASF24
+ 913 0108 06       		.uleb128 0x6
+ 914 0109 04       		.byte	0x4
+ 915 010a 07       		.uleb128 0x7
+ 916 010b 04       		.byte	0x4
+ 917 010c F3000000 		.4byte	0xf3
+ 918 0110 07       		.uleb128 0x7
+ 919 0111 04       		.byte	0x4
+ 920 0112 42000000 		.4byte	0x42
+ 921 0116 02       		.uleb128 0x2
+ 922 0117 6B030000 		.4byte	.LASF25
+ 923 011b 05       		.byte	0x5
+ 924 011c 25       		.byte	0x25
+ 925 011d AD000000 		.4byte	0xad
+ARM GAS  C:\Users\Reza\AppData\Local\Temp\ccXaA36W.s 			page 22
+
+
+ 926 0121 02       		.uleb128 0x2
+ 927 0122 A3020000 		.4byte	.LASF26
+ 928 0126 05       		.byte	0x5
+ 929 0127 26       		.byte	0x26
+ 930 0128 A2000000 		.4byte	0xa2
+ 931 012c 02       		.uleb128 0x2
+ 932 012d 3A000000 		.4byte	.LASF27
+ 933 0131 05       		.byte	0x5
+ 934 0132 27       		.byte	0x27
+ 935 0133 C3000000 		.4byte	0xc3
+ 936 0137 02       		.uleb128 0x2
+ 937 0138 5F010000 		.4byte	.LASF28
+ 938 013c 05       		.byte	0x5
+ 939 013d 28       		.byte	0x28
+ 940 013e B8000000 		.4byte	0xb8
+ 941 0142 08       		.uleb128 0x8
+ 942 0143 01       		.byte	0x1
+ 943 0144 42000000 		.4byte	0x42
+ 944 0148 06       		.byte	0x6
+ 945 0149 1D       		.byte	0x1d
+ 946 014a 5B010000 		.4byte	0x15b
+ 947 014e 09       		.uleb128 0x9
+ 948 014f 19050000 		.4byte	.LASF29
+ 949 0153 00       		.byte	0
+ 950 0154 09       		.uleb128 0x9
+ 951 0155 08000000 		.4byte	.LASF30
+ 952 0159 01       		.byte	0x1
+ 953 015a 00       		.byte	0
+ 954 015b 02       		.uleb128 0x2
+ 955 015c B5000000 		.4byte	.LASF31
+ 956 0160 06       		.byte	0x6
+ 957 0161 20       		.byte	0x20
+ 958 0162 42010000 		.4byte	0x142
+ 959 0166 0A       		.uleb128 0xa
+ 960 0167 14       		.byte	0x14
+ 961 0168 06       		.byte	0x6
+ 962 0169 22       		.byte	0x22
+ 963 016a C1010000 		.4byte	0x1c1
+ 964 016e 0B       		.uleb128 0xb
+ 965 016f 7000     		.ascii	"p\000"
+ 966 0171 06       		.byte	0x6
+ 967 0172 24       		.byte	0x24
+ 968 0173 10010000 		.4byte	0x110
+ 969 0177 00       		.byte	0
+ 970 0178 0C       		.uleb128 0xc
+ 971 0179 57020000 		.4byte	.LASF32
+ 972 017d 06       		.byte	0x6
+ 973 017e 25       		.byte	0x25
+ 974 017f 5B010000 		.4byte	0x15b
+ 975 0183 04       		.byte	0x4
+ 976 0184 0C       		.uleb128 0xc
+ 977 0185 22020000 		.4byte	.LASF33
+ 978 0189 06       		.byte	0x6
+ 979 018a 26       		.byte	0x26
+ 980 018b 37010000 		.4byte	0x137
+ 981 018f 06       		.byte	0x6
+ 982 0190 0C       		.uleb128 0xc
+ARM GAS  C:\Users\Reza\AppData\Local\Temp\ccXaA36W.s 			page 23
+
+
+ 983 0191 AF030000 		.4byte	.LASF34
+ 984 0195 06       		.byte	0x6
+ 985 0196 27       		.byte	0x27
+ 986 0197 37010000 		.4byte	0x137
+ 987 019b 08       		.byte	0x8
+ 988 019c 0C       		.uleb128 0xc
+ 989 019d 60030000 		.4byte	.LASF35
+ 990 01a1 06       		.byte	0x6
+ 991 01a2 28       		.byte	0x28
+ 992 01a3 2C010000 		.4byte	0x12c
+ 993 01a7 0A       		.byte	0xa
+ 994 01a8 0C       		.uleb128 0xc
+ 995 01a9 FA030000 		.4byte	.LASF36
+ 996 01ad 06       		.byte	0x6
+ 997 01ae 29       		.byte	0x29
+ 998 01af 2C010000 		.4byte	0x12c
+ 999 01b3 0C       		.byte	0xc
+ 1000 01b4 0C       		.uleb128 0xc
+ 1001 01b5 7A030000 		.4byte	.LASF37
+ 1002 01b9 06       		.byte	0x6
+ 1003 01ba 2A       		.byte	0x2a
+ 1004 01bb C1010000 		.4byte	0x1c1
+ 1005 01bf 10       		.byte	0x10
+ 1006 01c0 00       		.byte	0
+ 1007 01c1 07       		.uleb128 0x7
+ 1008 01c2 04       		.byte	0x4
+ 1009 01c3 16010000 		.4byte	0x116
+ 1010 01c7 02       		.uleb128 0x2
+ 1011 01c8 03040000 		.4byte	.LASF38
+ 1012 01cc 06       		.byte	0x6
+ 1013 01cd 2B       		.byte	0x2b
+ 1014 01ce 66010000 		.4byte	0x166
+ 1015 01d2 02       		.uleb128 0x2
+ 1016 01d3 DE020000 		.4byte	.LASF39
+ 1017 01d7 06       		.byte	0x6
+ 1018 01d8 64       		.byte	0x64
+ 1019 01d9 DD010000 		.4byte	0x1dd
+ 1020 01dd 0D       		.uleb128 0xd
+ 1021 01de 04050000 		.4byte	.LASF49
+ 1022 01e2 20       		.byte	0x20
+ 1023 01e3 06       		.byte	0x6
+ 1024 01e4 F5       		.byte	0xf5
+ 1025 01e5 55020000 		.4byte	0x255
+ 1026 01e9 0C       		.uleb128 0xc
+ 1027 01ea 80040000 		.4byte	.LASF40
+ 1028 01ee 06       		.byte	0x6
+ 1029 01ef F7       		.byte	0xf7
+ 1030 01f0 16010000 		.4byte	0x116
+ 1031 01f4 00       		.byte	0
+ 1032 01f5 0C       		.uleb128 0xc
+ 1033 01f6 25000000 		.4byte	.LASF41
+ 1034 01fa 06       		.byte	0x6
+ 1035 01fb F8       		.byte	0xf8
+ 1036 01fc 16010000 		.4byte	0x116
+ 1037 0200 01       		.byte	0x1
+ 1038 0201 0C       		.uleb128 0xc
+ 1039 0202 5B000000 		.4byte	.LASF42
+ARM GAS  C:\Users\Reza\AppData\Local\Temp\ccXaA36W.s 			page 24
+
+
+ 1040 0206 06       		.byte	0x6
+ 1041 0207 F9       		.byte	0xf9
+ 1042 0208 05040000 		.4byte	0x405
+ 1043 020c 04       		.byte	0x4
+ 1044 020d 0C       		.uleb128 0xc
+ 1045 020e 13050000 		.4byte	.LASF43
+ 1046 0212 06       		.byte	0x6
+ 1047 0213 FA       		.byte	0xfa
+ 1048 0214 4E030000 		.4byte	0x34e
+ 1049 0218 08       		.byte	0x8
+ 1050 0219 0C       		.uleb128 0xc
+ 1051 021a A3040000 		.4byte	.LASF44
+ 1052 021e 06       		.byte	0x6
+ 1053 021f FB       		.byte	0xfb
+ 1054 0220 4E030000 		.4byte	0x34e
+ 1055 0224 10       		.byte	0x10
+ 1056 0225 0C       		.uleb128 0xc
+ 1057 0226 4B040000 		.4byte	.LASF45
+ 1058 022a 06       		.byte	0x6
+ 1059 022b FC       		.byte	0xfc
+ 1060 022c 16010000 		.4byte	0x116
+ 1061 0230 18       		.byte	0x18
+ 1062 0231 0B       		.uleb128 0xb
+ 1063 0232 696400   		.ascii	"id\000"
+ 1064 0235 06       		.byte	0x6
+ 1065 0236 FD       		.byte	0xfd
+ 1066 0237 16010000 		.4byte	0x116
+ 1067 023b 19       		.byte	0x19
+ 1068 023c 0C       		.uleb128 0xc
+ 1069 023d 03010000 		.4byte	.LASF46
+ 1070 0241 06       		.byte	0x6
+ 1071 0242 FE       		.byte	0xfe
+ 1072 0243 16010000 		.4byte	0x116
+ 1073 0247 1A       		.byte	0x1a
+ 1074 0248 0C       		.uleb128 0xc
+ 1075 0249 74020000 		.4byte	.LASF47
+ 1076 024d 06       		.byte	0x6
+ 1077 024e FF       		.byte	0xff
+ 1078 024f 08010000 		.4byte	0x108
+ 1079 0253 1C       		.byte	0x1c
+ 1080 0254 00       		.byte	0
+ 1081 0255 02       		.uleb128 0x2
+ 1082 0256 CE030000 		.4byte	.LASF48
+ 1083 025a 06       		.byte	0x6
+ 1084 025b 65       		.byte	0x65
+ 1085 025c 60020000 		.4byte	0x260
+ 1086 0260 0E       		.uleb128 0xe
+ 1087 0261 82000000 		.4byte	.LASF50
+ 1088 0265 34       		.byte	0x34
+ 1089 0266 06       		.byte	0x6
+ 1090 0267 3F01     		.2byte	0x13f
+ 1091 0269 03030000 		.4byte	0x303
+ 1092 026d 0F       		.uleb128 0xf
+ 1093 026e 58010000 		.4byte	.LASF51
+ 1094 0272 06       		.byte	0x6
+ 1095 0273 4101     		.2byte	0x141
+ 1096 0275 16010000 		.4byte	0x116
+ARM GAS  C:\Users\Reza\AppData\Local\Temp\ccXaA36W.s 			page 25
+
+
+ 1097 0279 00       		.byte	0
+ 1098 027a 0F       		.uleb128 0xf
+ 1099 027b D1000000 		.4byte	.LASF52
+ 1100 027f 06       		.byte	0x6
+ 1101 0280 4201     		.2byte	0x142
+ 1102 0282 FF030000 		.4byte	0x3ff
+ 1103 0286 04       		.byte	0x4
+ 1104 0287 0F       		.uleb128 0xf
+ 1105 0288 80040000 		.4byte	.LASF40
+ 1106 028c 06       		.byte	0x6
+ 1107 028d 4301     		.2byte	0x143
+ 1108 028f 16010000 		.4byte	0x116
+ 1109 0293 08       		.byte	0x8
+ 1110 0294 10       		.uleb128 0x10
+ 1111 0295 666300   		.ascii	"fc\000"
+ 1112 0298 06       		.byte	0x6
+ 1113 0299 4401     		.2byte	0x144
+ 1114 029b 0E030000 		.4byte	0x30e
+ 1115 029f 0A       		.byte	0xa
+ 1116 02a0 10       		.uleb128 0x10
+ 1117 02a1 626300   		.ascii	"bc\000"
+ 1118 02a4 06       		.byte	0x6
+ 1119 02a5 4501     		.2byte	0x145
+ 1120 02a7 0E030000 		.4byte	0x30e
+ 1121 02ab 0C       		.byte	0xc
+ 1122 02ac 10       		.uleb128 0x10
+ 1123 02ad 787300   		.ascii	"xs\000"
+ 1124 02b0 06       		.byte	0x6
+ 1125 02b1 4601     		.2byte	0x146
+ 1126 02b3 37010000 		.4byte	0x137
+ 1127 02b7 0E       		.byte	0xe
+ 1128 02b8 10       		.uleb128 0x10
+ 1129 02b9 797300   		.ascii	"ys\000"
+ 1130 02bc 06       		.byte	0x6
+ 1131 02bd 4701     		.2byte	0x147
+ 1132 02bf 37010000 		.4byte	0x137
+ 1133 02c3 10       		.byte	0x10
+ 1134 02c4 10       		.uleb128 0x10
+ 1135 02c5 786500   		.ascii	"xe\000"
+ 1136 02c8 06       		.byte	0x6
+ 1137 02c9 4801     		.2byte	0x148
+ 1138 02cb 37010000 		.4byte	0x137
+ 1139 02cf 12       		.byte	0x12
+ 1140 02d0 10       		.uleb128 0x10
+ 1141 02d1 796500   		.ascii	"ye\000"
+ 1142 02d4 06       		.byte	0x6
+ 1143 02d5 4901     		.2byte	0x149
+ 1144 02d7 37010000 		.4byte	0x137
+ 1145 02db 14       		.byte	0x14
+ 1146 02dc 0F       		.uleb128 0xf
+ 1147 02dd 7A040000 		.4byte	.LASF53
+ 1148 02e1 06       		.byte	0x6
+ 1149 02e2 4A01     		.2byte	0x14a
+ 1150 02e4 16010000 		.4byte	0x116
+ 1151 02e8 16       		.byte	0x16
+ 1152 02e9 0F       		.uleb128 0xf
+ 1153 02ea E4000000 		.4byte	.LASF54
+ARM GAS  C:\Users\Reza\AppData\Local\Temp\ccXaA36W.s 			page 26
+
+
+ 1154 02ee 06       		.byte	0x6
+ 1155 02ef 4B01     		.2byte	0x14b
+ 1156 02f1 95040000 		.4byte	0x495
+ 1157 02f5 18       		.byte	0x18
+ 1158 02f6 10       		.uleb128 0x10
+ 1159 02f7 636200   		.ascii	"cb\000"
+ 1160 02fa 06       		.byte	0x6
+ 1161 02fb 4C01     		.2byte	0x14c
+ 1162 02fd B2040000 		.4byte	0x4b2
+ 1163 0301 30       		.byte	0x30
+ 1164 0302 00       		.byte	0
+ 1165 0303 02       		.uleb128 0x2
+ 1166 0304 D4020000 		.4byte	.LASF55
+ 1167 0308 06       		.byte	0x6
+ 1168 0309 66       		.byte	0x66
+ 1169 030a 21010000 		.4byte	0x121
+ 1170 030e 02       		.uleb128 0x2
+ 1171 030f 31000000 		.4byte	.LASF56
+ 1172 0313 06       		.byte	0x6
+ 1173 0314 6B       		.byte	0x6b
+ 1174 0315 2C010000 		.4byte	0x12c
+ 1175 0319 0A       		.uleb128 0xa
+ 1176 031a 08       		.byte	0x8
+ 1177 031b 06       		.byte	0x6
+ 1178 031c A5       		.byte	0xa5
+ 1179 031d 4E030000 		.4byte	0x34e
+ 1180 0321 0B       		.uleb128 0xb
+ 1181 0322 787300   		.ascii	"xs\000"
+ 1182 0325 06       		.byte	0x6
+ 1183 0326 A7       		.byte	0xa7
+ 1184 0327 37010000 		.4byte	0x137
+ 1185 032b 00       		.byte	0
+ 1186 032c 0B       		.uleb128 0xb
+ 1187 032d 797300   		.ascii	"ys\000"
+ 1188 0330 06       		.byte	0x6
+ 1189 0331 A8       		.byte	0xa8
+ 1190 0332 37010000 		.4byte	0x137
+ 1191 0336 02       		.byte	0x2
+ 1192 0337 0B       		.uleb128 0xb
+ 1193 0338 786500   		.ascii	"xe\000"
+ 1194 033b 06       		.byte	0x6
+ 1195 033c A9       		.byte	0xa9
+ 1196 033d 37010000 		.4byte	0x137
+ 1197 0341 04       		.byte	0x4
+ 1198 0342 0B       		.uleb128 0xb
+ 1199 0343 796500   		.ascii	"ye\000"
+ 1200 0346 06       		.byte	0x6
+ 1201 0347 AA       		.byte	0xaa
+ 1202 0348 37010000 		.4byte	0x137
+ 1203 034c 06       		.byte	0x6
+ 1204 034d 00       		.byte	0
+ 1205 034e 02       		.uleb128 0x2
+ 1206 034f 61020000 		.4byte	.LASF57
+ 1207 0353 06       		.byte	0x6
+ 1208 0354 AB       		.byte	0xab
+ 1209 0355 19030000 		.4byte	0x319
+ 1210 0359 07       		.uleb128 0x7
+ARM GAS  C:\Users\Reza\AppData\Local\Temp\ccXaA36W.s 			page 27
+
+
+ 1211 035a 04       		.byte	0x4
+ 1212 035b 5F030000 		.4byte	0x35f
+ 1213 035f 11       		.uleb128 0x11
+ 1214 0360 C7010000 		.4byte	0x1c7
+ 1215 0364 0A       		.uleb128 0xa
+ 1216 0365 08       		.byte	0x8
+ 1217 0366 06       		.byte	0x6
+ 1218 0367 D4       		.byte	0xd4
+ 1219 0368 A8030000 		.4byte	0x3a8
+ 1220 036c 0C       		.uleb128 0xc
+ 1221 036d 4B040000 		.4byte	.LASF45
+ 1222 0371 06       		.byte	0x6
+ 1223 0372 D6       		.byte	0xd6
+ 1224 0373 16010000 		.4byte	0x116
+ 1225 0377 00       		.byte	0
+ 1226 0378 0B       		.uleb128 0xb
+ 1227 0379 696400   		.ascii	"id\000"
+ 1228 037c 06       		.byte	0x6
+ 1229 037d D7       		.byte	0xd7
+ 1230 037e 16010000 		.4byte	0x116
+ 1231 0382 01       		.byte	0x1
+ 1232 0383 0C       		.uleb128 0xc
+ 1233 0384 F4020000 		.4byte	.LASF58
+ 1234 0388 06       		.byte	0x6
+ 1235 0389 D8       		.byte	0xd8
+ 1236 038a 16010000 		.4byte	0x116
+ 1237 038e 02       		.byte	0x2
+ 1238 038f 0C       		.uleb128 0xc
+ 1239 0390 03010000 		.4byte	.LASF46
+ 1240 0394 06       		.byte	0x6
+ 1241 0395 D9       		.byte	0xd9
+ 1242 0396 16010000 		.4byte	0x116
+ 1243 039a 03       		.byte	0x3
+ 1244 039b 0B       		.uleb128 0xb
+ 1245 039c 73726300 		.ascii	"src\000"
+ 1246 03a0 06       		.byte	0x6
+ 1247 03a1 DA       		.byte	0xda
+ 1248 03a2 08010000 		.4byte	0x108
+ 1249 03a6 04       		.byte	0x4
+ 1250 03a7 00       		.byte	0
+ 1251 03a8 02       		.uleb128 0x2
+ 1252 03a9 69020000 		.4byte	.LASF59
+ 1253 03ad 06       		.byte	0x6
+ 1254 03ae DB       		.byte	0xdb
+ 1255 03af 64030000 		.4byte	0x364
+ 1256 03b3 0A       		.uleb128 0xa
+ 1257 03b4 06       		.byte	0x6
+ 1258 03b5 06       		.byte	0x6
+ 1259 03b6 E6       		.byte	0xe6
+ 1260 03b7 DE030000 		.4byte	0x3de
+ 1261 03bb 0C       		.uleb128 0xc
+ 1262 03bc 80040000 		.4byte	.LASF40
+ 1263 03c0 06       		.byte	0x6
+ 1264 03c1 E8       		.byte	0xe8
+ 1265 03c2 16010000 		.4byte	0x116
+ 1266 03c6 00       		.byte	0
+ 1267 03c7 0B       		.uleb128 0xb
+ARM GAS  C:\Users\Reza\AppData\Local\Temp\ccXaA36W.s 			page 28
+
+
+ 1268 03c8 787000   		.ascii	"xp\000"
+ 1269 03cb 06       		.byte	0x6
+ 1270 03cc E9       		.byte	0xe9
+ 1271 03cd 37010000 		.4byte	0x137
+ 1272 03d1 02       		.byte	0x2
+ 1273 03d2 0B       		.uleb128 0xb
+ 1274 03d3 797000   		.ascii	"yp\000"
+ 1275 03d6 06       		.byte	0x6
+ 1276 03d7 EA       		.byte	0xea
+ 1277 03d8 37010000 		.4byte	0x137
+ 1278 03dc 04       		.byte	0x4
+ 1279 03dd 00       		.byte	0
+ 1280 03de 02       		.uleb128 0x2
+ 1281 03df A9040000 		.4byte	.LASF60
+ 1282 03e3 06       		.byte	0x6
+ 1283 03e4 EB       		.byte	0xeb
+ 1284 03e5 B3030000 		.4byte	0x3b3
+ 1285 03e9 12       		.uleb128 0x12
+ 1286 03ea F9030000 		.4byte	0x3f9
+ 1287 03ee 13       		.uleb128 0x13
+ 1288 03ef F9030000 		.4byte	0x3f9
+ 1289 03f3 13       		.uleb128 0x13
+ 1290 03f4 FF030000 		.4byte	0x3ff
+ 1291 03f8 00       		.byte	0
+ 1292 03f9 07       		.uleb128 0x7
+ 1293 03fa 04       		.byte	0x4
+ 1294 03fb 55020000 		.4byte	0x255
+ 1295 03ff 07       		.uleb128 0x7
+ 1296 0400 04       		.byte	0x4
+ 1297 0401 D2010000 		.4byte	0x1d2
+ 1298 0405 07       		.uleb128 0x7
+ 1299 0406 04       		.byte	0x4
+ 1300 0407 E9030000 		.4byte	0x3e9
+ 1301 040b 14       		.uleb128 0x14
+ 1302 040c 18       		.byte	0x18
+ 1303 040d 06       		.byte	0x6
+ 1304 040e 3001     		.2byte	0x130
+ 1305 0410 95040000 		.4byte	0x495
+ 1306 0414 10       		.uleb128 0x10
+ 1307 0415 73747200 		.ascii	"str\000"
+ 1308 0419 06       		.byte	0x6
+ 1309 041a 3201     		.2byte	0x132
+ 1310 041c 0A010000 		.4byte	0x10a
+ 1311 0420 00       		.byte	0
+ 1312 0421 0F       		.uleb128 0xf
+ 1313 0422 15040000 		.4byte	.LASF61
+ 1314 0426 06       		.byte	0x6
+ 1315 0427 3301     		.2byte	0x133
+ 1316 0429 59030000 		.4byte	0x359
+ 1317 042d 04       		.byte	0x4
+ 1318 042e 0F       		.uleb128 0xf
+ 1319 042f 5E040000 		.4byte	.LASF62
+ 1320 0433 06       		.byte	0x6
+ 1321 0434 3401     		.2byte	0x134
+ 1322 0436 21010000 		.4byte	0x121
+ 1323 043a 08       		.byte	0x8
+ 1324 043b 0F       		.uleb128 0xf
+ARM GAS  C:\Users\Reza\AppData\Local\Temp\ccXaA36W.s 			page 29
+
+
+ 1325 043c 4A020000 		.4byte	.LASF63
+ 1326 0440 06       		.byte	0x6
+ 1327 0441 3501     		.2byte	0x135
+ 1328 0443 21010000 		.4byte	0x121
+ 1329 0447 09       		.byte	0x9
+ 1330 0448 0F       		.uleb128 0xf
+ 1331 0449 0D050000 		.4byte	.LASF64
+ 1332 044d 06       		.byte	0x6
+ 1333 044e 3601     		.2byte	0x136
+ 1334 0450 16010000 		.4byte	0x116
+ 1335 0454 0A       		.byte	0xa
+ 1336 0455 10       		.uleb128 0x10
+ 1337 0456 666300   		.ascii	"fc\000"
+ 1338 0459 06       		.byte	0x6
+ 1339 045a 3701     		.2byte	0x137
+ 1340 045c 0E030000 		.4byte	0x30e
+ 1341 0460 0C       		.byte	0xc
+ 1342 0461 10       		.uleb128 0x10
+ 1343 0462 626300   		.ascii	"bc\000"
+ 1344 0465 06       		.byte	0x6
+ 1345 0466 3801     		.2byte	0x138
+ 1346 0468 0E030000 		.4byte	0x30e
+ 1347 046c 0E       		.byte	0xe
+ 1348 046d 10       		.uleb128 0x10
+ 1349 046e 69666300 		.ascii	"ifc\000"
+ 1350 0472 06       		.byte	0x6
+ 1351 0473 3901     		.2byte	0x139
+ 1352 0475 0E030000 		.4byte	0x30e
+ 1353 0479 10       		.byte	0x10
+ 1354 047a 10       		.uleb128 0x10
+ 1355 047b 69626300 		.ascii	"ibc\000"
+ 1356 047f 06       		.byte	0x6
+ 1357 0480 3A01     		.2byte	0x13a
+ 1358 0482 0E030000 		.4byte	0x30e
+ 1359 0486 12       		.byte	0x12
+ 1360 0487 0F       		.uleb128 0xf
+ 1361 0488 59030000 		.4byte	.LASF65
+ 1362 048c 06       		.byte	0x6
+ 1363 048d 3B01     		.2byte	0x13b
+ 1364 048f 16010000 		.4byte	0x116
+ 1365 0493 14       		.byte	0x14
+ 1366 0494 00       		.byte	0
+ 1367 0495 05       		.uleb128 0x5
+ 1368 0496 96030000 		.4byte	.LASF66
+ 1369 049a 06       		.byte	0x6
+ 1370 049b 3C01     		.2byte	0x13c
+ 1371 049d 0B040000 		.4byte	0x40b
+ 1372 04a1 12       		.uleb128 0x12
+ 1373 04a2 AC040000 		.4byte	0x4ac
+ 1374 04a6 13       		.uleb128 0x13
+ 1375 04a7 AC040000 		.4byte	0x4ac
+ 1376 04ab 00       		.byte	0
+ 1377 04ac 07       		.uleb128 0x7
+ 1378 04ad 04       		.byte	0x4
+ 1379 04ae A8030000 		.4byte	0x3a8
+ 1380 04b2 07       		.uleb128 0x7
+ 1381 04b3 04       		.byte	0x4
+ARM GAS  C:\Users\Reza\AppData\Local\Temp\ccXaA36W.s 			page 30
+
+
+ 1382 04b4 A1040000 		.4byte	0x4a1
+ 1383 04b8 14       		.uleb128 0x14
+ 1384 04b9 08       		.byte	0x8
+ 1385 04ba 06       		.byte	0x6
+ 1386 04bb 1E02     		.2byte	0x21e
+ 1387 04bd DC040000 		.4byte	0x4dc
+ 1388 04c1 0F       		.uleb128 0xf
+ 1389 04c2 94020000 		.4byte	.LASF67
+ 1390 04c6 06       		.byte	0x6
+ 1391 04c7 2002     		.2byte	0x220
+ 1392 04c9 08010000 		.4byte	0x108
+ 1393 04cd 00       		.byte	0
+ 1394 04ce 0F       		.uleb128 0xf
+ 1395 04cf 80040000 		.4byte	.LASF40
+ 1396 04d3 06       		.byte	0x6
+ 1397 04d4 2102     		.2byte	0x221
+ 1398 04d6 16010000 		.4byte	0x116
+ 1399 04da 04       		.byte	0x4
+ 1400 04db 00       		.byte	0
+ 1401 04dc 05       		.uleb128 0x5
+ 1402 04dd 9F030000 		.4byte	.LASF68
+ 1403 04e1 06       		.byte	0x6
+ 1404 04e2 2202     		.2byte	0x222
+ 1405 04e4 B8040000 		.4byte	0x4b8
+ 1406 04e8 14       		.uleb128 0x14
+ 1407 04e9 10       		.byte	0x10
+ 1408 04ea 06       		.byte	0x6
+ 1409 04eb 3902     		.2byte	0x239
+ 1410 04ed 5A050000 		.4byte	0x55a
+ 1411 04f1 0F       		.uleb128 0xf
+ 1412 04f2 A9030000 		.4byte	.LASF69
+ 1413 04f6 06       		.byte	0x6
+ 1414 04f7 3B02     		.2byte	0x23b
+ 1415 04f9 37010000 		.4byte	0x137
+ 1416 04fd 00       		.byte	0
+ 1417 04fe 0F       		.uleb128 0xf
+ 1418 04ff 76010000 		.4byte	.LASF70
+ 1419 0503 06       		.byte	0x6
+ 1420 0504 3C02     		.2byte	0x23c
+ 1421 0506 37010000 		.4byte	0x137
+ 1422 050a 02       		.byte	0x2
+ 1423 050b 0F       		.uleb128 0xf
+ 1424 050c 6C040000 		.4byte	.LASF71
+ 1425 0510 06       		.byte	0x6
+ 1426 0511 3D02     		.2byte	0x23d
+ 1427 0513 37010000 		.4byte	0x137
+ 1428 0517 04       		.byte	0x4
+ 1429 0518 0F       		.uleb128 0xf
+ 1430 0519 42020000 		.4byte	.LASF72
+ 1431 051d 06       		.byte	0x6
+ 1432 051e 3E02     		.2byte	0x23e
+ 1433 0520 37010000 		.4byte	0x137
+ 1434 0524 06       		.byte	0x6
+ 1435 0525 0F       		.uleb128 0xf
+ 1436 0526 F1000000 		.4byte	.LASF73
+ 1437 052a 06       		.byte	0x6
+ 1438 052b 3F02     		.2byte	0x23f
+ARM GAS  C:\Users\Reza\AppData\Local\Temp\ccXaA36W.s 			page 31
+
+
+ 1439 052d 37010000 		.4byte	0x137
+ 1440 0531 08       		.byte	0x8
+ 1441 0532 0F       		.uleb128 0xf
+ 1442 0533 74040000 		.4byte	.LASF74
+ 1443 0537 06       		.byte	0x6
+ 1444 0538 4002     		.2byte	0x240
+ 1445 053a 37010000 		.4byte	0x137
+ 1446 053e 0A       		.byte	0xa
+ 1447 053f 0F       		.uleb128 0xf
+ 1448 0540 66010000 		.4byte	.LASF75
+ 1449 0544 06       		.byte	0x6
+ 1450 0545 4102     		.2byte	0x241
+ 1451 0547 0E030000 		.4byte	0x30e
+ 1452 054b 0C       		.byte	0xc
+ 1453 054c 0F       		.uleb128 0xf
+ 1454 054d 15010000 		.4byte	.LASF76
+ 1455 0551 06       		.byte	0x6
+ 1456 0552 4202     		.2byte	0x242
+ 1457 0554 0E030000 		.4byte	0x30e
+ 1458 0558 0E       		.byte	0xe
+ 1459 0559 00       		.byte	0
+ 1460 055a 14       		.uleb128 0x14
+ 1461 055b 64       		.byte	0x64
+ 1462 055c 06       		.byte	0x6
+ 1463 055d 3002     		.2byte	0x230
+ 1464 055f 34060000 		.4byte	0x634
+ 1465 0563 0F       		.uleb128 0xf
+ 1466 0564 E8020000 		.4byte	.LASF77
+ 1467 0568 06       		.byte	0x6
+ 1468 0569 3202     		.2byte	0x232
+ 1469 056b 49060000 		.4byte	0x649
+ 1470 056f 00       		.byte	0
+ 1471 0570 0F       		.uleb128 0xf
+ 1472 0571 A9020000 		.4byte	.LASF78
+ 1473 0575 06       		.byte	0x6
+ 1474 0576 3302     		.2byte	0x233
+ 1475 0578 37010000 		.4byte	0x137
+ 1476 057c 04       		.byte	0x4
+ 1477 057d 0F       		.uleb128 0xf
+ 1478 057e AF000000 		.4byte	.LASF79
+ 1479 0582 06       		.byte	0x6
+ 1480 0583 3402     		.2byte	0x234
+ 1481 0585 37010000 		.4byte	0x137
+ 1482 0589 06       		.byte	0x6
+ 1483 058a 0F       		.uleb128 0xf
+ 1484 058b 8E020000 		.4byte	.LASF80
+ 1485 058f 06       		.byte	0x6
+ 1486 0590 3502     		.2byte	0x235
+ 1487 0592 DE030000 		.4byte	0x3de
+ 1488 0596 08       		.byte	0x8
+ 1489 0597 0F       		.uleb128 0xf
+ 1490 0598 D8000000 		.4byte	.LASF81
+ 1491 059c 06       		.byte	0x6
+ 1492 059d 3602     		.2byte	0x236
+ 1493 059f F9030000 		.4byte	0x3f9
+ 1494 05a3 10       		.byte	0x10
+ 1495 05a4 0F       		.uleb128 0xf
+ARM GAS  C:\Users\Reza\AppData\Local\Temp\ccXaA36W.s 			page 32
+
+
+ 1496 05a5 4A010000 		.4byte	.LASF82
+ 1497 05a9 06       		.byte	0x6
+ 1498 05aa 3702     		.2byte	0x237
+ 1499 05ac F9030000 		.4byte	0x3f9
+ 1500 05b0 14       		.byte	0x14
+ 1501 05b1 0F       		.uleb128 0xf
+ 1502 05b2 09010000 		.4byte	.LASF83
+ 1503 05b6 06       		.byte	0x6
+ 1504 05b7 3802     		.2byte	0x238
+ 1505 05b9 F9030000 		.4byte	0x3f9
+ 1506 05bd 18       		.byte	0x18
+ 1507 05be 0F       		.uleb128 0xf
+ 1508 05bf 72000000 		.4byte	.LASF84
+ 1509 05c3 06       		.byte	0x6
+ 1510 05c4 4302     		.2byte	0x243
+ 1511 05c6 E8040000 		.4byte	0x4e8
+ 1512 05ca 1C       		.byte	0x1c
+ 1513 05cb 0F       		.uleb128 0xf
+ 1514 05cc 15040000 		.4byte	.LASF61
+ 1515 05d0 06       		.byte	0x6
+ 1516 05d1 4402     		.2byte	0x244
+ 1517 05d3 C7010000 		.4byte	0x1c7
+ 1518 05d7 2C       		.byte	0x2c
+ 1519 05d8 0F       		.uleb128 0xf
+ 1520 05d9 33050000 		.4byte	.LASF85
+ 1521 05dd 06       		.byte	0x6
+ 1522 05de 4502     		.2byte	0x245
+ 1523 05e0 21010000 		.4byte	0x121
+ 1524 05e4 40       		.byte	0x40
+ 1525 05e5 0F       		.uleb128 0xf
+ 1526 05e6 4E000000 		.4byte	.LASF86
+ 1527 05ea 06       		.byte	0x6
+ 1528 05eb 4602     		.2byte	0x246
+ 1529 05ed 21010000 		.4byte	0x121
+ 1530 05f1 41       		.byte	0x41
+ 1531 05f2 0F       		.uleb128 0xf
+ 1532 05f3 66010000 		.4byte	.LASF75
+ 1533 05f7 06       		.byte	0x6
+ 1534 05f8 4702     		.2byte	0x247
+ 1535 05fa 0E030000 		.4byte	0x30e
+ 1536 05fe 42       		.byte	0x42
+ 1537 05ff 0F       		.uleb128 0xf
+ 1538 0600 15010000 		.4byte	.LASF76
+ 1539 0604 06       		.byte	0x6
+ 1540 0605 4802     		.2byte	0x248
+ 1541 0607 0E030000 		.4byte	0x30e
+ 1542 060b 44       		.byte	0x44
+ 1543 060c 0F       		.uleb128 0xf
+ 1544 060d 17000000 		.4byte	.LASF87
+ 1545 0611 06       		.byte	0x6
+ 1546 0612 4902     		.2byte	0x249
+ 1547 0614 0E030000 		.4byte	0x30e
+ 1548 0618 46       		.byte	0x46
+ 1549 0619 0F       		.uleb128 0xf
+ 1550 061a 80040000 		.4byte	.LASF40
+ 1551 061e 06       		.byte	0x6
+ 1552 061f 4A02     		.2byte	0x24a
+ARM GAS  C:\Users\Reza\AppData\Local\Temp\ccXaA36W.s 			page 33
+
+
+ 1553 0621 16010000 		.4byte	0x116
+ 1554 0625 48       		.byte	0x48
+ 1555 0626 0F       		.uleb128 0xf
+ 1556 0627 94020000 		.4byte	.LASF67
+ 1557 062b 06       		.byte	0x6
+ 1558 062c 4B02     		.2byte	0x24b
+ 1559 062e 4F060000 		.4byte	0x64f
+ 1560 0632 4C       		.byte	0x4c
+ 1561 0633 00       		.byte	0
+ 1562 0634 12       		.uleb128 0x12
+ 1563 0635 49060000 		.4byte	0x649
+ 1564 0639 13       		.uleb128 0x13
+ 1565 063a 37010000 		.4byte	0x137
+ 1566 063e 13       		.uleb128 0x13
+ 1567 063f 37010000 		.4byte	0x137
+ 1568 0643 13       		.uleb128 0x13
+ 1569 0644 0E030000 		.4byte	0x30e
+ 1570 0648 00       		.byte	0
+ 1571 0649 07       		.uleb128 0x7
+ 1572 064a 04       		.byte	0x4
+ 1573 064b 34060000 		.4byte	0x634
+ 1574 064f 15       		.uleb128 0x15
+ 1575 0650 DC040000 		.4byte	0x4dc
+ 1576 0654 5F060000 		.4byte	0x65f
+ 1577 0658 16       		.uleb128 0x16
+ 1578 0659 01010000 		.4byte	0x101
+ 1579 065d 02       		.byte	0x2
+ 1580 065e 00       		.byte	0
+ 1581 065f 05       		.uleb128 0x5
+ 1582 0660 9C040000 		.4byte	.LASF88
+ 1583 0664 06       		.byte	0x6
+ 1584 0665 4C02     		.2byte	0x24c
+ 1585 0667 5A050000 		.4byte	0x55a
+ 1586 066b 17       		.uleb128 0x17
+ 1587 066c EC030000 		.4byte	.LASF97
+ 1588 0670 01       		.byte	0x1
+ 1589 0671 64       		.byte	0x64
+ 1590 0672 00000000 		.4byte	.LFB64
+ 1591 0676 1C000000 		.4byte	.LFE64-.LFB64
+ 1592 067a 01       		.uleb128 0x1
+ 1593 067b 9C       		.byte	0x9c
+ 1594 067c DC060000 		.4byte	0x6dc
+ 1595 0680 18       		.uleb128 0x18
+ 1596 0681 E2040000 		.4byte	.LASF89
+ 1597 0685 01       		.byte	0x1
+ 1598 0686 4A       		.byte	0x4a
+ 1599 0687 94000000 		.4byte	0x94
+ 1600 068b 91060000 		.4byte	0x691
+ 1601 068f 19       		.uleb128 0x19
+ 1602 0690 00       		.byte	0
+ 1603 0691 1A       		.uleb128 0x1a
+ 1604 0692 08000000 		.4byte	.LVL0
+ 1605 0696 CD0B0000 		.4byte	0xbcd
+ 1606 069a A4060000 		.4byte	0x6a4
+ 1607 069e 1B       		.uleb128 0x1b
+ 1608 069f 01       		.uleb128 0x1
+ 1609 06a0 50       		.byte	0x50
+ARM GAS  C:\Users\Reza\AppData\Local\Temp\ccXaA36W.s 			page 34
+
+
+ 1610 06a1 01       		.uleb128 0x1
+ 1611 06a2 30       		.byte	0x30
+ 1612 06a3 00       		.byte	0
+ 1613 06a4 1A       		.uleb128 0x1a
+ 1614 06a5 0E000000 		.4byte	.LVL1
+ 1615 06a9 D80B0000 		.4byte	0xbd8
+ 1616 06ad B8060000 		.4byte	0x6b8
+ 1617 06b1 1B       		.uleb128 0x1b
+ 1618 06b2 01       		.uleb128 0x1
+ 1619 06b3 50       		.byte	0x50
+ 1620 06b4 02       		.uleb128 0x2
+ 1621 06b5 08       		.byte	0x8
+ 1622 06b6 32       		.byte	0x32
+ 1623 06b7 00       		.byte	0
+ 1624 06b8 1A       		.uleb128 0x1a
+ 1625 06b9 14000000 		.4byte	.LVL2
+ 1626 06bd CD0B0000 		.4byte	0xbcd
+ 1627 06c1 CB060000 		.4byte	0x6cb
+ 1628 06c5 1B       		.uleb128 0x1b
+ 1629 06c6 01       		.uleb128 0x1
+ 1630 06c7 50       		.byte	0x50
+ 1631 06c8 01       		.uleb128 0x1
+ 1632 06c9 31       		.byte	0x31
+ 1633 06ca 00       		.byte	0
+ 1634 06cb 1C       		.uleb128 0x1c
+ 1635 06cc 1A000000 		.4byte	.LVL3
+ 1636 06d0 D80B0000 		.4byte	0xbd8
+ 1637 06d4 1B       		.uleb128 0x1b
+ 1638 06d5 01       		.uleb128 0x1
+ 1639 06d6 50       		.byte	0x50
+ 1640 06d7 02       		.uleb128 0x2
+ 1641 06d8 08       		.byte	0x8
+ 1642 06d9 78       		.byte	0x78
+ 1643 06da 00       		.byte	0
+ 1644 06db 00       		.byte	0
+ 1645 06dc 1D       		.uleb128 0x1d
+ 1646 06dd 2D020000 		.4byte	.LASF92
+ 1647 06e1 01       		.byte	0x1
+ 1648 06e2 6A       		.byte	0x6a
+ 1649 06e3 00000000 		.4byte	.LFB65
+ 1650 06e7 12000000 		.4byte	.LFE65-.LFB65
+ 1651 06eb 01       		.uleb128 0x1
+ 1652 06ec 9C       		.byte	0x9c
+ 1653 06ed 46070000 		.4byte	0x746
+ 1654 06f1 1E       		.uleb128 0x1e
+ 1655 06f2 45030000 		.4byte	.LASF94
+ 1656 06f6 01       		.byte	0x1
+ 1657 06f7 6A       		.byte	0x6a
+ 1658 06f8 D9000000 		.4byte	0xd9
+ 1659 06fc 00000000 		.4byte	.LLST0
+ 1660 0700 18       		.uleb128 0x18
+ 1661 0701 86040000 		.4byte	.LASF90
+ 1662 0705 01       		.byte	0x1
+ 1663 0706 4B       		.byte	0x4b
+ 1664 0707 94000000 		.4byte	0x94
+ 1665 070b 11070000 		.4byte	0x711
+ 1666 070f 19       		.uleb128 0x19
+ARM GAS  C:\Users\Reza\AppData\Local\Temp\ccXaA36W.s 			page 35
+
+
+ 1667 0710 00       		.byte	0
+ 1668 0711 18       		.uleb128 0x18
+ 1669 0712 D1040000 		.4byte	.LASF91
+ 1670 0716 01       		.byte	0x1
+ 1671 0717 6F       		.byte	0x6f
+ 1672 0718 94000000 		.4byte	0x94
+ 1673 071c 22070000 		.4byte	0x722
+ 1674 0720 19       		.uleb128 0x19
+ 1675 0721 00       		.byte	0
+ 1676 0722 1A       		.uleb128 0x1a
+ 1677 0723 0A000000 		.4byte	.LVL6
+ 1678 0727 E30B0000 		.4byte	0xbe3
+ 1679 072b 35070000 		.4byte	0x735
+ 1680 072f 1B       		.uleb128 0x1b
+ 1681 0730 01       		.uleb128 0x1
+ 1682 0731 50       		.byte	0x50
+ 1683 0732 01       		.uleb128 0x1
+ 1684 0733 30       		.byte	0x30
+ 1685 0734 00       		.byte	0
+ 1686 0735 1C       		.uleb128 0x1c
+ 1687 0736 10000000 		.4byte	.LVL7
+ 1688 073a EE0B0000 		.4byte	0xbee
+ 1689 073e 1B       		.uleb128 0x1b
+ 1690 073f 01       		.uleb128 0x1
+ 1691 0740 50       		.byte	0x50
+ 1692 0741 02       		.uleb128 0x2
+ 1693 0742 74       		.byte	0x74
+ 1694 0743 00       		.sleb128 0
+ 1695 0744 00       		.byte	0
+ 1696 0745 00       		.byte	0
+ 1697 0746 1D       		.uleb128 0x1d
+ 1698 0747 10020000 		.4byte	.LASF93
+ 1699 074b 01       		.byte	0x1
+ 1700 074c 7B       		.byte	0x7b
+ 1701 074d 00000000 		.4byte	.LFB66
+ 1702 0751 16000000 		.4byte	.LFE66-.LFB66
+ 1703 0755 01       		.uleb128 0x1
+ 1704 0756 9C       		.byte	0x9c
+ 1705 0757 C5070000 		.4byte	0x7c5
+ 1706 075b 1E       		.uleb128 0x1e
+ 1707 075c 74020000 		.4byte	.LASF47
+ 1708 0760 01       		.byte	0x1
+ 1709 0761 7B       		.byte	0x7b
+ 1710 0762 C5070000 		.4byte	0x7c5
+ 1711 0766 21000000 		.4byte	.LLST1
+ 1712 076a 1E       		.uleb128 0x1e
+ 1713 076b E5030000 		.4byte	.LASF95
+ 1714 076f 01       		.byte	0x1
+ 1715 0770 7B       		.byte	0x7b
+ 1716 0771 D9000000 		.4byte	0xd9
+ 1717 0775 3F000000 		.4byte	.LLST2
+ 1718 0779 18       		.uleb128 0x18
+ 1719 077a 86040000 		.4byte	.LASF90
+ 1720 077e 01       		.byte	0x1
+ 1721 077f 4B       		.byte	0x4b
+ 1722 0780 94000000 		.4byte	0x94
+ 1723 0784 8A070000 		.4byte	0x78a
+ARM GAS  C:\Users\Reza\AppData\Local\Temp\ccXaA36W.s 			page 36
+
+
+ 1724 0788 19       		.uleb128 0x19
+ 1725 0789 00       		.byte	0
+ 1726 078a 18       		.uleb128 0x18
+ 1727 078b 35040000 		.4byte	.LASF96
+ 1728 078f 01       		.byte	0x1
+ 1729 0790 85       		.byte	0x85
+ 1730 0791 94000000 		.4byte	0x94
+ 1731 0795 9B070000 		.4byte	0x79b
+ 1732 0799 19       		.uleb128 0x19
+ 1733 079a 00       		.byte	0
+ 1734 079b 1A       		.uleb128 0x1a
+ 1735 079c 0C000000 		.4byte	.LVL10
+ 1736 07a0 E30B0000 		.4byte	0xbe3
+ 1737 07a4 AE070000 		.4byte	0x7ae
+ 1738 07a8 1B       		.uleb128 0x1b
+ 1739 07a9 01       		.uleb128 0x1
+ 1740 07aa 50       		.byte	0x50
+ 1741 07ab 01       		.uleb128 0x1
+ 1742 07ac 31       		.byte	0x31
+ 1743 07ad 00       		.byte	0
+ 1744 07ae 1C       		.uleb128 0x1c
+ 1745 07af 14000000 		.4byte	.LVL11
+ 1746 07b3 F90B0000 		.4byte	0xbf9
+ 1747 07b7 1B       		.uleb128 0x1b
+ 1748 07b8 01       		.uleb128 0x1
+ 1749 07b9 50       		.byte	0x50
+ 1750 07ba 02       		.uleb128 0x2
+ 1751 07bb 74       		.byte	0x74
+ 1752 07bc 00       		.sleb128 0
+ 1753 07bd 1B       		.uleb128 0x1b
+ 1754 07be 01       		.uleb128 0x1
+ 1755 07bf 51       		.byte	0x51
+ 1756 07c0 02       		.uleb128 0x2
+ 1757 07c1 75       		.byte	0x75
+ 1758 07c2 00       		.sleb128 0
+ 1759 07c3 00       		.byte	0
+ 1760 07c4 00       		.byte	0
+ 1761 07c5 07       		.uleb128 0x7
+ 1762 07c6 04       		.byte	0x4
+ 1763 07c7 D9000000 		.4byte	0xd9
+ 1764 07cb 17       		.uleb128 0x17
+ 1765 07cc 79020000 		.4byte	.LASF98
+ 1766 07d0 01       		.byte	0x1
+ 1767 07d1 28       		.byte	0x28
+ 1768 07d2 00000000 		.4byte	.LFB63
+ 1769 07d6 98020000 		.4byte	.LFE63-.LFB63
+ 1770 07da 01       		.uleb128 0x1
+ 1771 07db 9C       		.byte	0x9c
+ 1772 07dc 1D090000 		.4byte	0x91d
+ 1773 07e0 1F       		.uleb128 0x1f
+ 1774 07e1 71010000 		.4byte	.LASF99
+ 1775 07e5 01       		.byte	0x1
+ 1776 07e6 2A       		.byte	0x2a
+ 1777 07e7 D9000000 		.4byte	0xd9
+ 1778 07eb 60000000 		.4byte	.LLST3
+ 1779 07ef 20       		.uleb128 0x20
+ 1780 07f0 F9040000 		.4byte	.LASF100
+ARM GAS  C:\Users\Reza\AppData\Local\Temp\ccXaA36W.s 			page 37
+
+
+ 1781 07f4 01       		.byte	0x1
+ 1782 07f5 2D       		.byte	0x2d
+ 1783 07f6 1D090000 		.4byte	0x91d
+ 1784 07fa 03       		.uleb128 0x3
+ 1785 07fb 91       		.byte	0x91
+ 1786 07fc EC7C     		.sleb128 -404
+ 1787 07fe 18       		.uleb128 0x18
+ 1788 07ff E2040000 		.4byte	.LASF89
+ 1789 0803 01       		.byte	0x1
+ 1790 0804 4A       		.byte	0x4a
+ 1791 0805 94000000 		.4byte	0x94
+ 1792 0809 0F080000 		.4byte	0x80f
+ 1793 080d 19       		.uleb128 0x19
+ 1794 080e 00       		.byte	0
+ 1795 080f 18       		.uleb128 0x18
+ 1796 0810 86040000 		.4byte	.LASF90
+ 1797 0814 01       		.byte	0x1
+ 1798 0815 4B       		.byte	0x4b
+ 1799 0816 94000000 		.4byte	0x94
+ 1800 081a 20080000 		.4byte	0x820
+ 1801 081e 19       		.uleb128 0x19
+ 1802 081f 00       		.byte	0
+ 1803 0820 18       		.uleb128 0x18
+ 1804 0821 28050000 		.4byte	.LASF101
+ 1805 0825 01       		.byte	0x1
+ 1806 0826 4E       		.byte	0x4e
+ 1807 0827 94000000 		.4byte	0x94
+ 1808 082b 31080000 		.4byte	0x831
+ 1809 082f 19       		.uleb128 0x19
+ 1810 0830 00       		.byte	0
+ 1811 0831 1A       		.uleb128 0x1a
+ 1812 0832 12000000 		.4byte	.LVL12
+ 1813 0836 040C0000 		.4byte	0xc04
+ 1814 083a 52080000 		.4byte	0x852
+ 1815 083e 1B       		.uleb128 0x1b
+ 1816 083f 01       		.uleb128 0x1
+ 1817 0840 50       		.byte	0x50
+ 1818 0841 03       		.uleb128 0x3
+ 1819 0842 91       		.byte	0x91
+ 1820 0843 EC7C     		.sleb128 -404
+ 1821 0845 1B       		.uleb128 0x1b
+ 1822 0846 01       		.uleb128 0x1
+ 1823 0847 51       		.byte	0x51
+ 1824 0848 01       		.uleb128 0x1
+ 1825 0849 30       		.byte	0x30
+ 1826 084a 1B       		.uleb128 0x1b
+ 1827 084b 01       		.uleb128 0x1
+ 1828 084c 52       		.byte	0x52
+ 1829 084d 03       		.uleb128 0x3
+ 1830 084e 0A       		.byte	0xa
+ 1831 084f 7C01     		.2byte	0x17c
+ 1832 0851 00       		.byte	0
+ 1833 0852 1A       		.uleb128 0x1a
+ 1834 0853 20020000 		.4byte	.LVL13
+ 1835 0857 CD0B0000 		.4byte	0xbcd
+ 1836 085b 66080000 		.4byte	0x866
+ 1837 085f 1B       		.uleb128 0x1b
+ARM GAS  C:\Users\Reza\AppData\Local\Temp\ccXaA36W.s 			page 38
+
+
+ 1838 0860 01       		.uleb128 0x1
+ 1839 0861 50       		.byte	0x50
+ 1840 0862 02       		.uleb128 0x2
+ 1841 0863 74       		.byte	0x74
+ 1842 0864 00       		.sleb128 0
+ 1843 0865 00       		.byte	0
+ 1844 0866 1A       		.uleb128 0x1a
+ 1845 0867 26020000 		.4byte	.LVL14
+ 1846 086b E30B0000 		.4byte	0xbe3
+ 1847 086f 7A080000 		.4byte	0x87a
+ 1848 0873 1B       		.uleb128 0x1b
+ 1849 0874 01       		.uleb128 0x1
+ 1850 0875 50       		.byte	0x50
+ 1851 0876 02       		.uleb128 0x2
+ 1852 0877 74       		.byte	0x74
+ 1853 0878 00       		.sleb128 0
+ 1854 0879 00       		.byte	0
+ 1855 087a 21       		.uleb128 0x21
+ 1856 087b 2A020000 		.4byte	.LVL15
+ 1857 087f 0D0C0000 		.4byte	0xc0d
+ 1858 0883 21       		.uleb128 0x21
+ 1859 0884 2E020000 		.4byte	.LVL16
+ 1860 0888 6B060000 		.4byte	0x66b
+ 1861 088c 21       		.uleb128 0x21
+ 1862 088d 42020000 		.4byte	.LVL18
+ 1863 0891 DC060000 		.4byte	0x6dc
+ 1864 0895 1A       		.uleb128 0x1a
+ 1865 0896 50020000 		.4byte	.LVL19
+ 1866 089a 46070000 		.4byte	0x746
+ 1867 089e B3080000 		.4byte	0x8b3
+ 1868 08a2 1B       		.uleb128 0x1b
+ 1869 08a3 01       		.uleb128 0x1
+ 1870 08a4 50       		.byte	0x50
+ 1871 08a5 0C       		.uleb128 0xc
+ 1872 08a6 75       		.byte	0x75
+ 1873 08a7 00       		.sleb128 0
+ 1874 08a8 74       		.byte	0x74
+ 1875 08a9 00       		.sleb128 0
+ 1876 08aa 22       		.byte	0x22
+ 1877 08ab 32       		.byte	0x32
+ 1878 08ac 24       		.byte	0x24
+ 1879 08ad 76       		.byte	0x76
+ 1880 08ae 00       		.sleb128 0
+ 1881 08af 22       		.byte	0x22
+ 1882 08b0 23       		.byte	0x23
+ 1883 08b1 02       		.uleb128 0x2
+ 1884 08b2 00       		.byte	0
+ 1885 08b3 21       		.uleb128 0x21
+ 1886 08b4 5C020000 		.4byte	.LVL20
+ 1887 08b8 D80B0000 		.4byte	0xbd8
+ 1888 08bc 1A       		.uleb128 0x1a
+ 1889 08bd 70020000 		.4byte	.LVL23
+ 1890 08c1 180C0000 		.4byte	0xc18
+ 1891 08c5 E8080000 		.4byte	0x8e8
+ 1892 08c9 1B       		.uleb128 0x1b
+ 1893 08ca 01       		.uleb128 0x1
+ 1894 08cb 50       		.byte	0x50
+ARM GAS  C:\Users\Reza\AppData\Local\Temp\ccXaA36W.s 			page 39
+
+
+ 1895 08cc 05       		.uleb128 0x5
+ 1896 08cd 03       		.byte	0x3
+ 1897 08ce 00000000 		.4byte	gui7735
+ 1898 08d2 1B       		.uleb128 0x1b
+ 1899 08d3 01       		.uleb128 0x1
+ 1900 08d4 51       		.byte	0x51
+ 1901 08d5 05       		.uleb128 0x5
+ 1902 08d6 03       		.byte	0x3
+ 1903 08d7 00000000 		.4byte	Display_PSet
+ 1904 08db 1B       		.uleb128 0x1b
+ 1905 08dc 01       		.uleb128 0x1
+ 1906 08dd 52       		.byte	0x52
+ 1907 08de 02       		.uleb128 0x2
+ 1908 08df 08       		.byte	0x8
+ 1909 08e0 80       		.byte	0x80
+ 1910 08e1 1B       		.uleb128 0x1b
+ 1911 08e2 01       		.uleb128 0x1
+ 1912 08e3 53       		.byte	0x53
+ 1913 08e4 02       		.uleb128 0x2
+ 1914 08e5 08       		.byte	0x8
+ 1915 08e6 A0       		.byte	0xa0
+ 1916 08e7 00       		.byte	0
+ 1917 08e8 1A       		.uleb128 0x1a
+ 1918 08e9 78020000 		.4byte	.LVL24
+ 1919 08ed 240C0000 		.4byte	0xc24
+ 1920 08f1 04090000 		.4byte	0x904
+ 1921 08f5 1B       		.uleb128 0x1b
+ 1922 08f6 01       		.uleb128 0x1
+ 1923 08f7 50       		.byte	0x50
+ 1924 08f8 01       		.uleb128 0x1
+ 1925 08f9 31       		.byte	0x31
+ 1926 08fa 1B       		.uleb128 0x1b
+ 1927 08fb 01       		.uleb128 0x1
+ 1928 08fc 51       		.byte	0x51
+ 1929 08fd 05       		.uleb128 0x5
+ 1930 08fe 03       		.byte	0x3
+ 1931 08ff 00000000 		.4byte	HW_FillFrame
+ 1932 0903 00       		.byte	0
+ 1933 0904 1C       		.uleb128 0x1c
+ 1934 0905 80020000 		.4byte	.LVL25
+ 1935 0909 240C0000 		.4byte	0xc24
+ 1936 090d 1B       		.uleb128 0x1b
+ 1937 090e 01       		.uleb128 0x1
+ 1938 090f 50       		.byte	0x50
+ 1939 0910 01       		.uleb128 0x1
+ 1940 0911 30       		.byte	0x30
+ 1941 0912 1B       		.uleb128 0x1b
+ 1942 0913 01       		.uleb128 0x1
+ 1943 0914 51       		.byte	0x51
+ 1944 0915 05       		.uleb128 0x5
+ 1945 0916 03       		.byte	0x3
+ 1946 0917 00000000 		.4byte	HW_DrawLine
+ 1947 091b 00       		.byte	0
+ 1948 091c 00       		.byte	0
+ 1949 091d 15       		.uleb128 0x15
+ 1950 091e D9000000 		.4byte	0xd9
+ 1951 0922 33090000 		.4byte	0x933
+ARM GAS  C:\Users\Reza\AppData\Local\Temp\ccXaA36W.s 			page 40
+
+
+ 1952 0926 16       		.uleb128 0x16
+ 1953 0927 01010000 		.4byte	0x101
+ 1954 092b 12       		.byte	0x12
+ 1955 092c 16       		.uleb128 0x16
+ 1956 092d 01010000 		.4byte	0x101
+ 1957 0931 13       		.byte	0x13
+ 1958 0932 00       		.byte	0
+ 1959 0933 1D       		.uleb128 0x1d
+ 1960 0934 BD020000 		.4byte	.LASF102
+ 1961 0938 01       		.byte	0x1
+ 1962 0939 89       		.byte	0x89
+ 1963 093a 00000000 		.4byte	.LFB67
+ 1964 093e 90000000 		.4byte	.LFE67-.LFB67
+ 1965 0942 01       		.uleb128 0x1
+ 1966 0943 9C       		.byte	0x9c
+ 1967 0944 100A0000 		.4byte	0xa10
+ 1968 0948 22       		.uleb128 0x22
+ 1969 0949 7800     		.ascii	"x\000"
+ 1970 094b 01       		.byte	0x1
+ 1971 094c 89       		.byte	0x89
+ 1972 094d 37010000 		.4byte	0x137
+ 1973 0951 8A000000 		.4byte	.LLST4
+ 1974 0955 22       		.uleb128 0x22
+ 1975 0956 7900     		.ascii	"y\000"
+ 1976 0958 01       		.byte	0x1
+ 1977 0959 89       		.byte	0x89
+ 1978 095a 37010000 		.4byte	0x137
+ 1979 095e C1000000 		.4byte	.LLST5
+ 1980 0962 22       		.uleb128 0x22
+ 1981 0963 6300     		.ascii	"c\000"
+ 1982 0965 01       		.byte	0x1
+ 1983 0966 89       		.byte	0x89
+ 1984 0967 0E030000 		.4byte	0x30e
+ 1985 096b ED000000 		.4byte	.LLST6
+ 1986 096f 1F       		.uleb128 0x1f
+ 1987 0970 7C010000 		.4byte	.LASF103
+ 1988 0974 01       		.byte	0x1
+ 1989 0975 8B       		.byte	0x8b
+ 1990 0976 2C010000 		.4byte	0x12c
+ 1991 097a 19010000 		.4byte	.LLST7
+ 1992 097e 20       		.uleb128 0x20
+ 1993 097f 62000000 		.4byte	.LASF104
+ 1994 0983 01       		.byte	0x1
+ 1995 0984 8C       		.byte	0x8c
+ 1996 0985 100A0000 		.4byte	0xa10
+ 1997 0989 02       		.uleb128 0x2
+ 1998 098a 91       		.byte	0x91
+ 1999 098b 64       		.sleb128 -28
+ 2000 098c 1A       		.uleb128 0x1a
+ 2001 098d 1E000000 		.4byte	.LVL29
+ 2002 0991 DC060000 		.4byte	0x6dc
+ 2003 0995 A0090000 		.4byte	0x9a0
+ 2004 0999 1B       		.uleb128 0x1b
+ 2005 099a 01       		.uleb128 0x1
+ 2006 099b 50       		.byte	0x50
+ 2007 099c 02       		.uleb128 0x2
+ 2008 099d 08       		.byte	0x8
+ARM GAS  C:\Users\Reza\AppData\Local\Temp\ccXaA36W.s 			page 41
+
+
+ 2009 099e 2A       		.byte	0x2a
+ 2010 099f 00       		.byte	0
+ 2011 09a0 1A       		.uleb128 0x1a
+ 2012 09a1 3E000000 		.4byte	.LVL30
+ 2013 09a5 46070000 		.4byte	0x746
+ 2014 09a9 B9090000 		.4byte	0x9b9
+ 2015 09ad 1B       		.uleb128 0x1b
+ 2016 09ae 01       		.uleb128 0x1
+ 2017 09af 50       		.byte	0x50
+ 2018 09b0 02       		.uleb128 0x2
+ 2019 09b1 91       		.byte	0x91
+ 2020 09b2 64       		.sleb128 -28
+ 2021 09b3 1B       		.uleb128 0x1b
+ 2022 09b4 01       		.uleb128 0x1
+ 2023 09b5 51       		.byte	0x51
+ 2024 09b6 01       		.uleb128 0x1
+ 2025 09b7 34       		.byte	0x34
+ 2026 09b8 00       		.byte	0
+ 2027 09b9 1A       		.uleb128 0x1a
+ 2028 09ba 44000000 		.4byte	.LVL31
+ 2029 09be DC060000 		.4byte	0x6dc
+ 2030 09c2 CD090000 		.4byte	0x9cd
+ 2031 09c6 1B       		.uleb128 0x1b
+ 2032 09c7 01       		.uleb128 0x1
+ 2033 09c8 50       		.byte	0x50
+ 2034 09c9 02       		.uleb128 0x2
+ 2035 09ca 08       		.byte	0x8
+ 2036 09cb 2B       		.byte	0x2b
+ 2037 09cc 00       		.byte	0
+ 2038 09cd 1A       		.uleb128 0x1a
+ 2039 09ce 62000000 		.4byte	.LVL32
+ 2040 09d2 46070000 		.4byte	0x746
+ 2041 09d6 E6090000 		.4byte	0x9e6
+ 2042 09da 1B       		.uleb128 0x1b
+ 2043 09db 01       		.uleb128 0x1
+ 2044 09dc 50       		.byte	0x50
+ 2045 09dd 02       		.uleb128 0x2
+ 2046 09de 91       		.byte	0x91
+ 2047 09df 64       		.sleb128 -28
+ 2048 09e0 1B       		.uleb128 0x1b
+ 2049 09e1 01       		.uleb128 0x1
+ 2050 09e2 51       		.byte	0x51
+ 2051 09e3 01       		.uleb128 0x1
+ 2052 09e4 34       		.byte	0x34
+ 2053 09e5 00       		.byte	0
+ 2054 09e6 1A       		.uleb128 0x1a
+ 2055 09e7 68000000 		.4byte	.LVL33
+ 2056 09eb DC060000 		.4byte	0x6dc
+ 2057 09ef FA090000 		.4byte	0x9fa
+ 2058 09f3 1B       		.uleb128 0x1b
+ 2059 09f4 01       		.uleb128 0x1
+ 2060 09f5 50       		.byte	0x50
+ 2061 09f6 02       		.uleb128 0x2
+ 2062 09f7 08       		.byte	0x8
+ 2063 09f8 2C       		.byte	0x2c
+ 2064 09f9 00       		.byte	0
+ 2065 09fa 1C       		.uleb128 0x1c
+ARM GAS  C:\Users\Reza\AppData\Local\Temp\ccXaA36W.s 			page 42
+
+
+ 2066 09fb 8A000000 		.4byte	.LVL36
+ 2067 09ff 46070000 		.4byte	0x746
+ 2068 0a03 1B       		.uleb128 0x1b
+ 2069 0a04 01       		.uleb128 0x1
+ 2070 0a05 50       		.byte	0x50
+ 2071 0a06 02       		.uleb128 0x2
+ 2072 0a07 91       		.byte	0x91
+ 2073 0a08 64       		.sleb128 -28
+ 2074 0a09 1B       		.uleb128 0x1b
+ 2075 0a0a 01       		.uleb128 0x1
+ 2076 0a0b 51       		.byte	0x51
+ 2077 0a0c 01       		.uleb128 0x1
+ 2078 0a0d 32       		.byte	0x32
+ 2079 0a0e 00       		.byte	0
+ 2080 0a0f 00       		.byte	0
+ 2081 0a10 15       		.uleb128 0x15
+ 2082 0a11 D9000000 		.4byte	0xd9
+ 2083 0a15 200A0000 		.4byte	0xa20
+ 2084 0a19 16       		.uleb128 0x16
+ 2085 0a1a 01010000 		.4byte	0x101
+ 2086 0a1e 03       		.byte	0x3
+ 2087 0a1f 00       		.byte	0
+ 2088 0a20 23       		.uleb128 0x23
+ 2089 0a21 8F040000 		.4byte	.LASF107
+ 2090 0a25 01       		.byte	0x1
+ 2091 0a26 B1       		.byte	0xb1
+ 2092 0a27 03030000 		.4byte	0x303
+ 2093 0a2b 00000000 		.4byte	.LFB68
+ 2094 0a2f EC000000 		.4byte	.LFE68-.LFB68
+ 2095 0a33 01       		.uleb128 0x1
+ 2096 0a34 9C       		.byte	0x9c
+ 2097 0a35 3C0B0000 		.4byte	0xb3c
+ 2098 0a39 22       		.uleb128 0x22
+ 2099 0a3a 783100   		.ascii	"x1\000"
+ 2100 0a3d 01       		.byte	0x1
+ 2101 0a3e B1       		.byte	0xb1
+ 2102 0a3f 37010000 		.4byte	0x137
+ 2103 0a43 46010000 		.4byte	.LLST8
+ 2104 0a47 22       		.uleb128 0x22
+ 2105 0a48 793100   		.ascii	"y1\000"
+ 2106 0a4b 01       		.byte	0x1
+ 2107 0a4c B1       		.byte	0xb1
+ 2108 0a4d 37010000 		.4byte	0x137
+ 2109 0a51 F4010000 		.4byte	.LLST9
+ 2110 0a55 22       		.uleb128 0x22
+ 2111 0a56 783200   		.ascii	"x2\000"
+ 2112 0a59 01       		.byte	0x1
+ 2113 0a5a B1       		.byte	0xb1
+ 2114 0a5b 37010000 		.4byte	0x137
+ 2115 0a5f 2E020000 		.4byte	.LLST10
+ 2116 0a63 22       		.uleb128 0x22
+ 2117 0a64 793200   		.ascii	"y2\000"
+ 2118 0a67 01       		.byte	0x1
+ 2119 0a68 B1       		.byte	0xb1
+ 2120 0a69 37010000 		.4byte	0x137
+ 2121 0a6d 73020000 		.4byte	.LLST11
+ 2122 0a71 24       		.uleb128 0x24
+ARM GAS  C:\Users\Reza\AppData\Local\Temp\ccXaA36W.s 			page 43
+
+
+ 2123 0a72 6300     		.ascii	"c\000"
+ 2124 0a74 01       		.byte	0x1
+ 2125 0a75 B1       		.byte	0xb1
+ 2126 0a76 0E030000 		.4byte	0x30e
+ 2127 0a7a 02       		.uleb128 0x2
+ 2128 0a7b 91       		.byte	0x91
+ 2129 0a7c 00       		.sleb128 0
+ 2130 0a7d 1F       		.uleb128 0x1f
+ 2131 0a7e 66040000 		.4byte	.LASF105
+ 2132 0a82 01       		.byte	0x1
+ 2133 0a83 B3       		.byte	0xb3
+ 2134 0a84 D9000000 		.4byte	0xd9
+ 2135 0a88 AD020000 		.4byte	.LLST12
+ 2136 0a8c 1F       		.uleb128 0x1f
+ 2137 0a8d F7000000 		.4byte	.LASF106
+ 2138 0a91 01       		.byte	0x1
+ 2139 0a92 B3       		.byte	0xb3
+ 2140 0a93 D9000000 		.4byte	0xd9
+ 2141 0a97 CB020000 		.4byte	.LLST13
+ 2142 0a9b 1F       		.uleb128 0x1f
+ 2143 0a9c 7C010000 		.4byte	.LASF103
+ 2144 0aa0 01       		.byte	0x1
+ 2145 0aa1 B4       		.byte	0xb4
+ 2146 0aa2 2C010000 		.4byte	0x12c
+ 2147 0aa6 F4020000 		.4byte	.LLST14
+ 2148 0aaa 20       		.uleb128 0x20
+ 2149 0aab 62000000 		.4byte	.LASF104
+ 2150 0aaf 01       		.byte	0x1
+ 2151 0ab0 B5       		.byte	0xb5
+ 2152 0ab1 100A0000 		.4byte	0xa10
+ 2153 0ab5 02       		.uleb128 0x2
+ 2154 0ab6 91       		.byte	0x91
+ 2155 0ab7 5C       		.sleb128 -36
+ 2156 0ab8 1A       		.uleb128 0x1a
+ 2157 0ab9 34000000 		.4byte	.LVL40
+ 2158 0abd DC060000 		.4byte	0x6dc
+ 2159 0ac1 CC0A0000 		.4byte	0xacc
+ 2160 0ac5 1B       		.uleb128 0x1b
+ 2161 0ac6 01       		.uleb128 0x1
+ 2162 0ac7 50       		.byte	0x50
+ 2163 0ac8 02       		.uleb128 0x2
+ 2164 0ac9 08       		.byte	0x8
+ 2165 0aca 2A       		.byte	0x2a
+ 2166 0acb 00       		.byte	0
+ 2167 0acc 1A       		.uleb128 0x1a
+ 2168 0acd 54000000 		.4byte	.LVL42
+ 2169 0ad1 46070000 		.4byte	0x746
+ 2170 0ad5 E50A0000 		.4byte	0xae5
+ 2171 0ad9 1B       		.uleb128 0x1b
+ 2172 0ada 01       		.uleb128 0x1
+ 2173 0adb 50       		.byte	0x50
+ 2174 0adc 02       		.uleb128 0x2
+ 2175 0add 91       		.byte	0x91
+ 2176 0ade 5C       		.sleb128 -36
+ 2177 0adf 1B       		.uleb128 0x1b
+ 2178 0ae0 01       		.uleb128 0x1
+ 2179 0ae1 51       		.byte	0x51
+ARM GAS  C:\Users\Reza\AppData\Local\Temp\ccXaA36W.s 			page 44
+
+
+ 2180 0ae2 01       		.uleb128 0x1
+ 2181 0ae3 34       		.byte	0x34
+ 2182 0ae4 00       		.byte	0
+ 2183 0ae5 1A       		.uleb128 0x1a
+ 2184 0ae6 5A000000 		.4byte	.LVL43
+ 2185 0aea DC060000 		.4byte	0x6dc
+ 2186 0aee F90A0000 		.4byte	0xaf9
+ 2187 0af2 1B       		.uleb128 0x1b
+ 2188 0af3 01       		.uleb128 0x1
+ 2189 0af4 50       		.byte	0x50
+ 2190 0af5 02       		.uleb128 0x2
+ 2191 0af6 08       		.byte	0x8
+ 2192 0af7 2B       		.byte	0x2b
+ 2193 0af8 00       		.byte	0
+ 2194 0af9 1A       		.uleb128 0x1a
+ 2195 0afa 78000000 		.4byte	.LVL44
+ 2196 0afe 46070000 		.4byte	0x746
+ 2197 0b02 120B0000 		.4byte	0xb12
+ 2198 0b06 1B       		.uleb128 0x1b
+ 2199 0b07 01       		.uleb128 0x1
+ 2200 0b08 50       		.byte	0x50
+ 2201 0b09 02       		.uleb128 0x2
+ 2202 0b0a 91       		.byte	0x91
+ 2203 0b0b 5C       		.sleb128 -36
+ 2204 0b0c 1B       		.uleb128 0x1b
+ 2205 0b0d 01       		.uleb128 0x1
+ 2206 0b0e 51       		.byte	0x51
+ 2207 0b0f 01       		.uleb128 0x1
+ 2208 0b10 34       		.byte	0x34
+ 2209 0b11 00       		.byte	0
+ 2210 0b12 1A       		.uleb128 0x1a
+ 2211 0b13 7E000000 		.4byte	.LVL45
+ 2212 0b17 DC060000 		.4byte	0x6dc
+ 2213 0b1b 260B0000 		.4byte	0xb26
+ 2214 0b1f 1B       		.uleb128 0x1b
+ 2215 0b20 01       		.uleb128 0x1
+ 2216 0b21 50       		.byte	0x50
+ 2217 0b22 02       		.uleb128 0x2
+ 2218 0b23 08       		.byte	0x8
+ 2219 0b24 2C       		.byte	0x2c
+ 2220 0b25 00       		.byte	0
+ 2221 0b26 1C       		.uleb128 0x1c
+ 2222 0b27 A2000000 		.4byte	.LVL49
+ 2223 0b2b 46070000 		.4byte	0x746
+ 2224 0b2f 1B       		.uleb128 0x1b
+ 2225 0b30 01       		.uleb128 0x1
+ 2226 0b31 50       		.byte	0x50
+ 2227 0b32 02       		.uleb128 0x2
+ 2228 0b33 91       		.byte	0x91
+ 2229 0b34 5C       		.sleb128 -36
+ 2230 0b35 1B       		.uleb128 0x1b
+ 2231 0b36 01       		.uleb128 0x1
+ 2232 0b37 51       		.byte	0x51
+ 2233 0b38 01       		.uleb128 0x1
+ 2234 0b39 32       		.byte	0x32
+ 2235 0b3a 00       		.byte	0
+ 2236 0b3b 00       		.byte	0
+ARM GAS  C:\Users\Reza\AppData\Local\Temp\ccXaA36W.s 			page 45
+
+
+ 2237 0b3c 23       		.uleb128 0x23
+ 2238 0b3d 4D030000 		.4byte	.LASF108
+ 2239 0b41 01       		.byte	0x1
+ 2240 0b42 E8       		.byte	0xe8
+ 2241 0b43 03030000 		.4byte	0x303
+ 2242 0b47 00000000 		.4byte	.LFB69
+ 2243 0b4b 62000000 		.4byte	.LFE69-.LFB69
+ 2244 0b4f 01       		.uleb128 0x1
+ 2245 0b50 9C       		.byte	0x9c
+ 2246 0b51 AB0B0000 		.4byte	0xbab
+ 2247 0b55 22       		.uleb128 0x22
+ 2248 0b56 783100   		.ascii	"x1\000"
+ 2249 0b59 01       		.byte	0x1
+ 2250 0b5a E8       		.byte	0xe8
+ 2251 0b5b 37010000 		.4byte	0x137
+ 2252 0b5f 21030000 		.4byte	.LLST15
+ 2253 0b63 22       		.uleb128 0x22
+ 2254 0b64 793100   		.ascii	"y1\000"
+ 2255 0b67 01       		.byte	0x1
+ 2256 0b68 E8       		.byte	0xe8
+ 2257 0b69 37010000 		.4byte	0x137
+ 2258 0b6d E8030000 		.4byte	.LLST16
+ 2259 0b71 22       		.uleb128 0x22
+ 2260 0b72 783200   		.ascii	"x2\000"
+ 2261 0b75 01       		.byte	0x1
+ 2262 0b76 E8       		.byte	0xe8
+ 2263 0b77 37010000 		.4byte	0x137
+ 2264 0b7b 22040000 		.4byte	.LLST17
+ 2265 0b7f 22       		.uleb128 0x22
+ 2266 0b80 793200   		.ascii	"y2\000"
+ 2267 0b83 01       		.byte	0x1
+ 2268 0b84 E8       		.byte	0xe8
+ 2269 0b85 37010000 		.4byte	0x137
+ 2270 0b89 5C040000 		.4byte	.LLST18
+ 2271 0b8d 24       		.uleb128 0x24
+ 2272 0b8e 6300     		.ascii	"c\000"
+ 2273 0b90 01       		.byte	0x1
+ 2274 0b91 E8       		.byte	0xe8
+ 2275 0b92 0E030000 		.4byte	0x30e
+ 2276 0b96 02       		.uleb128 0x2
+ 2277 0b97 91       		.byte	0x91
+ 2278 0b98 00       		.sleb128 0
+ 2279 0b99 1C       		.uleb128 0x1c
+ 2280 0b9a 32000000 		.4byte	.LVL69
+ 2281 0b9e 200A0000 		.4byte	0xa20
+ 2282 0ba2 1B       		.uleb128 0x1b
+ 2283 0ba3 02       		.uleb128 0x2
+ 2284 0ba4 7D       		.byte	0x7d
+ 2285 0ba5 00       		.sleb128 0
+ 2286 0ba6 02       		.uleb128 0x2
+ 2287 0ba7 74       		.byte	0x74
+ 2288 0ba8 00       		.sleb128 0
+ 2289 0ba9 00       		.byte	0
+ 2290 0baa 00       		.byte	0
+ 2291 0bab 25       		.uleb128 0x25
+ 2292 0bac D8030000 		.4byte	.LASF109
+ 2293 0bb0 07       		.byte	0x7
+ARM GAS  C:\Users\Reza\AppData\Local\Temp\ccXaA36W.s 			page 46
+
+
+ 2294 0bb1 1207     		.2byte	0x712
+ 2295 0bb3 B70B0000 		.4byte	0xbb7
+ 2296 0bb7 26       		.uleb128 0x26
+ 2297 0bb8 CE000000 		.4byte	0xce
+ 2298 0bbc 27       		.uleb128 0x27
+ 2299 0bbd 7A000000 		.4byte	.LASF110
+ 2300 0bc1 08       		.byte	0x8
+ 2301 0bc2 5E       		.byte	0x5e
+ 2302 0bc3 5F060000 		.4byte	0x65f
+ 2303 0bc7 05       		.uleb128 0x5
+ 2304 0bc8 03       		.byte	0x3
+ 2305 0bc9 00000000 		.4byte	gui7735
+ 2306 0bcd 28       		.uleb128 0x28
+ 2307 0bce E2040000 		.4byte	.LASF89
+ 2308 0bd2 E2040000 		.4byte	.LASF89
+ 2309 0bd6 01       		.byte	0x1
+ 2310 0bd7 4A       		.byte	0x4a
+ 2311 0bd8 28       		.uleb128 0x28
+ 2312 0bd9 00000000 		.4byte	.LASF111
+ 2313 0bdd 00000000 		.4byte	.LASF111
+ 2314 0be1 09       		.byte	0x9
+ 2315 0be2 76       		.byte	0x76
+ 2316 0be3 28       		.uleb128 0x28
+ 2317 0be4 86040000 		.4byte	.LASF90
+ 2318 0be8 86040000 		.4byte	.LASF90
+ 2319 0bec 01       		.byte	0x1
+ 2320 0bed 4B       		.byte	0x4b
+ 2321 0bee 28       		.uleb128 0x28
+ 2322 0bef D1040000 		.4byte	.LASF91
+ 2323 0bf3 D1040000 		.4byte	.LASF91
+ 2324 0bf7 01       		.byte	0x1
+ 2325 0bf8 6F       		.byte	0x6f
+ 2326 0bf9 28       		.uleb128 0x28
+ 2327 0bfa 35040000 		.4byte	.LASF96
+ 2328 0bfe 35040000 		.4byte	.LASF96
+ 2329 0c02 01       		.byte	0x1
+ 2330 0c03 85       		.byte	0x85
+ 2331 0c04 29       		.uleb128 0x29
+ 2332 0c05 ED020000 		.4byte	.LASF117
+ 2333 0c09 ED020000 		.4byte	.LASF117
+ 2334 0c0d 28       		.uleb128 0x28
+ 2335 0c0e 28050000 		.4byte	.LASF101
+ 2336 0c12 28050000 		.4byte	.LASF101
+ 2337 0c16 01       		.byte	0x1
+ 2338 0c17 4E       		.byte	0x4e
+ 2339 0c18 2A       		.uleb128 0x2a
+ 2340 0c19 9B020000 		.4byte	.LASF112
+ 2341 0c1d 9B020000 		.4byte	.LASF112
+ 2342 0c21 06       		.byte	0x6
+ 2343 0c22 7403     		.2byte	0x374
+ 2344 0c24 2A       		.uleb128 0x2a
+ 2345 0c25 BF000000 		.4byte	.LASF113
+ 2346 0c29 BF000000 		.4byte	.LASF113
+ 2347 0c2d 06       		.byte	0x6
+ 2348 0c2e 9603     		.2byte	0x396
+ 2349 0c30 00       		.byte	0
+ 2350              		.section	.debug_abbrev,"",%progbits
+ARM GAS  C:\Users\Reza\AppData\Local\Temp\ccXaA36W.s 			page 47
+
+
+ 2351              	.Ldebug_abbrev0:
+ 2352 0000 01       		.uleb128 0x1
+ 2353 0001 11       		.uleb128 0x11
+ 2354 0002 01       		.byte	0x1
+ 2355 0003 25       		.uleb128 0x25
+ 2356 0004 0E       		.uleb128 0xe
+ 2357 0005 13       		.uleb128 0x13
+ 2358 0006 0B       		.uleb128 0xb
+ 2359 0007 03       		.uleb128 0x3
+ 2360 0008 0E       		.uleb128 0xe
+ 2361 0009 1B       		.uleb128 0x1b
+ 2362 000a 0E       		.uleb128 0xe
+ 2363 000b 55       		.uleb128 0x55
+ 2364 000c 17       		.uleb128 0x17
+ 2365 000d 11       		.uleb128 0x11
+ 2366 000e 01       		.uleb128 0x1
+ 2367 000f 10       		.uleb128 0x10
+ 2368 0010 17       		.uleb128 0x17
+ 2369 0011 00       		.byte	0
+ 2370 0012 00       		.byte	0
+ 2371 0013 02       		.uleb128 0x2
+ 2372 0014 16       		.uleb128 0x16
+ 2373 0015 00       		.byte	0
+ 2374 0016 03       		.uleb128 0x3
+ 2375 0017 0E       		.uleb128 0xe
+ 2376 0018 3A       		.uleb128 0x3a
+ 2377 0019 0B       		.uleb128 0xb
+ 2378 001a 3B       		.uleb128 0x3b
+ 2379 001b 0B       		.uleb128 0xb
+ 2380 001c 49       		.uleb128 0x49
+ 2381 001d 13       		.uleb128 0x13
+ 2382 001e 00       		.byte	0
+ 2383 001f 00       		.byte	0
+ 2384 0020 03       		.uleb128 0x3
+ 2385 0021 24       		.uleb128 0x24
+ 2386 0022 00       		.byte	0
+ 2387 0023 0B       		.uleb128 0xb
+ 2388 0024 0B       		.uleb128 0xb
+ 2389 0025 3E       		.uleb128 0x3e
+ 2390 0026 0B       		.uleb128 0xb
+ 2391 0027 03       		.uleb128 0x3
+ 2392 0028 0E       		.uleb128 0xe
+ 2393 0029 00       		.byte	0
+ 2394 002a 00       		.byte	0
+ 2395 002b 04       		.uleb128 0x4
+ 2396 002c 24       		.uleb128 0x24
+ 2397 002d 00       		.byte	0
+ 2398 002e 0B       		.uleb128 0xb
+ 2399 002f 0B       		.uleb128 0xb
+ 2400 0030 3E       		.uleb128 0x3e
+ 2401 0031 0B       		.uleb128 0xb
+ 2402 0032 03       		.uleb128 0x3
+ 2403 0033 08       		.uleb128 0x8
+ 2404 0034 00       		.byte	0
+ 2405 0035 00       		.byte	0
+ 2406 0036 05       		.uleb128 0x5
+ 2407 0037 16       		.uleb128 0x16
+ARM GAS  C:\Users\Reza\AppData\Local\Temp\ccXaA36W.s 			page 48
+
+
+ 2408 0038 00       		.byte	0
+ 2409 0039 03       		.uleb128 0x3
+ 2410 003a 0E       		.uleb128 0xe
+ 2411 003b 3A       		.uleb128 0x3a
+ 2412 003c 0B       		.uleb128 0xb
+ 2413 003d 3B       		.uleb128 0x3b
+ 2414 003e 05       		.uleb128 0x5
+ 2415 003f 49       		.uleb128 0x49
+ 2416 0040 13       		.uleb128 0x13
+ 2417 0041 00       		.byte	0
+ 2418 0042 00       		.byte	0
+ 2419 0043 06       		.uleb128 0x6
+ 2420 0044 0F       		.uleb128 0xf
+ 2421 0045 00       		.byte	0
+ 2422 0046 0B       		.uleb128 0xb
+ 2423 0047 0B       		.uleb128 0xb
+ 2424 0048 00       		.byte	0
+ 2425 0049 00       		.byte	0
+ 2426 004a 07       		.uleb128 0x7
+ 2427 004b 0F       		.uleb128 0xf
+ 2428 004c 00       		.byte	0
+ 2429 004d 0B       		.uleb128 0xb
+ 2430 004e 0B       		.uleb128 0xb
+ 2431 004f 49       		.uleb128 0x49
+ 2432 0050 13       		.uleb128 0x13
+ 2433 0051 00       		.byte	0
+ 2434 0052 00       		.byte	0
+ 2435 0053 08       		.uleb128 0x8
+ 2436 0054 04       		.uleb128 0x4
+ 2437 0055 01       		.byte	0x1
+ 2438 0056 0B       		.uleb128 0xb
+ 2439 0057 0B       		.uleb128 0xb
+ 2440 0058 49       		.uleb128 0x49
+ 2441 0059 13       		.uleb128 0x13
+ 2442 005a 3A       		.uleb128 0x3a
+ 2443 005b 0B       		.uleb128 0xb
+ 2444 005c 3B       		.uleb128 0x3b
+ 2445 005d 0B       		.uleb128 0xb
+ 2446 005e 01       		.uleb128 0x1
+ 2447 005f 13       		.uleb128 0x13
+ 2448 0060 00       		.byte	0
+ 2449 0061 00       		.byte	0
+ 2450 0062 09       		.uleb128 0x9
+ 2451 0063 28       		.uleb128 0x28
+ 2452 0064 00       		.byte	0
+ 2453 0065 03       		.uleb128 0x3
+ 2454 0066 0E       		.uleb128 0xe
+ 2455 0067 1C       		.uleb128 0x1c
+ 2456 0068 0B       		.uleb128 0xb
+ 2457 0069 00       		.byte	0
+ 2458 006a 00       		.byte	0
+ 2459 006b 0A       		.uleb128 0xa
+ 2460 006c 13       		.uleb128 0x13
+ 2461 006d 01       		.byte	0x1
+ 2462 006e 0B       		.uleb128 0xb
+ 2463 006f 0B       		.uleb128 0xb
+ 2464 0070 3A       		.uleb128 0x3a
+ARM GAS  C:\Users\Reza\AppData\Local\Temp\ccXaA36W.s 			page 49
+
+
+ 2465 0071 0B       		.uleb128 0xb
+ 2466 0072 3B       		.uleb128 0x3b
+ 2467 0073 0B       		.uleb128 0xb
+ 2468 0074 01       		.uleb128 0x1
+ 2469 0075 13       		.uleb128 0x13
+ 2470 0076 00       		.byte	0
+ 2471 0077 00       		.byte	0
+ 2472 0078 0B       		.uleb128 0xb
+ 2473 0079 0D       		.uleb128 0xd
+ 2474 007a 00       		.byte	0
+ 2475 007b 03       		.uleb128 0x3
+ 2476 007c 08       		.uleb128 0x8
+ 2477 007d 3A       		.uleb128 0x3a
+ 2478 007e 0B       		.uleb128 0xb
+ 2479 007f 3B       		.uleb128 0x3b
+ 2480 0080 0B       		.uleb128 0xb
+ 2481 0081 49       		.uleb128 0x49
+ 2482 0082 13       		.uleb128 0x13
+ 2483 0083 38       		.uleb128 0x38
+ 2484 0084 0B       		.uleb128 0xb
+ 2485 0085 00       		.byte	0
+ 2486 0086 00       		.byte	0
+ 2487 0087 0C       		.uleb128 0xc
+ 2488 0088 0D       		.uleb128 0xd
+ 2489 0089 00       		.byte	0
+ 2490 008a 03       		.uleb128 0x3
+ 2491 008b 0E       		.uleb128 0xe
+ 2492 008c 3A       		.uleb128 0x3a
+ 2493 008d 0B       		.uleb128 0xb
+ 2494 008e 3B       		.uleb128 0x3b
+ 2495 008f 0B       		.uleb128 0xb
+ 2496 0090 49       		.uleb128 0x49
+ 2497 0091 13       		.uleb128 0x13
+ 2498 0092 38       		.uleb128 0x38
+ 2499 0093 0B       		.uleb128 0xb
+ 2500 0094 00       		.byte	0
+ 2501 0095 00       		.byte	0
+ 2502 0096 0D       		.uleb128 0xd
+ 2503 0097 13       		.uleb128 0x13
+ 2504 0098 01       		.byte	0x1
+ 2505 0099 03       		.uleb128 0x3
+ 2506 009a 0E       		.uleb128 0xe
+ 2507 009b 0B       		.uleb128 0xb
+ 2508 009c 0B       		.uleb128 0xb
+ 2509 009d 3A       		.uleb128 0x3a
+ 2510 009e 0B       		.uleb128 0xb
+ 2511 009f 3B       		.uleb128 0x3b
+ 2512 00a0 0B       		.uleb128 0xb
+ 2513 00a1 01       		.uleb128 0x1
+ 2514 00a2 13       		.uleb128 0x13
+ 2515 00a3 00       		.byte	0
+ 2516 00a4 00       		.byte	0
+ 2517 00a5 0E       		.uleb128 0xe
+ 2518 00a6 13       		.uleb128 0x13
+ 2519 00a7 01       		.byte	0x1
+ 2520 00a8 03       		.uleb128 0x3
+ 2521 00a9 0E       		.uleb128 0xe
+ARM GAS  C:\Users\Reza\AppData\Local\Temp\ccXaA36W.s 			page 50
+
+
+ 2522 00aa 0B       		.uleb128 0xb
+ 2523 00ab 0B       		.uleb128 0xb
+ 2524 00ac 3A       		.uleb128 0x3a
+ 2525 00ad 0B       		.uleb128 0xb
+ 2526 00ae 3B       		.uleb128 0x3b
+ 2527 00af 05       		.uleb128 0x5
+ 2528 00b0 01       		.uleb128 0x1
+ 2529 00b1 13       		.uleb128 0x13
+ 2530 00b2 00       		.byte	0
+ 2531 00b3 00       		.byte	0
+ 2532 00b4 0F       		.uleb128 0xf
+ 2533 00b5 0D       		.uleb128 0xd
+ 2534 00b6 00       		.byte	0
+ 2535 00b7 03       		.uleb128 0x3
+ 2536 00b8 0E       		.uleb128 0xe
+ 2537 00b9 3A       		.uleb128 0x3a
+ 2538 00ba 0B       		.uleb128 0xb
+ 2539 00bb 3B       		.uleb128 0x3b
+ 2540 00bc 05       		.uleb128 0x5
+ 2541 00bd 49       		.uleb128 0x49
+ 2542 00be 13       		.uleb128 0x13
+ 2543 00bf 38       		.uleb128 0x38
+ 2544 00c0 0B       		.uleb128 0xb
+ 2545 00c1 00       		.byte	0
+ 2546 00c2 00       		.byte	0
+ 2547 00c3 10       		.uleb128 0x10
+ 2548 00c4 0D       		.uleb128 0xd
+ 2549 00c5 00       		.byte	0
+ 2550 00c6 03       		.uleb128 0x3
+ 2551 00c7 08       		.uleb128 0x8
+ 2552 00c8 3A       		.uleb128 0x3a
+ 2553 00c9 0B       		.uleb128 0xb
+ 2554 00ca 3B       		.uleb128 0x3b
+ 2555 00cb 05       		.uleb128 0x5
+ 2556 00cc 49       		.uleb128 0x49
+ 2557 00cd 13       		.uleb128 0x13
+ 2558 00ce 38       		.uleb128 0x38
+ 2559 00cf 0B       		.uleb128 0xb
+ 2560 00d0 00       		.byte	0
+ 2561 00d1 00       		.byte	0
+ 2562 00d2 11       		.uleb128 0x11
+ 2563 00d3 26       		.uleb128 0x26
+ 2564 00d4 00       		.byte	0
+ 2565 00d5 49       		.uleb128 0x49
+ 2566 00d6 13       		.uleb128 0x13
+ 2567 00d7 00       		.byte	0
+ 2568 00d8 00       		.byte	0
+ 2569 00d9 12       		.uleb128 0x12
+ 2570 00da 15       		.uleb128 0x15
+ 2571 00db 01       		.byte	0x1
+ 2572 00dc 27       		.uleb128 0x27
+ 2573 00dd 19       		.uleb128 0x19
+ 2574 00de 01       		.uleb128 0x1
+ 2575 00df 13       		.uleb128 0x13
+ 2576 00e0 00       		.byte	0
+ 2577 00e1 00       		.byte	0
+ 2578 00e2 13       		.uleb128 0x13
+ARM GAS  C:\Users\Reza\AppData\Local\Temp\ccXaA36W.s 			page 51
+
+
+ 2579 00e3 05       		.uleb128 0x5
+ 2580 00e4 00       		.byte	0
+ 2581 00e5 49       		.uleb128 0x49
+ 2582 00e6 13       		.uleb128 0x13
+ 2583 00e7 00       		.byte	0
+ 2584 00e8 00       		.byte	0
+ 2585 00e9 14       		.uleb128 0x14
+ 2586 00ea 13       		.uleb128 0x13
+ 2587 00eb 01       		.byte	0x1
+ 2588 00ec 0B       		.uleb128 0xb
+ 2589 00ed 0B       		.uleb128 0xb
+ 2590 00ee 3A       		.uleb128 0x3a
+ 2591 00ef 0B       		.uleb128 0xb
+ 2592 00f0 3B       		.uleb128 0x3b
+ 2593 00f1 05       		.uleb128 0x5
+ 2594 00f2 01       		.uleb128 0x1
+ 2595 00f3 13       		.uleb128 0x13
+ 2596 00f4 00       		.byte	0
+ 2597 00f5 00       		.byte	0
+ 2598 00f6 15       		.uleb128 0x15
+ 2599 00f7 01       		.uleb128 0x1
+ 2600 00f8 01       		.byte	0x1
+ 2601 00f9 49       		.uleb128 0x49
+ 2602 00fa 13       		.uleb128 0x13
+ 2603 00fb 01       		.uleb128 0x1
+ 2604 00fc 13       		.uleb128 0x13
+ 2605 00fd 00       		.byte	0
+ 2606 00fe 00       		.byte	0
+ 2607 00ff 16       		.uleb128 0x16
+ 2608 0100 21       		.uleb128 0x21
+ 2609 0101 00       		.byte	0
+ 2610 0102 49       		.uleb128 0x49
+ 2611 0103 13       		.uleb128 0x13
+ 2612 0104 2F       		.uleb128 0x2f
+ 2613 0105 0B       		.uleb128 0xb
+ 2614 0106 00       		.byte	0
+ 2615 0107 00       		.byte	0
+ 2616 0108 17       		.uleb128 0x17
+ 2617 0109 2E       		.uleb128 0x2e
+ 2618 010a 01       		.byte	0x1
+ 2619 010b 3F       		.uleb128 0x3f
+ 2620 010c 19       		.uleb128 0x19
+ 2621 010d 03       		.uleb128 0x3
+ 2622 010e 0E       		.uleb128 0xe
+ 2623 010f 3A       		.uleb128 0x3a
+ 2624 0110 0B       		.uleb128 0xb
+ 2625 0111 3B       		.uleb128 0x3b
+ 2626 0112 0B       		.uleb128 0xb
+ 2627 0113 11       		.uleb128 0x11
+ 2628 0114 01       		.uleb128 0x1
+ 2629 0115 12       		.uleb128 0x12
+ 2630 0116 06       		.uleb128 0x6
+ 2631 0117 40       		.uleb128 0x40
+ 2632 0118 18       		.uleb128 0x18
+ 2633 0119 9742     		.uleb128 0x2117
+ 2634 011b 19       		.uleb128 0x19
+ 2635 011c 01       		.uleb128 0x1
+ARM GAS  C:\Users\Reza\AppData\Local\Temp\ccXaA36W.s 			page 52
+
+
+ 2636 011d 13       		.uleb128 0x13
+ 2637 011e 00       		.byte	0
+ 2638 011f 00       		.byte	0
+ 2639 0120 18       		.uleb128 0x18
+ 2640 0121 2E       		.uleb128 0x2e
+ 2641 0122 01       		.byte	0x1
+ 2642 0123 3F       		.uleb128 0x3f
+ 2643 0124 19       		.uleb128 0x19
+ 2644 0125 03       		.uleb128 0x3
+ 2645 0126 0E       		.uleb128 0xe
+ 2646 0127 3A       		.uleb128 0x3a
+ 2647 0128 0B       		.uleb128 0xb
+ 2648 0129 3B       		.uleb128 0x3b
+ 2649 012a 0B       		.uleb128 0xb
+ 2650 012b 49       		.uleb128 0x49
+ 2651 012c 13       		.uleb128 0x13
+ 2652 012d 3C       		.uleb128 0x3c
+ 2653 012e 19       		.uleb128 0x19
+ 2654 012f 01       		.uleb128 0x1
+ 2655 0130 13       		.uleb128 0x13
+ 2656 0131 00       		.byte	0
+ 2657 0132 00       		.byte	0
+ 2658 0133 19       		.uleb128 0x19
+ 2659 0134 18       		.uleb128 0x18
+ 2660 0135 00       		.byte	0
+ 2661 0136 00       		.byte	0
+ 2662 0137 00       		.byte	0
+ 2663 0138 1A       		.uleb128 0x1a
+ 2664 0139 898201   		.uleb128 0x4109
+ 2665 013c 01       		.byte	0x1
+ 2666 013d 11       		.uleb128 0x11
+ 2667 013e 01       		.uleb128 0x1
+ 2668 013f 31       		.uleb128 0x31
+ 2669 0140 13       		.uleb128 0x13
+ 2670 0141 01       		.uleb128 0x1
+ 2671 0142 13       		.uleb128 0x13
+ 2672 0143 00       		.byte	0
+ 2673 0144 00       		.byte	0
+ 2674 0145 1B       		.uleb128 0x1b
+ 2675 0146 8A8201   		.uleb128 0x410a
+ 2676 0149 00       		.byte	0
+ 2677 014a 02       		.uleb128 0x2
+ 2678 014b 18       		.uleb128 0x18
+ 2679 014c 9142     		.uleb128 0x2111
+ 2680 014e 18       		.uleb128 0x18
+ 2681 014f 00       		.byte	0
+ 2682 0150 00       		.byte	0
+ 2683 0151 1C       		.uleb128 0x1c
+ 2684 0152 898201   		.uleb128 0x4109
+ 2685 0155 01       		.byte	0x1
+ 2686 0156 11       		.uleb128 0x11
+ 2687 0157 01       		.uleb128 0x1
+ 2688 0158 31       		.uleb128 0x31
+ 2689 0159 13       		.uleb128 0x13
+ 2690 015a 00       		.byte	0
+ 2691 015b 00       		.byte	0
+ 2692 015c 1D       		.uleb128 0x1d
+ARM GAS  C:\Users\Reza\AppData\Local\Temp\ccXaA36W.s 			page 53
+
+
+ 2693 015d 2E       		.uleb128 0x2e
+ 2694 015e 01       		.byte	0x1
+ 2695 015f 3F       		.uleb128 0x3f
+ 2696 0160 19       		.uleb128 0x19
+ 2697 0161 03       		.uleb128 0x3
+ 2698 0162 0E       		.uleb128 0xe
+ 2699 0163 3A       		.uleb128 0x3a
+ 2700 0164 0B       		.uleb128 0xb
+ 2701 0165 3B       		.uleb128 0x3b
+ 2702 0166 0B       		.uleb128 0xb
+ 2703 0167 27       		.uleb128 0x27
+ 2704 0168 19       		.uleb128 0x19
+ 2705 0169 11       		.uleb128 0x11
+ 2706 016a 01       		.uleb128 0x1
+ 2707 016b 12       		.uleb128 0x12
+ 2708 016c 06       		.uleb128 0x6
+ 2709 016d 40       		.uleb128 0x40
+ 2710 016e 18       		.uleb128 0x18
+ 2711 016f 9742     		.uleb128 0x2117
+ 2712 0171 19       		.uleb128 0x19
+ 2713 0172 01       		.uleb128 0x1
+ 2714 0173 13       		.uleb128 0x13
+ 2715 0174 00       		.byte	0
+ 2716 0175 00       		.byte	0
+ 2717 0176 1E       		.uleb128 0x1e
+ 2718 0177 05       		.uleb128 0x5
+ 2719 0178 00       		.byte	0
+ 2720 0179 03       		.uleb128 0x3
+ 2721 017a 0E       		.uleb128 0xe
+ 2722 017b 3A       		.uleb128 0x3a
+ 2723 017c 0B       		.uleb128 0xb
+ 2724 017d 3B       		.uleb128 0x3b
+ 2725 017e 0B       		.uleb128 0xb
+ 2726 017f 49       		.uleb128 0x49
+ 2727 0180 13       		.uleb128 0x13
+ 2728 0181 02       		.uleb128 0x2
+ 2729 0182 17       		.uleb128 0x17
+ 2730 0183 00       		.byte	0
+ 2731 0184 00       		.byte	0
+ 2732 0185 1F       		.uleb128 0x1f
+ 2733 0186 34       		.uleb128 0x34
+ 2734 0187 00       		.byte	0
+ 2735 0188 03       		.uleb128 0x3
+ 2736 0189 0E       		.uleb128 0xe
+ 2737 018a 3A       		.uleb128 0x3a
+ 2738 018b 0B       		.uleb128 0xb
+ 2739 018c 3B       		.uleb128 0x3b
+ 2740 018d 0B       		.uleb128 0xb
+ 2741 018e 49       		.uleb128 0x49
+ 2742 018f 13       		.uleb128 0x13
+ 2743 0190 02       		.uleb128 0x2
+ 2744 0191 17       		.uleb128 0x17
+ 2745 0192 00       		.byte	0
+ 2746 0193 00       		.byte	0
+ 2747 0194 20       		.uleb128 0x20
+ 2748 0195 34       		.uleb128 0x34
+ 2749 0196 00       		.byte	0
+ARM GAS  C:\Users\Reza\AppData\Local\Temp\ccXaA36W.s 			page 54
+
+
+ 2750 0197 03       		.uleb128 0x3
+ 2751 0198 0E       		.uleb128 0xe
+ 2752 0199 3A       		.uleb128 0x3a
+ 2753 019a 0B       		.uleb128 0xb
+ 2754 019b 3B       		.uleb128 0x3b
+ 2755 019c 0B       		.uleb128 0xb
+ 2756 019d 49       		.uleb128 0x49
+ 2757 019e 13       		.uleb128 0x13
+ 2758 019f 02       		.uleb128 0x2
+ 2759 01a0 18       		.uleb128 0x18
+ 2760 01a1 00       		.byte	0
+ 2761 01a2 00       		.byte	0
+ 2762 01a3 21       		.uleb128 0x21
+ 2763 01a4 898201   		.uleb128 0x4109
+ 2764 01a7 00       		.byte	0
+ 2765 01a8 11       		.uleb128 0x11
+ 2766 01a9 01       		.uleb128 0x1
+ 2767 01aa 31       		.uleb128 0x31
+ 2768 01ab 13       		.uleb128 0x13
+ 2769 01ac 00       		.byte	0
+ 2770 01ad 00       		.byte	0
+ 2771 01ae 22       		.uleb128 0x22
+ 2772 01af 05       		.uleb128 0x5
+ 2773 01b0 00       		.byte	0
+ 2774 01b1 03       		.uleb128 0x3
+ 2775 01b2 08       		.uleb128 0x8
+ 2776 01b3 3A       		.uleb128 0x3a
+ 2777 01b4 0B       		.uleb128 0xb
+ 2778 01b5 3B       		.uleb128 0x3b
+ 2779 01b6 0B       		.uleb128 0xb
+ 2780 01b7 49       		.uleb128 0x49
+ 2781 01b8 13       		.uleb128 0x13
+ 2782 01b9 02       		.uleb128 0x2
+ 2783 01ba 17       		.uleb128 0x17
+ 2784 01bb 00       		.byte	0
+ 2785 01bc 00       		.byte	0
+ 2786 01bd 23       		.uleb128 0x23
+ 2787 01be 2E       		.uleb128 0x2e
+ 2788 01bf 01       		.byte	0x1
+ 2789 01c0 3F       		.uleb128 0x3f
+ 2790 01c1 19       		.uleb128 0x19
+ 2791 01c2 03       		.uleb128 0x3
+ 2792 01c3 0E       		.uleb128 0xe
+ 2793 01c4 3A       		.uleb128 0x3a
+ 2794 01c5 0B       		.uleb128 0xb
+ 2795 01c6 3B       		.uleb128 0x3b
+ 2796 01c7 0B       		.uleb128 0xb
+ 2797 01c8 27       		.uleb128 0x27
+ 2798 01c9 19       		.uleb128 0x19
+ 2799 01ca 49       		.uleb128 0x49
+ 2800 01cb 13       		.uleb128 0x13
+ 2801 01cc 11       		.uleb128 0x11
+ 2802 01cd 01       		.uleb128 0x1
+ 2803 01ce 12       		.uleb128 0x12
+ 2804 01cf 06       		.uleb128 0x6
+ 2805 01d0 40       		.uleb128 0x40
+ 2806 01d1 18       		.uleb128 0x18
+ARM GAS  C:\Users\Reza\AppData\Local\Temp\ccXaA36W.s 			page 55
+
+
+ 2807 01d2 9742     		.uleb128 0x2117
+ 2808 01d4 19       		.uleb128 0x19
+ 2809 01d5 01       		.uleb128 0x1
+ 2810 01d6 13       		.uleb128 0x13
+ 2811 01d7 00       		.byte	0
+ 2812 01d8 00       		.byte	0
+ 2813 01d9 24       		.uleb128 0x24
+ 2814 01da 05       		.uleb128 0x5
+ 2815 01db 00       		.byte	0
+ 2816 01dc 03       		.uleb128 0x3
+ 2817 01dd 08       		.uleb128 0x8
+ 2818 01de 3A       		.uleb128 0x3a
+ 2819 01df 0B       		.uleb128 0xb
+ 2820 01e0 3B       		.uleb128 0x3b
+ 2821 01e1 0B       		.uleb128 0xb
+ 2822 01e2 49       		.uleb128 0x49
+ 2823 01e3 13       		.uleb128 0x13
+ 2824 01e4 02       		.uleb128 0x2
+ 2825 01e5 18       		.uleb128 0x18
+ 2826 01e6 00       		.byte	0
+ 2827 01e7 00       		.byte	0
+ 2828 01e8 25       		.uleb128 0x25
+ 2829 01e9 34       		.uleb128 0x34
+ 2830 01ea 00       		.byte	0
+ 2831 01eb 03       		.uleb128 0x3
+ 2832 01ec 0E       		.uleb128 0xe
+ 2833 01ed 3A       		.uleb128 0x3a
+ 2834 01ee 0B       		.uleb128 0xb
+ 2835 01ef 3B       		.uleb128 0x3b
+ 2836 01f0 05       		.uleb128 0x5
+ 2837 01f1 49       		.uleb128 0x49
+ 2838 01f2 13       		.uleb128 0x13
+ 2839 01f3 3F       		.uleb128 0x3f
+ 2840 01f4 19       		.uleb128 0x19
+ 2841 01f5 3C       		.uleb128 0x3c
+ 2842 01f6 19       		.uleb128 0x19
+ 2843 01f7 00       		.byte	0
+ 2844 01f8 00       		.byte	0
+ 2845 01f9 26       		.uleb128 0x26
+ 2846 01fa 35       		.uleb128 0x35
+ 2847 01fb 00       		.byte	0
+ 2848 01fc 49       		.uleb128 0x49
+ 2849 01fd 13       		.uleb128 0x13
+ 2850 01fe 00       		.byte	0
+ 2851 01ff 00       		.byte	0
+ 2852 0200 27       		.uleb128 0x27
+ 2853 0201 34       		.uleb128 0x34
+ 2854 0202 00       		.byte	0
+ 2855 0203 03       		.uleb128 0x3
+ 2856 0204 0E       		.uleb128 0xe
+ 2857 0205 3A       		.uleb128 0x3a
+ 2858 0206 0B       		.uleb128 0xb
+ 2859 0207 3B       		.uleb128 0x3b
+ 2860 0208 0B       		.uleb128 0xb
+ 2861 0209 49       		.uleb128 0x49
+ 2862 020a 13       		.uleb128 0x13
+ 2863 020b 3F       		.uleb128 0x3f
+ARM GAS  C:\Users\Reza\AppData\Local\Temp\ccXaA36W.s 			page 56
+
+
+ 2864 020c 19       		.uleb128 0x19
+ 2865 020d 02       		.uleb128 0x2
+ 2866 020e 18       		.uleb128 0x18
+ 2867 020f 00       		.byte	0
+ 2868 0210 00       		.byte	0
+ 2869 0211 28       		.uleb128 0x28
+ 2870 0212 2E       		.uleb128 0x2e
+ 2871 0213 00       		.byte	0
+ 2872 0214 3F       		.uleb128 0x3f
+ 2873 0215 19       		.uleb128 0x19
+ 2874 0216 3C       		.uleb128 0x3c
+ 2875 0217 19       		.uleb128 0x19
+ 2876 0218 6E       		.uleb128 0x6e
+ 2877 0219 0E       		.uleb128 0xe
+ 2878 021a 03       		.uleb128 0x3
+ 2879 021b 0E       		.uleb128 0xe
+ 2880 021c 3A       		.uleb128 0x3a
+ 2881 021d 0B       		.uleb128 0xb
+ 2882 021e 3B       		.uleb128 0x3b
+ 2883 021f 0B       		.uleb128 0xb
+ 2884 0220 00       		.byte	0
+ 2885 0221 00       		.byte	0
+ 2886 0222 29       		.uleb128 0x29
+ 2887 0223 2E       		.uleb128 0x2e
+ 2888 0224 00       		.byte	0
+ 2889 0225 3F       		.uleb128 0x3f
+ 2890 0226 19       		.uleb128 0x19
+ 2891 0227 3C       		.uleb128 0x3c
+ 2892 0228 19       		.uleb128 0x19
+ 2893 0229 6E       		.uleb128 0x6e
+ 2894 022a 0E       		.uleb128 0xe
+ 2895 022b 03       		.uleb128 0x3
+ 2896 022c 0E       		.uleb128 0xe
+ 2897 022d 00       		.byte	0
+ 2898 022e 00       		.byte	0
+ 2899 022f 2A       		.uleb128 0x2a
+ 2900 0230 2E       		.uleb128 0x2e
+ 2901 0231 00       		.byte	0
+ 2902 0232 3F       		.uleb128 0x3f
+ 2903 0233 19       		.uleb128 0x19
+ 2904 0234 3C       		.uleb128 0x3c
+ 2905 0235 19       		.uleb128 0x19
+ 2906 0236 6E       		.uleb128 0x6e
+ 2907 0237 0E       		.uleb128 0xe
+ 2908 0238 03       		.uleb128 0x3
+ 2909 0239 0E       		.uleb128 0xe
+ 2910 023a 3A       		.uleb128 0x3a
+ 2911 023b 0B       		.uleb128 0xb
+ 2912 023c 3B       		.uleb128 0x3b
+ 2913 023d 05       		.uleb128 0x5
+ 2914 023e 00       		.byte	0
+ 2915 023f 00       		.byte	0
+ 2916 0240 00       		.byte	0
+ 2917              		.section	.debug_loc,"",%progbits
+ 2918              	.Ldebug_loc0:
+ 2919              	.LLST0:
+ 2920 0000 00000000 		.4byte	.LVL4
+ARM GAS  C:\Users\Reza\AppData\Local\Temp\ccXaA36W.s 			page 57
+
+
+ 2921 0004 06000000 		.4byte	.LVL5
+ 2922 0008 0100     		.2byte	0x1
+ 2923 000a 50       		.byte	0x50
+ 2924 000b 06000000 		.4byte	.LVL5
+ 2925 000f 12000000 		.4byte	.LFE65
+ 2926 0013 0400     		.2byte	0x4
+ 2927 0015 F3       		.byte	0xf3
+ 2928 0016 01       		.uleb128 0x1
+ 2929 0017 50       		.byte	0x50
+ 2930 0018 9F       		.byte	0x9f
+ 2931 0019 00000000 		.4byte	0
+ 2932 001d 00000000 		.4byte	0
+ 2933              	.LLST1:
+ 2934 0021 00000000 		.4byte	.LVL8
+ 2935 0025 08000000 		.4byte	.LVL9
+ 2936 0029 0100     		.2byte	0x1
+ 2937 002b 50       		.byte	0x50
+ 2938 002c 08000000 		.4byte	.LVL9
+ 2939 0030 16000000 		.4byte	.LFE66
+ 2940 0034 0100     		.2byte	0x1
+ 2941 0036 54       		.byte	0x54
+ 2942 0037 00000000 		.4byte	0
+ 2943 003b 00000000 		.4byte	0
+ 2944              	.LLST2:
+ 2945 003f 00000000 		.4byte	.LVL8
+ 2946 0043 0B000000 		.4byte	.LVL10-1
+ 2947 0047 0100     		.2byte	0x1
+ 2948 0049 51       		.byte	0x51
+ 2949 004a 0B000000 		.4byte	.LVL10-1
+ 2950 004e 16000000 		.4byte	.LFE66
+ 2951 0052 0400     		.2byte	0x4
+ 2952 0054 F3       		.byte	0xf3
+ 2953 0055 01       		.uleb128 0x1
+ 2954 0056 51       		.byte	0x51
+ 2955 0057 9F       		.byte	0x9f
+ 2956 0058 00000000 		.4byte	0
+ 2957 005c 00000000 		.4byte	0
+ 2958              	.LLST3:
+ 2959 0060 2E020000 		.4byte	.LVL16
+ 2960 0064 32020000 		.4byte	.LVL17
+ 2961 0068 0200     		.2byte	0x2
+ 2962 006a 30       		.byte	0x30
+ 2963 006b 9F       		.byte	0x9f
+ 2964 006c 32020000 		.4byte	.LVL17
+ 2965 0070 5E020000 		.4byte	.LVL21
+ 2966 0074 0100     		.2byte	0x1
+ 2967 0076 54       		.byte	0x54
+ 2968 0077 60020000 		.4byte	.LVL22
+ 2969 007b 86020000 		.4byte	.LVL26
+ 2970 007f 0100     		.2byte	0x1
+ 2971 0081 54       		.byte	0x54
+ 2972 0082 00000000 		.4byte	0
+ 2973 0086 00000000 		.4byte	0
+ 2974              	.LLST4:
+ 2975 008a 00000000 		.4byte	.LVL27
+ 2976 008e 1A000000 		.4byte	.LVL28
+ 2977 0092 0100     		.2byte	0x1
+ARM GAS  C:\Users\Reza\AppData\Local\Temp\ccXaA36W.s 			page 58
+
+
+ 2978 0094 50       		.byte	0x50
+ 2979 0095 1A000000 		.4byte	.LVL28
+ 2980 0099 1D000000 		.4byte	.LVL29-1
+ 2981 009d 0100     		.2byte	0x1
+ 2982 009f 53       		.byte	0x53
+ 2983 00a0 1D000000 		.4byte	.LVL29-1
+ 2984 00a4 8E000000 		.4byte	.LVL37
+ 2985 00a8 0400     		.2byte	0x4
+ 2986 00aa F3       		.byte	0xf3
+ 2987 00ab 01       		.uleb128 0x1
+ 2988 00ac 50       		.byte	0x50
+ 2989 00ad 9F       		.byte	0x9f
+ 2990 00ae 8E000000 		.4byte	.LVL37
+ 2991 00b2 90000000 		.4byte	.LFE67
+ 2992 00b6 0100     		.2byte	0x1
+ 2993 00b8 50       		.byte	0x50
+ 2994 00b9 00000000 		.4byte	0
+ 2995 00bd 00000000 		.4byte	0
+ 2996              	.LLST5:
+ 2997 00c1 00000000 		.4byte	.LVL27
+ 2998 00c5 1D000000 		.4byte	.LVL29-1
+ 2999 00c9 0100     		.2byte	0x1
+ 3000 00cb 51       		.byte	0x51
+ 3001 00cc 1D000000 		.4byte	.LVL29-1
+ 3002 00d0 8E000000 		.4byte	.LVL37
+ 3003 00d4 0400     		.2byte	0x4
+ 3004 00d6 F3       		.byte	0xf3
+ 3005 00d7 01       		.uleb128 0x1
+ 3006 00d8 51       		.byte	0x51
+ 3007 00d9 9F       		.byte	0x9f
+ 3008 00da 8E000000 		.4byte	.LVL37
+ 3009 00de 90000000 		.4byte	.LFE67
+ 3010 00e2 0100     		.2byte	0x1
+ 3011 00e4 51       		.byte	0x51
+ 3012 00e5 00000000 		.4byte	0
+ 3013 00e9 00000000 		.4byte	0
+ 3014              	.LLST6:
+ 3015 00ed 00000000 		.4byte	.LVL27
+ 3016 00f1 1D000000 		.4byte	.LVL29-1
+ 3017 00f5 0100     		.2byte	0x1
+ 3018 00f7 52       		.byte	0x52
+ 3019 00f8 1D000000 		.4byte	.LVL29-1
+ 3020 00fc 8E000000 		.4byte	.LVL37
+ 3021 0100 0400     		.2byte	0x4
+ 3022 0102 F3       		.byte	0xf3
+ 3023 0103 01       		.uleb128 0x1
+ 3024 0104 52       		.byte	0x52
+ 3025 0105 9F       		.byte	0x9f
+ 3026 0106 8E000000 		.4byte	.LVL37
+ 3027 010a 90000000 		.4byte	.LFE67
+ 3028 010e 0100     		.2byte	0x1
+ 3029 0110 52       		.byte	0x52
+ 3030 0111 00000000 		.4byte	0
+ 3031 0115 00000000 		.4byte	0
+ 3032              	.LLST7:
+ 3033 0119 68000000 		.4byte	.LVL33
+ 3034 011d 70000000 		.4byte	.LVL34
+ARM GAS  C:\Users\Reza\AppData\Local\Temp\ccXaA36W.s 			page 59
+
+
+ 3035 0121 0500     		.2byte	0x5
+ 3036 0123 76       		.byte	0x76
+ 3037 0124 00       		.sleb128 0
+ 3038 0125 3B       		.byte	0x3b
+ 3039 0126 25       		.byte	0x25
+ 3040 0127 9F       		.byte	0x9f
+ 3041 0128 70000000 		.4byte	.LVL34
+ 3042 012c 76000000 		.4byte	.LVL35
+ 3043 0130 0100     		.2byte	0x1
+ 3044 0132 52       		.byte	0x52
+ 3045 0133 76000000 		.4byte	.LVL35
+ 3046 0137 8E000000 		.4byte	.LVL37
+ 3047 013b 0100     		.2byte	0x1
+ 3048 013d 56       		.byte	0x56
+ 3049 013e 00000000 		.4byte	0
+ 3050 0142 00000000 		.4byte	0
+ 3051              	.LLST8:
+ 3052 0146 00000000 		.4byte	.LVL38
+ 3053 014a 30000000 		.4byte	.LVL39
+ 3054 014e 0100     		.2byte	0x1
+ 3055 0150 50       		.byte	0x50
+ 3056 0151 30000000 		.4byte	.LVL39
+ 3057 0155 C4000000 		.4byte	.LVL56
+ 3058 0159 0400     		.2byte	0x4
+ 3059 015b F3       		.byte	0xf3
+ 3060 015c 01       		.uleb128 0x1
+ 3061 015d 50       		.byte	0x50
+ 3062 015e 9F       		.byte	0x9f
+ 3063 015f C4000000 		.4byte	.LVL56
+ 3064 0163 C8000000 		.4byte	.LVL57
+ 3065 0167 0100     		.2byte	0x1
+ 3066 0169 50       		.byte	0x50
+ 3067 016a C8000000 		.4byte	.LVL57
+ 3068 016e CA000000 		.4byte	.LVL58
+ 3069 0172 0100     		.2byte	0x1
+ 3070 0174 54       		.byte	0x54
+ 3071 0175 CA000000 		.4byte	.LVL58
+ 3072 0179 CE000000 		.4byte	.LVL59
+ 3073 017d 0100     		.2byte	0x1
+ 3074 017f 50       		.byte	0x50
+ 3075 0180 CE000000 		.4byte	.LVL59
+ 3076 0184 D0000000 		.4byte	.LVL60
+ 3077 0188 0100     		.2byte	0x1
+ 3078 018a 54       		.byte	0x54
+ 3079 018b D0000000 		.4byte	.LVL60
+ 3080 018f D4000000 		.4byte	.LVL61
+ 3081 0193 0100     		.2byte	0x1
+ 3082 0195 50       		.byte	0x50
+ 3083 0196 D4000000 		.4byte	.LVL61
+ 3084 019a D6000000 		.4byte	.LVL62
+ 3085 019e 0100     		.2byte	0x1
+ 3086 01a0 54       		.byte	0x54
+ 3087 01a1 D6000000 		.4byte	.LVL62
+ 3088 01a5 DA000000 		.4byte	.LVL63
+ 3089 01a9 0100     		.2byte	0x1
+ 3090 01ab 50       		.byte	0x50
+ 3091 01ac DA000000 		.4byte	.LVL63
+ARM GAS  C:\Users\Reza\AppData\Local\Temp\ccXaA36W.s 			page 60
+
+
+ 3092 01b0 DC000000 		.4byte	.LVL64
+ 3093 01b4 0400     		.2byte	0x4
+ 3094 01b6 F3       		.byte	0xf3
+ 3095 01b7 01       		.uleb128 0x1
+ 3096 01b8 50       		.byte	0x50
+ 3097 01b9 9F       		.byte	0x9f
+ 3098 01ba DC000000 		.4byte	.LVL64
+ 3099 01be E0000000 		.4byte	.LVL65
+ 3100 01c2 0100     		.2byte	0x1
+ 3101 01c4 50       		.byte	0x50
+ 3102 01c5 E0000000 		.4byte	.LVL65
+ 3103 01c9 E2000000 		.4byte	.LVL66
+ 3104 01cd 0400     		.2byte	0x4
+ 3105 01cf F3       		.byte	0xf3
+ 3106 01d0 01       		.uleb128 0x1
+ 3107 01d1 50       		.byte	0x50
+ 3108 01d2 9F       		.byte	0x9f
+ 3109 01d3 E2000000 		.4byte	.LVL66
+ 3110 01d7 E6000000 		.4byte	.LVL67
+ 3111 01db 0100     		.2byte	0x1
+ 3112 01dd 50       		.byte	0x50
+ 3113 01de E6000000 		.4byte	.LVL67
+ 3114 01e2 EC000000 		.4byte	.LFE68
+ 3115 01e6 0400     		.2byte	0x4
+ 3116 01e8 F3       		.byte	0xf3
+ 3117 01e9 01       		.uleb128 0x1
+ 3118 01ea 50       		.byte	0x50
+ 3119 01eb 9F       		.byte	0x9f
+ 3120 01ec 00000000 		.4byte	0
+ 3121 01f0 00000000 		.4byte	0
+ 3122              	.LLST9:
+ 3123 01f4 00000000 		.4byte	.LVL38
+ 3124 01f8 33000000 		.4byte	.LVL40-1
+ 3125 01fc 0100     		.2byte	0x1
+ 3126 01fe 51       		.byte	0x51
+ 3127 01ff 33000000 		.4byte	.LVL40-1
+ 3128 0203 C4000000 		.4byte	.LVL56
+ 3129 0207 0400     		.2byte	0x4
+ 3130 0209 F3       		.byte	0xf3
+ 3131 020a 01       		.uleb128 0x1
+ 3132 020b 51       		.byte	0x51
+ 3133 020c 9F       		.byte	0x9f
+ 3134 020d C4000000 		.4byte	.LVL56
+ 3135 0211 E6000000 		.4byte	.LVL67
+ 3136 0215 0100     		.2byte	0x1
+ 3137 0217 51       		.byte	0x51
+ 3138 0218 E6000000 		.4byte	.LVL67
+ 3139 021c EC000000 		.4byte	.LFE68
+ 3140 0220 0400     		.2byte	0x4
+ 3141 0222 F3       		.byte	0xf3
+ 3142 0223 01       		.uleb128 0x1
+ 3143 0224 51       		.byte	0x51
+ 3144 0225 9F       		.byte	0x9f
+ 3145 0226 00000000 		.4byte	0
+ 3146 022a 00000000 		.4byte	0
+ 3147              	.LLST10:
+ 3148 022e 00000000 		.4byte	.LVL38
+ARM GAS  C:\Users\Reza\AppData\Local\Temp\ccXaA36W.s 			page 61
+
+
+ 3149 0232 33000000 		.4byte	.LVL40-1
+ 3150 0236 0100     		.2byte	0x1
+ 3151 0238 52       		.byte	0x52
+ 3152 0239 33000000 		.4byte	.LVL40-1
+ 3153 023d 36000000 		.4byte	.LVL41
+ 3154 0241 0100     		.2byte	0x1
+ 3155 0243 54       		.byte	0x54
+ 3156 0244 36000000 		.4byte	.LVL41
+ 3157 0248 C4000000 		.4byte	.LVL56
+ 3158 024c 0400     		.2byte	0x4
+ 3159 024e F3       		.byte	0xf3
+ 3160 024f 01       		.uleb128 0x1
+ 3161 0250 52       		.byte	0x52
+ 3162 0251 9F       		.byte	0x9f
+ 3163 0252 C4000000 		.4byte	.LVL56
+ 3164 0256 E6000000 		.4byte	.LVL67
+ 3165 025a 0100     		.2byte	0x1
+ 3166 025c 52       		.byte	0x52
+ 3167 025d E6000000 		.4byte	.LVL67
+ 3168 0261 EC000000 		.4byte	.LFE68
+ 3169 0265 0400     		.2byte	0x4
+ 3170 0267 F3       		.byte	0xf3
+ 3171 0268 01       		.uleb128 0x1
+ 3172 0269 52       		.byte	0x52
+ 3173 026a 9F       		.byte	0x9f
+ 3174 026b 00000000 		.4byte	0
+ 3175 026f 00000000 		.4byte	0
+ 3176              	.LLST11:
+ 3177 0273 00000000 		.4byte	.LVL38
+ 3178 0277 33000000 		.4byte	.LVL40-1
+ 3179 027b 0100     		.2byte	0x1
+ 3180 027d 53       		.byte	0x53
+ 3181 027e 33000000 		.4byte	.LVL40-1
+ 3182 0282 C4000000 		.4byte	.LVL56
+ 3183 0286 0400     		.2byte	0x4
+ 3184 0288 F3       		.byte	0xf3
+ 3185 0289 01       		.uleb128 0x1
+ 3186 028a 53       		.byte	0x53
+ 3187 028b 9F       		.byte	0x9f
+ 3188 028c C4000000 		.4byte	.LVL56
+ 3189 0290 E6000000 		.4byte	.LVL67
+ 3190 0294 0100     		.2byte	0x1
+ 3191 0296 53       		.byte	0x53
+ 3192 0297 E6000000 		.4byte	.LVL67
+ 3193 029b EC000000 		.4byte	.LFE68
+ 3194 029f 0400     		.2byte	0x4
+ 3195 02a1 F3       		.byte	0xf3
+ 3196 02a2 01       		.uleb128 0x1
+ 3197 02a3 53       		.byte	0x53
+ 3198 02a4 9F       		.byte	0x9f
+ 3199 02a5 00000000 		.4byte	0
+ 3200 02a9 00000000 		.4byte	0
+ 3201              	.LLST12:
+ 3202 02ad 8E000000 		.4byte	.LVL47
+ 3203 02b1 B4000000 		.4byte	.LVL54
+ 3204 02b5 0100     		.2byte	0x1
+ 3205 02b7 58       		.byte	0x58
+ARM GAS  C:\Users\Reza\AppData\Local\Temp\ccXaA36W.s 			page 62
+
+
+ 3206 02b8 B8000000 		.4byte	.LVL55
+ 3207 02bc C4000000 		.4byte	.LVL56
+ 3208 02c0 0100     		.2byte	0x1
+ 3209 02c2 58       		.byte	0x58
+ 3210 02c3 00000000 		.4byte	0
+ 3211 02c7 00000000 		.4byte	0
+ 3212              	.LLST13:
+ 3213 02cb 90000000 		.4byte	.LVL48
+ 3214 02cf A4000000 		.4byte	.LVL50
+ 3215 02d3 0100     		.2byte	0x1
+ 3216 02d5 54       		.byte	0x54
+ 3217 02d6 A6000000 		.4byte	.LVL51
+ 3218 02da A8000000 		.4byte	.LVL52
+ 3219 02de 0100     		.2byte	0x1
+ 3220 02e0 54       		.byte	0x54
+ 3221 02e1 AA000000 		.4byte	.LVL53
+ 3222 02e5 B8000000 		.4byte	.LVL55
+ 3223 02e9 0100     		.2byte	0x1
+ 3224 02eb 54       		.byte	0x54
+ 3225 02ec 00000000 		.4byte	0
+ 3226 02f0 00000000 		.4byte	0
+ 3227              	.LLST14:
+ 3228 02f4 7E000000 		.4byte	.LVL45
+ 3229 02f8 86000000 		.4byte	.LVL46
+ 3230 02fc 0500     		.2byte	0x5
+ 3231 02fe 76       		.byte	0x76
+ 3232 02ff 00       		.sleb128 0
+ 3233 0300 3B       		.byte	0x3b
+ 3234 0301 25       		.byte	0x25
+ 3235 0302 9F       		.byte	0x9f
+ 3236 0303 86000000 		.4byte	.LVL46
+ 3237 0307 8E000000 		.4byte	.LVL47
+ 3238 030b 0100     		.2byte	0x1
+ 3239 030d 53       		.byte	0x53
+ 3240 030e 8E000000 		.4byte	.LVL47
+ 3241 0312 C4000000 		.4byte	.LVL56
+ 3242 0316 0100     		.2byte	0x1
+ 3243 0318 57       		.byte	0x57
+ 3244 0319 00000000 		.4byte	0
+ 3245 031d 00000000 		.4byte	0
+ 3246              	.LLST15:
+ 3247 0321 00000000 		.4byte	.LVL68
+ 3248 0325 31000000 		.4byte	.LVL69-1
+ 3249 0329 0100     		.2byte	0x1
+ 3250 032b 50       		.byte	0x50
+ 3251 032c 31000000 		.4byte	.LVL69-1
+ 3252 0330 36000000 		.4byte	.LVL70
+ 3253 0334 0400     		.2byte	0x4
+ 3254 0336 F3       		.byte	0xf3
+ 3255 0337 01       		.uleb128 0x1
+ 3256 0338 50       		.byte	0x50
+ 3257 0339 9F       		.byte	0x9f
+ 3258 033a 36000000 		.4byte	.LVL70
+ 3259 033e 3A000000 		.4byte	.LVL71
+ 3260 0342 0100     		.2byte	0x1
+ 3261 0344 50       		.byte	0x50
+ 3262 0345 3A000000 		.4byte	.LVL71
+ARM GAS  C:\Users\Reza\AppData\Local\Temp\ccXaA36W.s 			page 63
+
+
+ 3263 0349 3C000000 		.4byte	.LVL72
+ 3264 034d 0100     		.2byte	0x1
+ 3265 034f 54       		.byte	0x54
+ 3266 0350 3C000000 		.4byte	.LVL72
+ 3267 0354 40000000 		.4byte	.LVL73
+ 3268 0358 0100     		.2byte	0x1
+ 3269 035a 50       		.byte	0x50
+ 3270 035b 40000000 		.4byte	.LVL73
+ 3271 035f 42000000 		.4byte	.LVL74
+ 3272 0363 0100     		.2byte	0x1
+ 3273 0365 54       		.byte	0x54
+ 3274 0366 42000000 		.4byte	.LVL74
+ 3275 036a 46000000 		.4byte	.LVL75
+ 3276 036e 0100     		.2byte	0x1
+ 3277 0370 50       		.byte	0x50
+ 3278 0371 46000000 		.4byte	.LVL75
+ 3279 0375 48000000 		.4byte	.LVL76
+ 3280 0379 0100     		.2byte	0x1
+ 3281 037b 54       		.byte	0x54
+ 3282 037c 48000000 		.4byte	.LVL76
+ 3283 0380 4C000000 		.4byte	.LVL77
+ 3284 0384 0100     		.2byte	0x1
+ 3285 0386 50       		.byte	0x50
+ 3286 0387 4C000000 		.4byte	.LVL77
+ 3287 038b 4E000000 		.4byte	.LVL78
+ 3288 038f 0400     		.2byte	0x4
+ 3289 0391 F3       		.byte	0xf3
+ 3290 0392 01       		.uleb128 0x1
+ 3291 0393 50       		.byte	0x50
+ 3292 0394 9F       		.byte	0x9f
+ 3293 0395 4E000000 		.4byte	.LVL78
+ 3294 0399 52000000 		.4byte	.LVL79
+ 3295 039d 0100     		.2byte	0x1
+ 3296 039f 50       		.byte	0x50
+ 3297 03a0 52000000 		.4byte	.LVL79
+ 3298 03a4 54000000 		.4byte	.LVL80
+ 3299 03a8 0400     		.2byte	0x4
+ 3300 03aa F3       		.byte	0xf3
+ 3301 03ab 01       		.uleb128 0x1
+ 3302 03ac 50       		.byte	0x50
+ 3303 03ad 9F       		.byte	0x9f
+ 3304 03ae 54000000 		.4byte	.LVL80
+ 3305 03b2 58000000 		.4byte	.LVL81
+ 3306 03b6 0100     		.2byte	0x1
+ 3307 03b8 50       		.byte	0x50
+ 3308 03b9 58000000 		.4byte	.LVL81
+ 3309 03bd 5A000000 		.4byte	.LVL82
+ 3310 03c1 0400     		.2byte	0x4
+ 3311 03c3 F3       		.byte	0xf3
+ 3312 03c4 01       		.uleb128 0x1
+ 3313 03c5 50       		.byte	0x50
+ 3314 03c6 9F       		.byte	0x9f
+ 3315 03c7 5A000000 		.4byte	.LVL82
+ 3316 03cb 5E000000 		.4byte	.LVL83
+ 3317 03cf 0100     		.2byte	0x1
+ 3318 03d1 50       		.byte	0x50
+ 3319 03d2 5E000000 		.4byte	.LVL83
+ARM GAS  C:\Users\Reza\AppData\Local\Temp\ccXaA36W.s 			page 64
+
+
+ 3320 03d6 62000000 		.4byte	.LFE69
+ 3321 03da 0400     		.2byte	0x4
+ 3322 03dc F3       		.byte	0xf3
+ 3323 03dd 01       		.uleb128 0x1
+ 3324 03de 50       		.byte	0x50
+ 3325 03df 9F       		.byte	0x9f
+ 3326 03e0 00000000 		.4byte	0
+ 3327 03e4 00000000 		.4byte	0
+ 3328              	.LLST16:
+ 3329 03e8 00000000 		.4byte	.LVL68
+ 3330 03ec 31000000 		.4byte	.LVL69-1
+ 3331 03f0 0100     		.2byte	0x1
+ 3332 03f2 51       		.byte	0x51
+ 3333 03f3 31000000 		.4byte	.LVL69-1
+ 3334 03f7 36000000 		.4byte	.LVL70
+ 3335 03fb 0400     		.2byte	0x4
+ 3336 03fd F3       		.byte	0xf3
+ 3337 03fe 01       		.uleb128 0x1
+ 3338 03ff 51       		.byte	0x51
+ 3339 0400 9F       		.byte	0x9f
+ 3340 0401 36000000 		.4byte	.LVL70
+ 3341 0405 5E000000 		.4byte	.LVL83
+ 3342 0409 0100     		.2byte	0x1
+ 3343 040b 51       		.byte	0x51
+ 3344 040c 5E000000 		.4byte	.LVL83
+ 3345 0410 62000000 		.4byte	.LFE69
+ 3346 0414 0400     		.2byte	0x4
+ 3347 0416 F3       		.byte	0xf3
+ 3348 0417 01       		.uleb128 0x1
+ 3349 0418 51       		.byte	0x51
+ 3350 0419 9F       		.byte	0x9f
+ 3351 041a 00000000 		.4byte	0
+ 3352 041e 00000000 		.4byte	0
+ 3353              	.LLST17:
+ 3354 0422 00000000 		.4byte	.LVL68
+ 3355 0426 31000000 		.4byte	.LVL69-1
+ 3356 042a 0100     		.2byte	0x1
+ 3357 042c 52       		.byte	0x52
+ 3358 042d 31000000 		.4byte	.LVL69-1
+ 3359 0431 36000000 		.4byte	.LVL70
+ 3360 0435 0400     		.2byte	0x4
+ 3361 0437 F3       		.byte	0xf3
+ 3362 0438 01       		.uleb128 0x1
+ 3363 0439 52       		.byte	0x52
+ 3364 043a 9F       		.byte	0x9f
+ 3365 043b 36000000 		.4byte	.LVL70
+ 3366 043f 5E000000 		.4byte	.LVL83
+ 3367 0443 0100     		.2byte	0x1
+ 3368 0445 52       		.byte	0x52
+ 3369 0446 5E000000 		.4byte	.LVL83
+ 3370 044a 62000000 		.4byte	.LFE69
+ 3371 044e 0400     		.2byte	0x4
+ 3372 0450 F3       		.byte	0xf3
+ 3373 0451 01       		.uleb128 0x1
+ 3374 0452 52       		.byte	0x52
+ 3375 0453 9F       		.byte	0x9f
+ 3376 0454 00000000 		.4byte	0
+ARM GAS  C:\Users\Reza\AppData\Local\Temp\ccXaA36W.s 			page 65
+
+
+ 3377 0458 00000000 		.4byte	0
+ 3378              	.LLST18:
+ 3379 045c 00000000 		.4byte	.LVL68
+ 3380 0460 31000000 		.4byte	.LVL69-1
+ 3381 0464 0100     		.2byte	0x1
+ 3382 0466 53       		.byte	0x53
+ 3383 0467 31000000 		.4byte	.LVL69-1
+ 3384 046b 36000000 		.4byte	.LVL70
+ 3385 046f 0400     		.2byte	0x4
+ 3386 0471 F3       		.byte	0xf3
+ 3387 0472 01       		.uleb128 0x1
+ 3388 0473 53       		.byte	0x53
+ 3389 0474 9F       		.byte	0x9f
+ 3390 0475 36000000 		.4byte	.LVL70
+ 3391 0479 5E000000 		.4byte	.LVL83
+ 3392 047d 0100     		.2byte	0x1
+ 3393 047f 53       		.byte	0x53
+ 3394 0480 5E000000 		.4byte	.LVL83
+ 3395 0484 62000000 		.4byte	.LFE69
+ 3396 0488 0400     		.2byte	0x4
+ 3397 048a F3       		.byte	0xf3
+ 3398 048b 01       		.uleb128 0x1
+ 3399 048c 53       		.byte	0x53
+ 3400 048d 9F       		.byte	0x9f
+ 3401 048e 00000000 		.4byte	0
+ 3402 0492 00000000 		.4byte	0
+ 3403              		.section	.debug_aranges,"",%progbits
+ 3404 0000 4C000000 		.4byte	0x4c
+ 3405 0004 0200     		.2byte	0x2
+ 3406 0006 00000000 		.4byte	.Ldebug_info0
+ 3407 000a 04       		.byte	0x4
+ 3408 000b 00       		.byte	0
+ 3409 000c 0000     		.2byte	0
+ 3410 000e 0000     		.2byte	0
+ 3411 0010 00000000 		.4byte	.LFB64
+ 3412 0014 1C000000 		.4byte	.LFE64-.LFB64
+ 3413 0018 00000000 		.4byte	.LFB65
+ 3414 001c 12000000 		.4byte	.LFE65-.LFB65
+ 3415 0020 00000000 		.4byte	.LFB66
+ 3416 0024 16000000 		.4byte	.LFE66-.LFB66
+ 3417 0028 00000000 		.4byte	.LFB63
+ 3418 002c 98020000 		.4byte	.LFE63-.LFB63
+ 3419 0030 00000000 		.4byte	.LFB67
+ 3420 0034 90000000 		.4byte	.LFE67-.LFB67
+ 3421 0038 00000000 		.4byte	.LFB68
+ 3422 003c EC000000 		.4byte	.LFE68-.LFB68
+ 3423 0040 00000000 		.4byte	.LFB69
+ 3424 0044 62000000 		.4byte	.LFE69-.LFB69
+ 3425 0048 00000000 		.4byte	0
+ 3426 004c 00000000 		.4byte	0
+ 3427              		.section	.debug_ranges,"",%progbits
+ 3428              	.Ldebug_ranges0:
+ 3429 0000 00000000 		.4byte	.LFB64
+ 3430 0004 1C000000 		.4byte	.LFE64
+ 3431 0008 00000000 		.4byte	.LFB65
+ 3432 000c 12000000 		.4byte	.LFE65
+ 3433 0010 00000000 		.4byte	.LFB66
+ARM GAS  C:\Users\Reza\AppData\Local\Temp\ccXaA36W.s 			page 66
+
+
+ 3434 0014 16000000 		.4byte	.LFE66
+ 3435 0018 00000000 		.4byte	.LFB63
+ 3436 001c 98020000 		.4byte	.LFE63
+ 3437 0020 00000000 		.4byte	.LFB67
+ 3438 0024 90000000 		.4byte	.LFE67
+ 3439 0028 00000000 		.4byte	.LFB68
+ 3440 002c EC000000 		.4byte	.LFE68
+ 3441 0030 00000000 		.4byte	.LFB69
+ 3442 0034 62000000 		.4byte	.LFE69
+ 3443 0038 00000000 		.4byte	0
+ 3444 003c 00000000 		.4byte	0
+ 3445              		.section	.debug_line,"",%progbits
+ 3446              	.Ldebug_line0:
+ 3447 0000 EF020000 		.section	.debug_str,"MS",%progbits,1
+ 3447      0200B901 
+ 3447      00000201 
+ 3447      FB0E0D00 
+ 3447      01010101 
+ 3448              	.LASF111:
+ 3449 0000 43794465 		.ascii	"CyDelay\000"
+ 3449      6C617900 
+ 3450              	.LASF30:
+ 3451 0008 464F4E54 		.ascii	"FONT_TYPE_8BPP\000"
+ 3451      5F545950 
+ 3451      455F3842 
+ 3451      505000
+ 3452              	.LASF87:
+ 3453 0017 6465736B 		.ascii	"desktop_color\000"
+ 3453      746F705F 
+ 3453      636F6C6F 
+ 3453      7200
+ 3454              	.LASF41:
+ 3455 0025 746F7563 		.ascii	"touch_state\000"
+ 3455      685F7374 
+ 3455      61746500 
+ 3456              	.LASF56:
+ 3457 0031 55475F43 		.ascii	"UG_COLOR\000"
+ 3457      4F4C4F52 
+ 3457      00
+ 3458              	.LASF27:
+ 3459 003a 55475F55 		.ascii	"UG_U16\000"
+ 3459      313600
+ 3460              	.LASF13:
+ 3461 0041 756E7369 		.ascii	"unsigned int\000"
+ 3461      676E6564 
+ 3461      20696E74 
+ 3461      00
+ 3462              	.LASF86:
+ 3463 004e 63686172 		.ascii	"char_v_space\000"
+ 3463      5F765F73 
+ 3463      70616365 
+ 3463      00
+ 3464              	.LASF42:
+ 3465 005b 75706461 		.ascii	"update\000"
+ 3465      746500
+ 3466              	.LASF104:
+ 3467 0062 64646174 		.ascii	"ddata\000"
+ARM GAS  C:\Users\Reza\AppData\Local\Temp\ccXaA36W.s 			page 67
+
+
+ 3467      6100
+ 3468              	.LASF8:
+ 3469 0068 5F5F696E 		.ascii	"__int32_t\000"
+ 3469      7433325F 
+ 3469      7400
+ 3470              	.LASF84:
+ 3471 0072 636F6E73 		.ascii	"console\000"
+ 3471      6F6C6500 
+ 3472              	.LASF110:
+ 3473 007a 67756937 		.ascii	"gui7735\000"
+ 3473      37333500 
+ 3474              	.LASF50:
+ 3475 0082 535F5749 		.ascii	"S_WINDOW\000"
+ 3475      4E444F57 
+ 3475      00
+ 3476              	.LASF115:
+ 3477 008b 536F7572 		.ascii	"Source\\bsw\\LCD_Driver\\ugui_st7735.c\000"
+ 3477      63655C62 
+ 3477      73775C4C 
+ 3477      43445F44 
+ 3477      72697665 
+ 3478              	.LASF79:
+ 3479 00af 795F6469 		.ascii	"y_dim\000"
+ 3479      6D00
+ 3480              	.LASF31:
+ 3481 00b5 464F4E54 		.ascii	"FONT_TYPE\000"
+ 3481      5F545950 
+ 3481      4500
+ 3482              	.LASF113:
+ 3483 00bf 55475F44 		.ascii	"UG_DriverRegister\000"
+ 3483      72697665 
+ 3483      72526567 
+ 3483      69737465 
+ 3483      7200
+ 3484              	.LASF52:
+ 3485 00d1 6F626A6C 		.ascii	"objlst\000"
+ 3485      737400
+ 3486              	.LASF81:
+ 3487 00d8 6E657874 		.ascii	"next_window\000"
+ 3487      5F77696E 
+ 3487      646F7700 
+ 3488              	.LASF54:
+ 3489 00e4 7469746C 		.ascii	"title\000"
+ 3489      6500
+ 3490              	.LASF14:
+ 3491 00ea 696E7438 		.ascii	"int8_t\000"
+ 3491      5F7400
+ 3492              	.LASF73:
+ 3493 00f1 785F656E 		.ascii	"x_end\000"
+ 3493      6400
+ 3494              	.LASF106:
+ 3495 00f7 6C6F6F70 		.ascii	"loopy\000"
+ 3495      7900
+ 3496              	.LASF20:
+ 3497 00fd 666C6F61 		.ascii	"float\000"
+ 3497      7400
+ 3498              	.LASF46:
+ARM GAS  C:\Users\Reza\AppData\Local\Temp\ccXaA36W.s 			page 68
+
+
+ 3499 0103 6576656E 		.ascii	"event\000"
+ 3499      7400
+ 3500              	.LASF83:
+ 3501 0109 6C617374 		.ascii	"last_window\000"
+ 3501      5F77696E 
+ 3501      646F7700 
+ 3502              	.LASF76:
+ 3503 0115 6261636B 		.ascii	"back_color\000"
+ 3503      5F636F6C 
+ 3503      6F7200
+ 3504              	.LASF16:
+ 3505 0120 696E7431 		.ascii	"int16_t\000"
+ 3505      365F7400 
+ 3506              	.LASF12:
+ 3507 0128 6C6F6E67 		.ascii	"long long unsigned int\000"
+ 3507      206C6F6E 
+ 3507      6720756E 
+ 3507      7369676E 
+ 3507      65642069 
+ 3508              	.LASF6:
+ 3509 013f 5F5F7569 		.ascii	"__uint16_t\000"
+ 3509      6E743136 
+ 3509      5F7400
+ 3510              	.LASF82:
+ 3511 014a 61637469 		.ascii	"active_window\000"
+ 3511      76655F77 
+ 3511      696E646F 
+ 3511      7700
+ 3512              	.LASF51:
+ 3513 0158 6F626A63 		.ascii	"objcnt\000"
+ 3513      6E7400
+ 3514              	.LASF28:
+ 3515 015f 55475F53 		.ascii	"UG_S16\000"
+ 3515      313600
+ 3516              	.LASF75:
+ 3517 0166 666F7265 		.ascii	"fore_color\000"
+ 3517      5F636F6C 
+ 3517      6F7200
+ 3518              	.LASF99:
+ 3519 0171 6C6F6F70 		.ascii	"loop\000"
+ 3519      00
+ 3520              	.LASF70:
+ 3521 0176 795F706F 		.ascii	"y_pos\000"
+ 3521      7300
+ 3522              	.LASF103:
+ 3523 017c 636F6C6F 		.ascii	"color\000"
+ 3523      7200
+ 3524              	.LASF114:
+ 3525 0182 474E5520 		.ascii	"GNU C11 5.4.1 20160609 (release) [ARM/embedded-5-br"
+ 3525      43313120 
+ 3525      352E342E 
+ 3525      31203230 
+ 3525      31363036 
+ 3526 01b5 616E6368 		.ascii	"anch revision 237715] -mcpu=cortex-m3 -mthumb -g -O"
+ 3526      20726576 
+ 3526      6973696F 
+ 3526      6E203233 
+ARM GAS  C:\Users\Reza\AppData\Local\Temp\ccXaA36W.s 			page 69
+
+
+ 3526      37373135 
+ 3527 01e8 67202D66 		.ascii	"g -ffunction-sections -ffat-lto-objects\000"
+ 3527      66756E63 
+ 3527      74696F6E 
+ 3527      2D736563 
+ 3527      74696F6E 
+ 3528              	.LASF93:
+ 3529 0210 44697370 		.ascii	"Display_WriteData\000"
+ 3529      6C61795F 
+ 3529      57726974 
+ 3529      65446174 
+ 3529      6100
+ 3530              	.LASF33:
+ 3531 0222 63686172 		.ascii	"char_width\000"
+ 3531      5F776964 
+ 3531      746800
+ 3532              	.LASF92:
+ 3533 022d 44697370 		.ascii	"Display_WriteCommand\000"
+ 3533      6C61795F 
+ 3533      57726974 
+ 3533      65436F6D 
+ 3533      6D616E64 
+ 3534              	.LASF72:
+ 3535 0242 795F7374 		.ascii	"y_start\000"
+ 3535      61727400 
+ 3536              	.LASF63:
+ 3537 024a 765F7370 		.ascii	"v_space\000"
+ 3537      61636500 
+ 3538              	.LASF22:
+ 3539 0252 63686172 		.ascii	"char\000"
+ 3539      00
+ 3540              	.LASF32:
+ 3541 0257 666F6E74 		.ascii	"font_type\000"
+ 3541      5F747970 
+ 3541      6500
+ 3542              	.LASF57:
+ 3543 0261 55475F41 		.ascii	"UG_AREA\000"
+ 3543      52454100 
+ 3544              	.LASF59:
+ 3545 0269 55475F4D 		.ascii	"UG_MESSAGE\000"
+ 3545      45535341 
+ 3545      474500
+ 3546              	.LASF47:
+ 3547 0274 64617461 		.ascii	"data\000"
+ 3547      00
+ 3548              	.LASF98:
+ 3549 0279 44697370 		.ascii	"Display_Init\000"
+ 3549      6C61795F 
+ 3549      496E6974 
+ 3549      00
+ 3550              	.LASF15:
+ 3551 0286 75696E74 		.ascii	"uint8_t\000"
+ 3551      385F7400 
+ 3552              	.LASF80:
+ 3553 028e 746F7563 		.ascii	"touch\000"
+ 3553      6800
+ 3554              	.LASF67:
+ARM GAS  C:\Users\Reza\AppData\Local\Temp\ccXaA36W.s 			page 70
+
+
+ 3555 0294 64726976 		.ascii	"driver\000"
+ 3555      657200
+ 3556              	.LASF112:
+ 3557 029b 55475F49 		.ascii	"UG_Init\000"
+ 3557      6E697400 
+ 3558              	.LASF26:
+ 3559 02a3 55475F53 		.ascii	"UG_S8\000"
+ 3559      3800
+ 3560              	.LASF78:
+ 3561 02a9 785F6469 		.ascii	"x_dim\000"
+ 3561      6D00
+ 3562              	.LASF11:
+ 3563 02af 6C6F6E67 		.ascii	"long long int\000"
+ 3563      206C6F6E 
+ 3563      6720696E 
+ 3563      7400
+ 3564              	.LASF102:
+ 3565 02bd 44697370 		.ascii	"Display_PSet\000"
+ 3565      6C61795F 
+ 3565      50536574 
+ 3565      00
+ 3566              	.LASF4:
+ 3567 02ca 5F5F696E 		.ascii	"__int16_t\000"
+ 3567      7431365F 
+ 3567      7400
+ 3568              	.LASF55:
+ 3569 02d4 55475F52 		.ascii	"UG_RESULT\000"
+ 3569      4553554C 
+ 3569      5400
+ 3570              	.LASF39:
+ 3571 02de 55475F4F 		.ascii	"UG_OBJECT\000"
+ 3571      424A4543 
+ 3571      5400
+ 3572              	.LASF77:
+ 3573 02e8 70736574 		.ascii	"pset\000"
+ 3573      00
+ 3574              	.LASF117:
+ 3575 02ed 6D656D73 		.ascii	"memset\000"
+ 3575      657400
+ 3576              	.LASF58:
+ 3577 02f4 7375625F 		.ascii	"sub_id\000"
+ 3577      696400
+ 3578              	.LASF116:
+ 3579 02fb 433A5C55 		.ascii	"C:\\Users\\Reza\\Documents\\PSoC Creator\\CAN_Appli"
+ 3579      73657273 
+ 3579      5C52657A 
+ 3579      615C446F 
+ 3579      63756D65 
+ 3580 0329 63617469 		.ascii	"cation_01\\Design01_Tx.cydsn\000"
+ 3580      6F6E5F30 
+ 3580      315C4465 
+ 3580      7369676E 
+ 3580      30315F54 
+ 3581              	.LASF94:
+ 3582 0345 636F6D6D 		.ascii	"command\000"
+ 3582      616E6400 
+ 3583              	.LASF108:
+ARM GAS  C:\Users\Reza\AppData\Local\Temp\ccXaA36W.s 			page 71
+
+
+ 3584 034d 48575F44 		.ascii	"HW_DrawLine\000"
+ 3584      7261774C 
+ 3584      696E6500 
+ 3585              	.LASF65:
+ 3586 0359 68656967 		.ascii	"height\000"
+ 3586      687400
+ 3587              	.LASF35:
+ 3588 0360 73746172 		.ascii	"start_char\000"
+ 3588      745F6368 
+ 3588      617200
+ 3589              	.LASF25:
+ 3590 036b 55475F55 		.ascii	"UG_U8\000"
+ 3590      3800
+ 3591              	.LASF0:
+ 3592 0371 5F5F696E 		.ascii	"__int8_t\000"
+ 3592      74385F74 
+ 3592      00
+ 3593              	.LASF37:
+ 3594 037a 77696474 		.ascii	"widths\000"
+ 3594      687300
+ 3595              	.LASF23:
+ 3596 0381 6C6F6E67 		.ascii	"long double\000"
+ 3596      20646F75 
+ 3596      626C6500 
+ 3597              	.LASF17:
+ 3598 038d 75696E74 		.ascii	"uint16_t\000"
+ 3598      31365F74 
+ 3598      00
+ 3599              	.LASF66:
+ 3600 0396 55475F54 		.ascii	"UG_TITLE\000"
+ 3600      49544C45 
+ 3600      00
+ 3601              	.LASF68:
+ 3602 039f 55475F44 		.ascii	"UG_DRIVER\000"
+ 3602      52495645 
+ 3602      5200
+ 3603              	.LASF69:
+ 3604 03a9 785F706F 		.ascii	"x_pos\000"
+ 3604      7300
+ 3605              	.LASF34:
+ 3606 03af 63686172 		.ascii	"char_height\000"
+ 3606      5F686569 
+ 3606      67687400 
+ 3607              	.LASF5:
+ 3608 03bb 73686F72 		.ascii	"short int\000"
+ 3608      7420696E 
+ 3608      7400
+ 3609              	.LASF9:
+ 3610 03c5 6C6F6E67 		.ascii	"long int\000"
+ 3610      20696E74 
+ 3610      00
+ 3611              	.LASF48:
+ 3612 03ce 55475F57 		.ascii	"UG_WINDOW\000"
+ 3612      494E444F 
+ 3612      5700
+ 3613              	.LASF109:
+ 3614 03d8 49544D5F 		.ascii	"ITM_RxBuffer\000"
+ARM GAS  C:\Users\Reza\AppData\Local\Temp\ccXaA36W.s 			page 72
+
+
+ 3614      52784275 
+ 3614      66666572 
+ 3614      00
+ 3615              	.LASF95:
+ 3616 03e5 6C656E67 		.ascii	"length\000"
+ 3616      746800
+ 3617              	.LASF97:
+ 3618 03ec 44697370 		.ascii	"Display_Reset\000"
+ 3618      6C61795F 
+ 3618      52657365 
+ 3618      7400
+ 3619              	.LASF36:
+ 3620 03fa 656E645F 		.ascii	"end_char\000"
+ 3620      63686172 
+ 3620      00
+ 3621              	.LASF38:
+ 3622 0403 55475F46 		.ascii	"UG_FONT\000"
+ 3622      4F4E5400 
+ 3623              	.LASF1:
+ 3624 040b 5F5F7569 		.ascii	"__uint8_t\000"
+ 3624      6E74385F 
+ 3624      7400
+ 3625              	.LASF61:
+ 3626 0415 666F6E74 		.ascii	"font\000"
+ 3626      00
+ 3627              	.LASF24:
+ 3628 041a 73697A65 		.ascii	"sizetype\000"
+ 3628      74797065 
+ 3628      00
+ 3629              	.LASF10:
+ 3630 0423 6C6F6E67 		.ascii	"long unsigned int\000"
+ 3630      20756E73 
+ 3630      69676E65 
+ 3630      6420696E 
+ 3630      7400
+ 3631              	.LASF96:
+ 3632 0435 5350494D 		.ascii	"SPIM_PutArray\000"
+ 3632      5F507574 
+ 3632      41727261 
+ 3632      7900
+ 3633              	.LASF18:
+ 3634 0443 696E7433 		.ascii	"int32_t\000"
+ 3634      325F7400 
+ 3635              	.LASF45:
+ 3636 044b 74797065 		.ascii	"type\000"
+ 3636      00
+ 3637              	.LASF3:
+ 3638 0450 756E7369 		.ascii	"unsigned char\000"
+ 3638      676E6564 
+ 3638      20636861 
+ 3638      7200
+ 3639              	.LASF62:
+ 3640 045e 685F7370 		.ascii	"h_space\000"
+ 3640      61636500 
+ 3641              	.LASF105:
+ 3642 0466 6C6F6F70 		.ascii	"loopx\000"
+ 3642      7800
+ARM GAS  C:\Users\Reza\AppData\Local\Temp\ccXaA36W.s 			page 73
+
+
+ 3643              	.LASF71:
+ 3644 046c 785F7374 		.ascii	"x_start\000"
+ 3644      61727400 
+ 3645              	.LASF74:
+ 3646 0474 795F656E 		.ascii	"y_end\000"
+ 3646      6400
+ 3647              	.LASF53:
+ 3648 047a 7374796C 		.ascii	"style\000"
+ 3648      6500
+ 3649              	.LASF40:
+ 3650 0480 73746174 		.ascii	"state\000"
+ 3650      6500
+ 3651              	.LASF90:
+ 3652 0486 52535F57 		.ascii	"RS_Write\000"
+ 3652      72697465 
+ 3652      00
+ 3653              	.LASF107:
+ 3654 048f 48575F46 		.ascii	"HW_FillFrame\000"
+ 3654      696C6C46 
+ 3654      72616D65 
+ 3654      00
+ 3655              	.LASF88:
+ 3656 049c 55475F47 		.ascii	"UG_GUI\000"
+ 3656      554900
+ 3657              	.LASF44:
+ 3658 04a3 615F7265 		.ascii	"a_rel\000"
+ 3658      6C00
+ 3659              	.LASF60:
+ 3660 04a9 55475F54 		.ascii	"UG_TOUCH\000"
+ 3660      4F554348 
+ 3660      00
+ 3661              	.LASF2:
+ 3662 04b2 7369676E 		.ascii	"signed char\000"
+ 3662      65642063 
+ 3662      68617200 
+ 3663              	.LASF7:
+ 3664 04be 73686F72 		.ascii	"short unsigned int\000"
+ 3664      7420756E 
+ 3664      7369676E 
+ 3664      65642069 
+ 3664      6E7400
+ 3665              	.LASF91:
+ 3666 04d1 5350494D 		.ascii	"SPIM_WriteTxData\000"
+ 3666      5F577269 
+ 3666      74655478 
+ 3666      44617461 
+ 3666      00
+ 3667              	.LASF89:
+ 3668 04e2 5253545F 		.ascii	"RST_Write\000"
+ 3668      57726974 
+ 3668      6500
+ 3669              	.LASF19:
+ 3670 04ec 75696E74 		.ascii	"uint8\000"
+ 3670      3800
+ 3671              	.LASF21:
+ 3672 04f2 646F7562 		.ascii	"double\000"
+ 3672      6C6500
+ARM GAS  C:\Users\Reza\AppData\Local\Temp\ccXaA36W.s 			page 74
+
+
+ 3673              	.LASF100:
+ 3674 04f9 636F6E66 		.ascii	"configdata\000"
+ 3674      69676461 
+ 3674      746100
+ 3675              	.LASF49:
+ 3676 0504 535F4F42 		.ascii	"S_OBJECT\000"
+ 3676      4A454354 
+ 3676      00
+ 3677              	.LASF64:
+ 3678 050d 616C6967 		.ascii	"align\000"
+ 3678      6E00
+ 3679              	.LASF43:
+ 3680 0513 615F6162 		.ascii	"a_abs\000"
+ 3680      7300
+ 3681              	.LASF29:
+ 3682 0519 464F4E54 		.ascii	"FONT_TYPE_1BPP\000"
+ 3682      5F545950 
+ 3682      455F3142 
+ 3682      505000
+ 3683              	.LASF101:
+ 3684 0528 5350494D 		.ascii	"SPIM_Start\000"
+ 3684      5F537461 
+ 3684      727400
+ 3685              	.LASF85:
+ 3686 0533 63686172 		.ascii	"char_h_space\000"
+ 3686      5F685F73 
+ 3686      70616365 
+ 3686      00
+ 3687              		.ident	"GCC: (GNU Tools for ARM Embedded Processors) 5.4.1 20160609 (release) [ARM/embedded-5-bran

@@ -1,0 +1,1268 @@
+ARM GAS  C:\Users\Reza\AppData\Local\Temp\ccPnZxAV.s 			page 1
+
+
+   1              		.syntax unified
+   2              		.cpu cortex-m3
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.thumb
+  14              		.syntax unified
+  15              		.file	"heap_1.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.section	.text.pvPortMalloc,"ax",%progbits
+  20              		.align	2
+  21              		.global	pvPortMalloc
+  22              		.thumb
+  23              		.thumb_func
+  24              		.type	pvPortMalloc, %function
+  25              	pvPortMalloc:
+  26              	.LFB68:
+  27              		.file 1 "Source\\bsw\\FreeRTOS\\src\\heap_1.c"
+   1:Source\bsw\FreeRTOS\src/heap_1.c **** /*
+   2:Source\bsw\FreeRTOS\src/heap_1.c ****  * FreeRTOS Kernel V10.3.1
+   3:Source\bsw\FreeRTOS\src/heap_1.c ****  * Copyright (C) 2020 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
+   4:Source\bsw\FreeRTOS\src/heap_1.c ****  *
+   5:Source\bsw\FreeRTOS\src/heap_1.c ****  * Permission is hereby granted, free of charge, to any person obtaining a copy of
+   6:Source\bsw\FreeRTOS\src/heap_1.c ****  * this software and associated documentation files (the "Software"), to deal in
+   7:Source\bsw\FreeRTOS\src/heap_1.c ****  * the Software without restriction, including without limitation the rights to
+   8:Source\bsw\FreeRTOS\src/heap_1.c ****  * use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+   9:Source\bsw\FreeRTOS\src/heap_1.c ****  * the Software, and to permit persons to whom the Software is furnished to do so,
+  10:Source\bsw\FreeRTOS\src/heap_1.c ****  * subject to the following conditions:
+  11:Source\bsw\FreeRTOS\src/heap_1.c ****  *
+  12:Source\bsw\FreeRTOS\src/heap_1.c ****  * The above copyright notice and this permission notice shall be included in all
+  13:Source\bsw\FreeRTOS\src/heap_1.c ****  * copies or substantial portions of the Software.
+  14:Source\bsw\FreeRTOS\src/heap_1.c ****  *
+  15:Source\bsw\FreeRTOS\src/heap_1.c ****  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  16:Source\bsw\FreeRTOS\src/heap_1.c ****  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+  17:Source\bsw\FreeRTOS\src/heap_1.c ****  * FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+  18:Source\bsw\FreeRTOS\src/heap_1.c ****  * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+  19:Source\bsw\FreeRTOS\src/heap_1.c ****  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+  20:Source\bsw\FreeRTOS\src/heap_1.c ****  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+  21:Source\bsw\FreeRTOS\src/heap_1.c ****  *
+  22:Source\bsw\FreeRTOS\src/heap_1.c ****  * http://www.FreeRTOS.org
+  23:Source\bsw\FreeRTOS\src/heap_1.c ****  * http://aws.amazon.com/freertos
+  24:Source\bsw\FreeRTOS\src/heap_1.c ****  *
+  25:Source\bsw\FreeRTOS\src/heap_1.c ****  * 1 tab == 4 spaces!
+  26:Source\bsw\FreeRTOS\src/heap_1.c ****  */
+  27:Source\bsw\FreeRTOS\src/heap_1.c **** 
+  28:Source\bsw\FreeRTOS\src/heap_1.c **** 
+  29:Source\bsw\FreeRTOS\src/heap_1.c **** /*
+  30:Source\bsw\FreeRTOS\src/heap_1.c ****  * The simplest possible implementation of pvPortMalloc().  Note that this
+ARM GAS  C:\Users\Reza\AppData\Local\Temp\ccPnZxAV.s 			page 2
+
+
+  31:Source\bsw\FreeRTOS\src/heap_1.c ****  * implementation does NOT allow allocated memory to be freed again.
+  32:Source\bsw\FreeRTOS\src/heap_1.c ****  *
+  33:Source\bsw\FreeRTOS\src/heap_1.c ****  * See heap_2.c, heap_3.c and heap_4.c for alternative implementations, and the
+  34:Source\bsw\FreeRTOS\src/heap_1.c ****  * memory management pages of http://www.FreeRTOS.org for more information.
+  35:Source\bsw\FreeRTOS\src/heap_1.c ****  */
+  36:Source\bsw\FreeRTOS\src/heap_1.c **** #include <stdlib.h>
+  37:Source\bsw\FreeRTOS\src/heap_1.c **** 
+  38:Source\bsw\FreeRTOS\src/heap_1.c **** /* Defining MPU_WRAPPERS_INCLUDED_FROM_API_FILE prevents task.h from redefining
+  39:Source\bsw\FreeRTOS\src/heap_1.c **** all the API functions to use the MPU wrappers.  That should only be done when
+  40:Source\bsw\FreeRTOS\src/heap_1.c **** task.h is included from an application file. */
+  41:Source\bsw\FreeRTOS\src/heap_1.c **** #define MPU_WRAPPERS_INCLUDED_FROM_API_FILE
+  42:Source\bsw\FreeRTOS\src/heap_1.c **** 
+  43:Source\bsw\FreeRTOS\src/heap_1.c **** #include "FreeRTOS.h"
+  44:Source\bsw\FreeRTOS\src/heap_1.c **** #include "task.h"
+  45:Source\bsw\FreeRTOS\src/heap_1.c **** 
+  46:Source\bsw\FreeRTOS\src/heap_1.c **** #undef MPU_WRAPPERS_INCLUDED_FROM_API_FILE
+  47:Source\bsw\FreeRTOS\src/heap_1.c **** 
+  48:Source\bsw\FreeRTOS\src/heap_1.c **** #if( configSUPPORT_DYNAMIC_ALLOCATION == 0 )
+  49:Source\bsw\FreeRTOS\src/heap_1.c **** 	#error This file must not be used if configSUPPORT_DYNAMIC_ALLOCATION is 0
+  50:Source\bsw\FreeRTOS\src/heap_1.c **** #endif
+  51:Source\bsw\FreeRTOS\src/heap_1.c **** 
+  52:Source\bsw\FreeRTOS\src/heap_1.c **** /* A few bytes might be lost to byte aligning the heap start address. */
+  53:Source\bsw\FreeRTOS\src/heap_1.c **** #define configADJUSTED_HEAP_SIZE	( configTOTAL_HEAP_SIZE - portBYTE_ALIGNMENT )
+  54:Source\bsw\FreeRTOS\src/heap_1.c **** 
+  55:Source\bsw\FreeRTOS\src/heap_1.c **** /* Allocate the memory for the heap. */
+  56:Source\bsw\FreeRTOS\src/heap_1.c **** #if( configAPPLICATION_ALLOCATED_HEAP == 1 )
+  57:Source\bsw\FreeRTOS\src/heap_1.c **** 	/* The application writer has already defined the array used for the RTOS
+  58:Source\bsw\FreeRTOS\src/heap_1.c **** 	heap - probably so it can be placed in a special segment or address. */
+  59:Source\bsw\FreeRTOS\src/heap_1.c **** 	extern uint8_t ucHeap[ configTOTAL_HEAP_SIZE ];
+  60:Source\bsw\FreeRTOS\src/heap_1.c **** #else
+  61:Source\bsw\FreeRTOS\src/heap_1.c **** 	static uint8_t ucHeap[ configTOTAL_HEAP_SIZE ];
+  62:Source\bsw\FreeRTOS\src/heap_1.c **** #endif /* configAPPLICATION_ALLOCATED_HEAP */
+  63:Source\bsw\FreeRTOS\src/heap_1.c **** 
+  64:Source\bsw\FreeRTOS\src/heap_1.c **** /* Index into the ucHeap array. */
+  65:Source\bsw\FreeRTOS\src/heap_1.c **** static size_t xNextFreeByte = ( size_t ) 0;
+  66:Source\bsw\FreeRTOS\src/heap_1.c **** 
+  67:Source\bsw\FreeRTOS\src/heap_1.c **** /*-----------------------------------------------------------*/
+  68:Source\bsw\FreeRTOS\src/heap_1.c **** 
+  69:Source\bsw\FreeRTOS\src/heap_1.c **** void *pvPortMalloc( size_t xWantedSize )
+  70:Source\bsw\FreeRTOS\src/heap_1.c **** {
+  28              		.loc 1 70 0
+  29              		.cfi_startproc
+  30              		@ args = 0, pretend = 0, frame = 0
+  31              		@ frame_needed = 0, uses_anonymous_args = 0
+  32              	.LVL0:
+  33 0000 38B5     		push	{r3, r4, r5, lr}
+  34              		.cfi_def_cfa_offset 16
+  35              		.cfi_offset 3, -16
+  36              		.cfi_offset 4, -12
+  37              		.cfi_offset 5, -8
+  38              		.cfi_offset 14, -4
+  39 0002 0446     		mov	r4, r0
+  40              	.LVL1:
+  71:Source\bsw\FreeRTOS\src/heap_1.c **** void *pvReturn = NULL;
+  72:Source\bsw\FreeRTOS\src/heap_1.c **** static uint8_t *pucAlignedHeap = NULL;
+  73:Source\bsw\FreeRTOS\src/heap_1.c **** 
+  74:Source\bsw\FreeRTOS\src/heap_1.c **** 	/* Ensure that blocks are always aligned to the required number of bytes. */
+ARM GAS  C:\Users\Reza\AppData\Local\Temp\ccPnZxAV.s 			page 3
+
+
+  75:Source\bsw\FreeRTOS\src/heap_1.c **** 	#if( portBYTE_ALIGNMENT != 1 )
+  76:Source\bsw\FreeRTOS\src/heap_1.c **** 	{
+  77:Source\bsw\FreeRTOS\src/heap_1.c **** 		if( xWantedSize & portBYTE_ALIGNMENT_MASK )
+  41              		.loc 1 77 0
+  42 0004 10F0070F 		tst	r0, #7
+  43 0008 02D0     		beq	.L2
+  78:Source\bsw\FreeRTOS\src/heap_1.c **** 		{
+  79:Source\bsw\FreeRTOS\src/heap_1.c **** 			/* Byte alignment required. */
+  80:Source\bsw\FreeRTOS\src/heap_1.c **** 			xWantedSize += ( portBYTE_ALIGNMENT - ( xWantedSize & portBYTE_ALIGNMENT_MASK ) );
+  44              		.loc 1 80 0
+  45 000a 20F00704 		bic	r4, r0, #7
+  46 000e 0834     		adds	r4, r4, #8
+  47              	.LVL2:
+  48              	.L2:
+  81:Source\bsw\FreeRTOS\src/heap_1.c **** 		}
+  82:Source\bsw\FreeRTOS\src/heap_1.c **** 	}
+  83:Source\bsw\FreeRTOS\src/heap_1.c **** 	#endif
+  84:Source\bsw\FreeRTOS\src/heap_1.c **** 
+  85:Source\bsw\FreeRTOS\src/heap_1.c **** 	vTaskSuspendAll();
+  49              		.loc 1 85 0
+  50 0010 FFF7FEFF 		bl	vTaskSuspendAll
+  51              	.LVL3:
+  86:Source\bsw\FreeRTOS\src/heap_1.c **** 	{
+  87:Source\bsw\FreeRTOS\src/heap_1.c **** 		if( pucAlignedHeap == NULL )
+  52              		.loc 1 87 0
+  53 0014 114B     		ldr	r3, .L9
+  54 0016 1B68     		ldr	r3, [r3]
+  55 0018 2BB9     		cbnz	r3, .L3
+  88:Source\bsw\FreeRTOS\src/heap_1.c **** 		{
+  89:Source\bsw\FreeRTOS\src/heap_1.c **** 			/* Ensure the heap starts on a correctly aligned boundary. */
+  90:Source\bsw\FreeRTOS\src/heap_1.c **** 			pucAlignedHeap = ( uint8_t * ) ( ( ( portPOINTER_SIZE_TYPE ) &ucHeap[ portBYTE_ALIGNMENT ] ) & (
+  56              		.loc 1 90 0
+  57 001a 104A     		ldr	r2, .L9
+  58 001c 02F10C03 		add	r3, r2, #12
+  59 0020 23F00703 		bic	r3, r3, #7
+  60 0024 1360     		str	r3, [r2]
+  61              	.L3:
+  91:Source\bsw\FreeRTOS\src/heap_1.c **** 		}
+  92:Source\bsw\FreeRTOS\src/heap_1.c **** 
+  93:Source\bsw\FreeRTOS\src/heap_1.c **** 		/* Check there is enough room left for the allocation. */
+  94:Source\bsw\FreeRTOS\src/heap_1.c **** 		if( ( ( xNextFreeByte + xWantedSize ) < configADJUSTED_HEAP_SIZE ) &&
+  62              		.loc 1 94 0
+  63 0026 0E4B     		ldr	r3, .L9+4
+  64 0028 D3F83C39 		ldr	r3, [r3, #2364]
+  65 002c 1C44     		add	r4, r4, r3
+  66              	.LVL4:
+  67 002e 47F6F772 		movw	r2, #32759
+  68 0032 9442     		cmp	r4, r2
+  69 0034 08D8     		bhi	.L6
+  70              		.loc 1 94 0 is_stmt 0 discriminator 1
+  71 0036 A342     		cmp	r3, r4
+  72 0038 08D2     		bcs	.L7
+  95:Source\bsw\FreeRTOS\src/heap_1.c **** 			( ( xNextFreeByte + xWantedSize ) > xNextFreeByte )	)/* Check for overflow. */
+  96:Source\bsw\FreeRTOS\src/heap_1.c **** 		{
+  97:Source\bsw\FreeRTOS\src/heap_1.c **** 			/* Return the next free byte then increment the index past this
+  98:Source\bsw\FreeRTOS\src/heap_1.c **** 			block. */
+  99:Source\bsw\FreeRTOS\src/heap_1.c **** 			pvReturn = pucAlignedHeap + xNextFreeByte;
+ARM GAS  C:\Users\Reza\AppData\Local\Temp\ccPnZxAV.s 			page 4
+
+
+  73              		.loc 1 99 0 is_stmt 1
+  74 003a 084A     		ldr	r2, .L9
+  75 003c 1568     		ldr	r5, [r2]
+  76 003e 1D44     		add	r5, r5, r3
+  77              	.LVL5:
+ 100:Source\bsw\FreeRTOS\src/heap_1.c **** 			xNextFreeByte += xWantedSize;
+  78              		.loc 1 100 0
+  79 0040 074B     		ldr	r3, .L9+4
+  80 0042 C3F83C49 		str	r4, [r3, #2364]
+  81 0046 02E0     		b	.L4
+  82              	.LVL6:
+  83              	.L6:
+  71:Source\bsw\FreeRTOS\src/heap_1.c **** static uint8_t *pucAlignedHeap = NULL;
+  84              		.loc 1 71 0
+  85 0048 0025     		movs	r5, #0
+  86 004a 00E0     		b	.L4
+  87              	.L7:
+  88 004c 0025     		movs	r5, #0
+  89              	.LVL7:
+  90              	.L4:
+ 101:Source\bsw\FreeRTOS\src/heap_1.c **** 		}
+ 102:Source\bsw\FreeRTOS\src/heap_1.c **** 
+ 103:Source\bsw\FreeRTOS\src/heap_1.c **** 		traceMALLOC( pvReturn, xWantedSize );
+ 104:Source\bsw\FreeRTOS\src/heap_1.c **** 	}
+ 105:Source\bsw\FreeRTOS\src/heap_1.c **** 	( void ) xTaskResumeAll();
+  91              		.loc 1 105 0
+  92 004e FFF7FEFF 		bl	xTaskResumeAll
+  93              	.LVL8:
+ 106:Source\bsw\FreeRTOS\src/heap_1.c **** 
+ 107:Source\bsw\FreeRTOS\src/heap_1.c **** 	#if( configUSE_MALLOC_FAILED_HOOK == 1 )
+ 108:Source\bsw\FreeRTOS\src/heap_1.c **** 	{
+ 109:Source\bsw\FreeRTOS\src/heap_1.c **** 		if( pvReturn == NULL )
+  94              		.loc 1 109 0
+  95 0052 0DB9     		cbnz	r5, .L5
+  96              	.LBB2:
+ 110:Source\bsw\FreeRTOS\src/heap_1.c **** 		{
+ 111:Source\bsw\FreeRTOS\src/heap_1.c **** 			extern void vApplicationMallocFailedHook( void );
+ 112:Source\bsw\FreeRTOS\src/heap_1.c **** 			vApplicationMallocFailedHook();
+  97              		.loc 1 112 0
+  98 0054 FFF7FEFF 		bl	vApplicationMallocFailedHook
+  99              	.LVL9:
+ 100              	.L5:
+ 101              	.LBE2:
+ 113:Source\bsw\FreeRTOS\src/heap_1.c **** 		}
+ 114:Source\bsw\FreeRTOS\src/heap_1.c **** 	}
+ 115:Source\bsw\FreeRTOS\src/heap_1.c **** 	#endif
+ 116:Source\bsw\FreeRTOS\src/heap_1.c **** 
+ 117:Source\bsw\FreeRTOS\src/heap_1.c **** 	return pvReturn;
+ 118:Source\bsw\FreeRTOS\src/heap_1.c **** }
+ 102              		.loc 1 118 0
+ 103 0058 2846     		mov	r0, r5
+ 104 005a 38BD     		pop	{r3, r4, r5, pc}
+ 105              	.LVL10:
+ 106              	.L10:
+ 107              		.align	2
+ 108              	.L9:
+ 109 005c 00000000 		.word	.LANCHOR0
+ARM GAS  C:\Users\Reza\AppData\Local\Temp\ccPnZxAV.s 			page 5
+
+
+ 110 0060 C8760000 		.word	.LANCHOR1
+ 111              		.cfi_endproc
+ 112              	.LFE68:
+ 113              		.size	pvPortMalloc, .-pvPortMalloc
+ 114              		.section	.text.vPortFree,"ax",%progbits
+ 115              		.align	2
+ 116              		.global	vPortFree
+ 117              		.thumb
+ 118              		.thumb_func
+ 119              		.type	vPortFree, %function
+ 120              	vPortFree:
+ 121              	.LFB69:
+ 119:Source\bsw\FreeRTOS\src/heap_1.c **** /*-----------------------------------------------------------*/
+ 120:Source\bsw\FreeRTOS\src/heap_1.c **** 
+ 121:Source\bsw\FreeRTOS\src/heap_1.c **** void vPortFree( void *pv )
+ 122:Source\bsw\FreeRTOS\src/heap_1.c **** {
+ 122              		.loc 1 122 0
+ 123              		.cfi_startproc
+ 124              		@ args = 0, pretend = 0, frame = 0
+ 125              		@ frame_needed = 0, uses_anonymous_args = 0
+ 126              		@ link register save eliminated.
+ 127              	.LVL11:
+ 128 0000 7047     		bx	lr
+ 129              		.cfi_endproc
+ 130              	.LFE69:
+ 131              		.size	vPortFree, .-vPortFree
+ 132 0002 00BF     		.section	.text.vPortInitialiseBlocks,"ax",%progbits
+ 133              		.align	2
+ 134              		.global	vPortInitialiseBlocks
+ 135              		.thumb
+ 136              		.thumb_func
+ 137              		.type	vPortInitialiseBlocks, %function
+ 138              	vPortInitialiseBlocks:
+ 139              	.LFB70:
+ 123:Source\bsw\FreeRTOS\src/heap_1.c **** 	/* Memory cannot be freed using this scheme.  See heap_2.c, heap_3.c and
+ 124:Source\bsw\FreeRTOS\src/heap_1.c **** 	heap_4.c for alternative implementations, and the memory management pages of
+ 125:Source\bsw\FreeRTOS\src/heap_1.c **** 	http://www.FreeRTOS.org for more information. */
+ 126:Source\bsw\FreeRTOS\src/heap_1.c **** 	( void ) pv;
+ 127:Source\bsw\FreeRTOS\src/heap_1.c **** 
+ 128:Source\bsw\FreeRTOS\src/heap_1.c **** 	/* Force an assert as it is invalid to call this function. */
+ 129:Source\bsw\FreeRTOS\src/heap_1.c **** 	configASSERT( pv == NULL );
+ 130:Source\bsw\FreeRTOS\src/heap_1.c **** }
+ 131:Source\bsw\FreeRTOS\src/heap_1.c **** /*-----------------------------------------------------------*/
+ 132:Source\bsw\FreeRTOS\src/heap_1.c **** 
+ 133:Source\bsw\FreeRTOS\src/heap_1.c **** void vPortInitialiseBlocks( void )
+ 134:Source\bsw\FreeRTOS\src/heap_1.c **** {
+ 140              		.loc 1 134 0
+ 141              		.cfi_startproc
+ 142              		@ args = 0, pretend = 0, frame = 0
+ 143              		@ frame_needed = 0, uses_anonymous_args = 0
+ 144              		@ link register save eliminated.
+ 135:Source\bsw\FreeRTOS\src/heap_1.c **** 	/* Only required when static memory is not cleared. */
+ 136:Source\bsw\FreeRTOS\src/heap_1.c **** 	xNextFreeByte = ( size_t ) 0;
+ 145              		.loc 1 136 0
+ 146 0000 0022     		movs	r2, #0
+ 147 0002 024B     		ldr	r3, .L13
+ 148 0004 C3F83C29 		str	r2, [r3, #2364]
+ARM GAS  C:\Users\Reza\AppData\Local\Temp\ccPnZxAV.s 			page 6
+
+
+ 149 0008 7047     		bx	lr
+ 150              	.L14:
+ 151 000a 00BF     		.align	2
+ 152              	.L13:
+ 153 000c C8760000 		.word	.LANCHOR1
+ 154              		.cfi_endproc
+ 155              	.LFE70:
+ 156              		.size	vPortInitialiseBlocks, .-vPortInitialiseBlocks
+ 157              		.section	.text.xPortGetFreeHeapSize,"ax",%progbits
+ 158              		.align	2
+ 159              		.global	xPortGetFreeHeapSize
+ 160              		.thumb
+ 161              		.thumb_func
+ 162              		.type	xPortGetFreeHeapSize, %function
+ 163              	xPortGetFreeHeapSize:
+ 164              	.LFB71:
+ 137:Source\bsw\FreeRTOS\src/heap_1.c **** }
+ 138:Source\bsw\FreeRTOS\src/heap_1.c **** /*-----------------------------------------------------------*/
+ 139:Source\bsw\FreeRTOS\src/heap_1.c **** 
+ 140:Source\bsw\FreeRTOS\src/heap_1.c **** size_t xPortGetFreeHeapSize( void )
+ 141:Source\bsw\FreeRTOS\src/heap_1.c **** {
+ 165              		.loc 1 141 0
+ 166              		.cfi_startproc
+ 167              		@ args = 0, pretend = 0, frame = 0
+ 168              		@ frame_needed = 0, uses_anonymous_args = 0
+ 169              		@ link register save eliminated.
+ 142:Source\bsw\FreeRTOS\src/heap_1.c **** 	return ( configADJUSTED_HEAP_SIZE - xNextFreeByte );
+ 170              		.loc 1 142 0
+ 171 0000 034B     		ldr	r3, .L16
+ 172 0002 D3F83C09 		ldr	r0, [r3, #2364]
+ 143:Source\bsw\FreeRTOS\src/heap_1.c **** }
+ 173              		.loc 1 143 0
+ 174 0006 C0F5FF40 		rsb	r0, r0, #32640
+ 175 000a 7830     		adds	r0, r0, #120
+ 176 000c 7047     		bx	lr
+ 177              	.L17:
+ 178 000e 00BF     		.align	2
+ 179              	.L16:
+ 180 0010 C8760000 		.word	.LANCHOR1
+ 181              		.cfi_endproc
+ 182              	.LFE71:
+ 183              		.size	xPortGetFreeHeapSize, .-xPortGetFreeHeapSize
+ 184              		.bss
+ 185              		.align	2
+ 186              		.set	.LANCHOR0,. + 0
+ 187              		.set	.LANCHOR1,. + 30408
+ 188              		.type	pucAlignedHeap.6539, %object
+ 189              		.size	pucAlignedHeap.6539, 4
+ 190              	pucAlignedHeap.6539:
+ 191 0000 00000000 		.space	4
+ 192              		.type	ucHeap, %object
+ 193              		.size	ucHeap, 32768
+ 194              	ucHeap:
+ 195 0004 00000000 		.space	32768
+ 195      00000000 
+ 195      00000000 
+ 195      00000000 
+ARM GAS  C:\Users\Reza\AppData\Local\Temp\ccPnZxAV.s 			page 7
+
+
+ 195      00000000 
+ 196              		.type	xNextFreeByte, %object
+ 197              		.size	xNextFreeByte, 4
+ 198              	xNextFreeByte:
+ 199 8004 00000000 		.space	4
+ 200              		.text
+ 201              	.Letext0:
+ 202              		.file 2 "c:\\program files (x86)\\cypress\\psoc creator\\4.2\\psoc creator\\import\\gnu\\arm\\5.4.
+ 203              		.file 3 "c:\\program files (x86)\\cypress\\psoc creator\\4.2\\psoc creator\\import\\gnu\\arm\\5.4.
+ 204              		.file 4 "c:\\program files (x86)\\cypress\\psoc creator\\4.2\\psoc creator\\import\\gnu\\arm\\5.4.
+ 205              		.file 5 ".\\Source\\bsw\\FreeRTOS\\include/task.h"
+ 206              		.file 6 "Generated_Source\\PSoC5/core_cm3.h"
+ 207              		.section	.debug_info,"",%progbits
+ 208              	.Ldebug_info0:
+ 209 0000 08020000 		.4byte	0x208
+ 210 0004 0400     		.2byte	0x4
+ 211 0006 00000000 		.4byte	.Ldebug_abbrev0
+ 212 000a 04       		.byte	0x4
+ 213 000b 01       		.uleb128 0x1
+ 214 000c 84000000 		.4byte	.LASF29
+ 215 0010 0C       		.byte	0xc
+ 216 0011 4F000000 		.4byte	.LASF30
+ 217 0015 F5010000 		.4byte	.LASF31
+ 218 0019 00000000 		.4byte	.Ldebug_ranges0+0
+ 219 001d 00000000 		.4byte	0
+ 220 0021 00000000 		.4byte	.Ldebug_line0
+ 221 0025 02       		.uleb128 0x2
+ 222 0026 0A000000 		.4byte	.LASF4
+ 223 002a 02       		.byte	0x2
+ 224 002b D8       		.byte	0xd8
+ 225 002c 30000000 		.4byte	0x30
+ 226 0030 03       		.uleb128 0x3
+ 227 0031 04       		.byte	0x4
+ 228 0032 07       		.byte	0x7
+ 229 0033 7C010000 		.4byte	.LASF0
+ 230 0037 04       		.uleb128 0x4
+ 231 0038 04       		.byte	0x4
+ 232 0039 05       		.byte	0x5
+ 233 003a 696E7400 		.ascii	"int\000"
+ 234 003e 03       		.uleb128 0x3
+ 235 003f 08       		.byte	0x8
+ 236 0040 05       		.byte	0x5
+ 237 0041 D6010000 		.4byte	.LASF1
+ 238 0045 03       		.uleb128 0x3
+ 239 0046 08       		.byte	0x8
+ 240 0047 04       		.byte	0x4
+ 241 0048 81020000 		.4byte	.LASF2
+ 242 004c 03       		.uleb128 0x3
+ 243 004d 01       		.byte	0x1
+ 244 004e 06       		.byte	0x6
+ 245 004f 8D020000 		.4byte	.LASF3
+ 246 0053 02       		.uleb128 0x2
+ 247 0054 00000000 		.4byte	.LASF5
+ 248 0058 03       		.byte	0x3
+ 249 0059 1D       		.byte	0x1d
+ 250 005a 5E000000 		.4byte	0x5e
+ 251 005e 03       		.uleb128 0x3
+ARM GAS  C:\Users\Reza\AppData\Local\Temp\ccPnZxAV.s 			page 8
+
+
+ 252 005f 01       		.byte	0x1
+ 253 0060 08       		.byte	0x8
+ 254 0061 76000000 		.4byte	.LASF6
+ 255 0065 03       		.uleb128 0x3
+ 256 0066 02       		.byte	0x2
+ 257 0067 05       		.byte	0x5
+ 258 0068 5B020000 		.4byte	.LASF7
+ 259 006c 03       		.uleb128 0x3
+ 260 006d 02       		.byte	0x2
+ 261 006e 07       		.byte	0x7
+ 262 006f 24010000 		.4byte	.LASF8
+ 263 0073 02       		.uleb128 0x2
+ 264 0074 21000000 		.4byte	.LASF9
+ 265 0078 03       		.byte	0x3
+ 266 0079 3F       		.byte	0x3f
+ 267 007a 7E000000 		.4byte	0x7e
+ 268 007e 03       		.uleb128 0x3
+ 269 007f 04       		.byte	0x4
+ 270 0080 05       		.byte	0x5
+ 271 0081 78020000 		.4byte	.LASF10
+ 272 0085 02       		.uleb128 0x2
+ 273 0086 4B010000 		.4byte	.LASF11
+ 274 008a 03       		.byte	0x3
+ 275 008b 41       		.byte	0x41
+ 276 008c 90000000 		.4byte	0x90
+ 277 0090 03       		.uleb128 0x3
+ 278 0091 04       		.byte	0x4
+ 279 0092 07       		.byte	0x7
+ 280 0093 12010000 		.4byte	.LASF12
+ 281 0097 03       		.uleb128 0x3
+ 282 0098 08       		.byte	0x8
+ 283 0099 07       		.byte	0x7
+ 284 009a 89010000 		.4byte	.LASF13
+ 285 009e 03       		.uleb128 0x3
+ 286 009f 04       		.byte	0x4
+ 287 00a0 07       		.byte	0x7
+ 288 00a1 CD010000 		.4byte	.LASF14
+ 289 00a5 05       		.uleb128 0x5
+ 290 00a6 04       		.byte	0x4
+ 291 00a7 03       		.uleb128 0x3
+ 292 00a8 01       		.byte	0x1
+ 293 00a9 08       		.byte	0x8
+ 294 00aa F0010000 		.4byte	.LASF15
+ 295 00ae 02       		.uleb128 0x2
+ 296 00af A0010000 		.4byte	.LASF16
+ 297 00b3 04       		.byte	0x4
+ 298 00b4 18       		.byte	0x18
+ 299 00b5 53000000 		.4byte	0x53
+ 300 00b9 02       		.uleb128 0x2
+ 301 00ba C5010000 		.4byte	.LASF17
+ 302 00be 04       		.byte	0x4
+ 303 00bf 2C       		.byte	0x2c
+ 304 00c0 73000000 		.4byte	0x73
+ 305 00c4 02       		.uleb128 0x2
+ 306 00c5 6F020000 		.4byte	.LASF18
+ 307 00c9 04       		.byte	0x4
+ 308 00ca 30       		.byte	0x30
+ARM GAS  C:\Users\Reza\AppData\Local\Temp\ccPnZxAV.s 			page 9
+
+
+ 309 00cb 85000000 		.4byte	0x85
+ 310 00cf 03       		.uleb128 0x3
+ 311 00d0 04       		.byte	0x4
+ 312 00d1 04       		.byte	0x4
+ 313 00d2 70000000 		.4byte	.LASF19
+ 314 00d6 03       		.uleb128 0x3
+ 315 00d7 08       		.byte	0x8
+ 316 00d8 04       		.byte	0x4
+ 317 00d9 44010000 		.4byte	.LASF20
+ 318 00dd 06       		.uleb128 0x6
+ 319 00de 04       		.byte	0x4
+ 320 00df AE000000 		.4byte	0xae
+ 321 00e3 07       		.uleb128 0x7
+ 322 00e4 4E020000 		.4byte	.LASF32
+ 323 00e8 01       		.byte	0x1
+ 324 00e9 45       		.byte	0x45
+ 325 00ea A5000000 		.4byte	0xa5
+ 326 00ee 00000000 		.4byte	.LFB68
+ 327 00f2 64000000 		.4byte	.LFE68-.LFB68
+ 328 00f6 01       		.uleb128 0x1
+ 329 00f7 9C       		.byte	0x9c
+ 330 00f8 5C010000 		.4byte	0x15c
+ 331 00fc 08       		.uleb128 0x8
+ 332 00fd E4010000 		.4byte	.LASF23
+ 333 0101 01       		.byte	0x1
+ 334 0102 45       		.byte	0x45
+ 335 0103 25000000 		.4byte	0x25
+ 336 0107 00000000 		.4byte	.LLST0
+ 337 010b 09       		.uleb128 0x9
+ 338 010c 56010000 		.4byte	.LASF21
+ 339 0110 01       		.byte	0x1
+ 340 0111 47       		.byte	0x47
+ 341 0112 A5000000 		.4byte	0xa5
+ 342 0116 1E000000 		.4byte	.LLST1
+ 343 011a 0A       		.uleb128 0xa
+ 344 011b 3F020000 		.4byte	.LASF22
+ 345 011f 01       		.byte	0x1
+ 346 0120 48       		.byte	0x48
+ 347 0121 DD000000 		.4byte	0xdd
+ 348 0125 05       		.uleb128 0x5
+ 349 0126 03       		.byte	0x3
+ 350 0127 00000000 		.4byte	pucAlignedHeap.6539
+ 351 012b 0B       		.uleb128 0xb
+ 352 012c 54000000 		.4byte	.LBB2
+ 353 0130 04000000 		.4byte	.LBE2-.LBB2
+ 354 0134 49010000 		.4byte	0x149
+ 355 0138 0C       		.uleb128 0xc
+ 356 0139 A8010000 		.4byte	.LASF26
+ 357 013d 01       		.byte	0x1
+ 358 013e 6F       		.byte	0x6f
+ 359 013f 0D       		.uleb128 0xd
+ 360 0140 58000000 		.4byte	.LVL9
+ 361 0144 E8010000 		.4byte	0x1e8
+ 362 0148 00       		.byte	0
+ 363 0149 0D       		.uleb128 0xd
+ 364 014a 14000000 		.4byte	.LVL3
+ 365 014e F3010000 		.4byte	0x1f3
+ARM GAS  C:\Users\Reza\AppData\Local\Temp\ccPnZxAV.s 			page 10
+
+
+ 366 0152 0D       		.uleb128 0xd
+ 367 0153 52000000 		.4byte	.LVL8
+ 368 0157 FF010000 		.4byte	0x1ff
+ 369 015b 00       		.byte	0
+ 370 015c 0E       		.uleb128 0xe
+ 371 015d 65020000 		.4byte	.LASF33
+ 372 0161 01       		.byte	0x1
+ 373 0162 79       		.byte	0x79
+ 374 0163 00000000 		.4byte	.LFB69
+ 375 0167 02000000 		.4byte	.LFE69-.LFB69
+ 376 016b 01       		.uleb128 0x1
+ 377 016c 9C       		.byte	0x9c
+ 378 016d 7E010000 		.4byte	0x17e
+ 379 0171 0F       		.uleb128 0xf
+ 380 0172 707600   		.ascii	"pv\000"
+ 381 0175 01       		.byte	0x1
+ 382 0176 79       		.byte	0x79
+ 383 0177 A5000000 		.4byte	0xa5
+ 384 017b 01       		.uleb128 0x1
+ 385 017c 50       		.byte	0x50
+ 386 017d 00       		.byte	0
+ 387 017e 10       		.uleb128 0x10
+ 388 017f 66010000 		.4byte	.LASF34
+ 389 0183 01       		.byte	0x1
+ 390 0184 85       		.byte	0x85
+ 391 0185 00000000 		.4byte	.LFB70
+ 392 0189 10000000 		.4byte	.LFE70-.LFB70
+ 393 018d 01       		.uleb128 0x1
+ 394 018e 9C       		.byte	0x9c
+ 395 018f 11       		.uleb128 0x11
+ 396 0190 2B000000 		.4byte	.LASF35
+ 397 0194 01       		.byte	0x1
+ 398 0195 8C       		.byte	0x8c
+ 399 0196 25000000 		.4byte	0x25
+ 400 019a 00000000 		.4byte	.LFB71
+ 401 019e 14000000 		.4byte	.LFE71-.LFB71
+ 402 01a2 01       		.uleb128 0x1
+ 403 01a3 9C       		.byte	0x9c
+ 404 01a4 12       		.uleb128 0x12
+ 405 01a5 AE000000 		.4byte	0xae
+ 406 01a9 B5010000 		.4byte	0x1b5
+ 407 01ad 13       		.uleb128 0x13
+ 408 01ae 9E000000 		.4byte	0x9e
+ 409 01b2 FF7F     		.2byte	0x7fff
+ 410 01b4 00       		.byte	0
+ 411 01b5 0A       		.uleb128 0xa
+ 412 01b6 5F010000 		.4byte	.LASF24
+ 413 01ba 01       		.byte	0x1
+ 414 01bb 3D       		.byte	0x3d
+ 415 01bc A4010000 		.4byte	0x1a4
+ 416 01c0 05       		.uleb128 0x5
+ 417 01c1 03       		.byte	0x3
+ 418 01c2 04000000 		.4byte	ucHeap
+ 419 01c6 0A       		.uleb128 0xa
+ 420 01c7 99020000 		.4byte	.LASF25
+ 421 01cb 01       		.byte	0x1
+ 422 01cc 41       		.byte	0x41
+ARM GAS  C:\Users\Reza\AppData\Local\Temp\ccPnZxAV.s 			page 11
+
+
+ 423 01cd 25000000 		.4byte	0x25
+ 424 01d1 05       		.uleb128 0x5
+ 425 01d2 03       		.byte	0x3
+ 426 01d3 04800000 		.4byte	xNextFreeByte
+ 427 01d7 14       		.uleb128 0x14
+ 428 01d8 37010000 		.4byte	.LASF36
+ 429 01dc 06       		.byte	0x6
+ 430 01dd 1207     		.2byte	0x712
+ 431 01df E3010000 		.4byte	0x1e3
+ 432 01e3 15       		.uleb128 0x15
+ 433 01e4 B9000000 		.4byte	0xb9
+ 434 01e8 16       		.uleb128 0x16
+ 435 01e9 A8010000 		.4byte	.LASF26
+ 436 01ed A8010000 		.4byte	.LASF26
+ 437 01f1 01       		.byte	0x1
+ 438 01f2 6F       		.byte	0x6f
+ 439 01f3 17       		.uleb128 0x17
+ 440 01f4 11000000 		.4byte	.LASF27
+ 441 01f8 11000000 		.4byte	.LASF27
+ 442 01fc 05       		.byte	0x5
+ 443 01fd 0705     		.2byte	0x507
+ 444 01ff 17       		.uleb128 0x17
+ 445 0200 40000000 		.4byte	.LASF28
+ 446 0204 40000000 		.4byte	.LASF28
+ 447 0208 05       		.byte	0x5
+ 448 0209 3D05     		.2byte	0x53d
+ 449 020b 00       		.byte	0
+ 450              		.section	.debug_abbrev,"",%progbits
+ 451              	.Ldebug_abbrev0:
+ 452 0000 01       		.uleb128 0x1
+ 453 0001 11       		.uleb128 0x11
+ 454 0002 01       		.byte	0x1
+ 455 0003 25       		.uleb128 0x25
+ 456 0004 0E       		.uleb128 0xe
+ 457 0005 13       		.uleb128 0x13
+ 458 0006 0B       		.uleb128 0xb
+ 459 0007 03       		.uleb128 0x3
+ 460 0008 0E       		.uleb128 0xe
+ 461 0009 1B       		.uleb128 0x1b
+ 462 000a 0E       		.uleb128 0xe
+ 463 000b 55       		.uleb128 0x55
+ 464 000c 17       		.uleb128 0x17
+ 465 000d 11       		.uleb128 0x11
+ 466 000e 01       		.uleb128 0x1
+ 467 000f 10       		.uleb128 0x10
+ 468 0010 17       		.uleb128 0x17
+ 469 0011 00       		.byte	0
+ 470 0012 00       		.byte	0
+ 471 0013 02       		.uleb128 0x2
+ 472 0014 16       		.uleb128 0x16
+ 473 0015 00       		.byte	0
+ 474 0016 03       		.uleb128 0x3
+ 475 0017 0E       		.uleb128 0xe
+ 476 0018 3A       		.uleb128 0x3a
+ 477 0019 0B       		.uleb128 0xb
+ 478 001a 3B       		.uleb128 0x3b
+ 479 001b 0B       		.uleb128 0xb
+ARM GAS  C:\Users\Reza\AppData\Local\Temp\ccPnZxAV.s 			page 12
+
+
+ 480 001c 49       		.uleb128 0x49
+ 481 001d 13       		.uleb128 0x13
+ 482 001e 00       		.byte	0
+ 483 001f 00       		.byte	0
+ 484 0020 03       		.uleb128 0x3
+ 485 0021 24       		.uleb128 0x24
+ 486 0022 00       		.byte	0
+ 487 0023 0B       		.uleb128 0xb
+ 488 0024 0B       		.uleb128 0xb
+ 489 0025 3E       		.uleb128 0x3e
+ 490 0026 0B       		.uleb128 0xb
+ 491 0027 03       		.uleb128 0x3
+ 492 0028 0E       		.uleb128 0xe
+ 493 0029 00       		.byte	0
+ 494 002a 00       		.byte	0
+ 495 002b 04       		.uleb128 0x4
+ 496 002c 24       		.uleb128 0x24
+ 497 002d 00       		.byte	0
+ 498 002e 0B       		.uleb128 0xb
+ 499 002f 0B       		.uleb128 0xb
+ 500 0030 3E       		.uleb128 0x3e
+ 501 0031 0B       		.uleb128 0xb
+ 502 0032 03       		.uleb128 0x3
+ 503 0033 08       		.uleb128 0x8
+ 504 0034 00       		.byte	0
+ 505 0035 00       		.byte	0
+ 506 0036 05       		.uleb128 0x5
+ 507 0037 0F       		.uleb128 0xf
+ 508 0038 00       		.byte	0
+ 509 0039 0B       		.uleb128 0xb
+ 510 003a 0B       		.uleb128 0xb
+ 511 003b 00       		.byte	0
+ 512 003c 00       		.byte	0
+ 513 003d 06       		.uleb128 0x6
+ 514 003e 0F       		.uleb128 0xf
+ 515 003f 00       		.byte	0
+ 516 0040 0B       		.uleb128 0xb
+ 517 0041 0B       		.uleb128 0xb
+ 518 0042 49       		.uleb128 0x49
+ 519 0043 13       		.uleb128 0x13
+ 520 0044 00       		.byte	0
+ 521 0045 00       		.byte	0
+ 522 0046 07       		.uleb128 0x7
+ 523 0047 2E       		.uleb128 0x2e
+ 524 0048 01       		.byte	0x1
+ 525 0049 3F       		.uleb128 0x3f
+ 526 004a 19       		.uleb128 0x19
+ 527 004b 03       		.uleb128 0x3
+ 528 004c 0E       		.uleb128 0xe
+ 529 004d 3A       		.uleb128 0x3a
+ 530 004e 0B       		.uleb128 0xb
+ 531 004f 3B       		.uleb128 0x3b
+ 532 0050 0B       		.uleb128 0xb
+ 533 0051 27       		.uleb128 0x27
+ 534 0052 19       		.uleb128 0x19
+ 535 0053 49       		.uleb128 0x49
+ 536 0054 13       		.uleb128 0x13
+ARM GAS  C:\Users\Reza\AppData\Local\Temp\ccPnZxAV.s 			page 13
+
+
+ 537 0055 11       		.uleb128 0x11
+ 538 0056 01       		.uleb128 0x1
+ 539 0057 12       		.uleb128 0x12
+ 540 0058 06       		.uleb128 0x6
+ 541 0059 40       		.uleb128 0x40
+ 542 005a 18       		.uleb128 0x18
+ 543 005b 9742     		.uleb128 0x2117
+ 544 005d 19       		.uleb128 0x19
+ 545 005e 01       		.uleb128 0x1
+ 546 005f 13       		.uleb128 0x13
+ 547 0060 00       		.byte	0
+ 548 0061 00       		.byte	0
+ 549 0062 08       		.uleb128 0x8
+ 550 0063 05       		.uleb128 0x5
+ 551 0064 00       		.byte	0
+ 552 0065 03       		.uleb128 0x3
+ 553 0066 0E       		.uleb128 0xe
+ 554 0067 3A       		.uleb128 0x3a
+ 555 0068 0B       		.uleb128 0xb
+ 556 0069 3B       		.uleb128 0x3b
+ 557 006a 0B       		.uleb128 0xb
+ 558 006b 49       		.uleb128 0x49
+ 559 006c 13       		.uleb128 0x13
+ 560 006d 02       		.uleb128 0x2
+ 561 006e 17       		.uleb128 0x17
+ 562 006f 00       		.byte	0
+ 563 0070 00       		.byte	0
+ 564 0071 09       		.uleb128 0x9
+ 565 0072 34       		.uleb128 0x34
+ 566 0073 00       		.byte	0
+ 567 0074 03       		.uleb128 0x3
+ 568 0075 0E       		.uleb128 0xe
+ 569 0076 3A       		.uleb128 0x3a
+ 570 0077 0B       		.uleb128 0xb
+ 571 0078 3B       		.uleb128 0x3b
+ 572 0079 0B       		.uleb128 0xb
+ 573 007a 49       		.uleb128 0x49
+ 574 007b 13       		.uleb128 0x13
+ 575 007c 02       		.uleb128 0x2
+ 576 007d 17       		.uleb128 0x17
+ 577 007e 00       		.byte	0
+ 578 007f 00       		.byte	0
+ 579 0080 0A       		.uleb128 0xa
+ 580 0081 34       		.uleb128 0x34
+ 581 0082 00       		.byte	0
+ 582 0083 03       		.uleb128 0x3
+ 583 0084 0E       		.uleb128 0xe
+ 584 0085 3A       		.uleb128 0x3a
+ 585 0086 0B       		.uleb128 0xb
+ 586 0087 3B       		.uleb128 0x3b
+ 587 0088 0B       		.uleb128 0xb
+ 588 0089 49       		.uleb128 0x49
+ 589 008a 13       		.uleb128 0x13
+ 590 008b 02       		.uleb128 0x2
+ 591 008c 18       		.uleb128 0x18
+ 592 008d 00       		.byte	0
+ 593 008e 00       		.byte	0
+ARM GAS  C:\Users\Reza\AppData\Local\Temp\ccPnZxAV.s 			page 14
+
+
+ 594 008f 0B       		.uleb128 0xb
+ 595 0090 0B       		.uleb128 0xb
+ 596 0091 01       		.byte	0x1
+ 597 0092 11       		.uleb128 0x11
+ 598 0093 01       		.uleb128 0x1
+ 599 0094 12       		.uleb128 0x12
+ 600 0095 06       		.uleb128 0x6
+ 601 0096 01       		.uleb128 0x1
+ 602 0097 13       		.uleb128 0x13
+ 603 0098 00       		.byte	0
+ 604 0099 00       		.byte	0
+ 605 009a 0C       		.uleb128 0xc
+ 606 009b 2E       		.uleb128 0x2e
+ 607 009c 00       		.byte	0
+ 608 009d 3F       		.uleb128 0x3f
+ 609 009e 19       		.uleb128 0x19
+ 610 009f 03       		.uleb128 0x3
+ 611 00a0 0E       		.uleb128 0xe
+ 612 00a1 3A       		.uleb128 0x3a
+ 613 00a2 0B       		.uleb128 0xb
+ 614 00a3 3B       		.uleb128 0x3b
+ 615 00a4 0B       		.uleb128 0xb
+ 616 00a5 27       		.uleb128 0x27
+ 617 00a6 19       		.uleb128 0x19
+ 618 00a7 3C       		.uleb128 0x3c
+ 619 00a8 19       		.uleb128 0x19
+ 620 00a9 00       		.byte	0
+ 621 00aa 00       		.byte	0
+ 622 00ab 0D       		.uleb128 0xd
+ 623 00ac 898201   		.uleb128 0x4109
+ 624 00af 00       		.byte	0
+ 625 00b0 11       		.uleb128 0x11
+ 626 00b1 01       		.uleb128 0x1
+ 627 00b2 31       		.uleb128 0x31
+ 628 00b3 13       		.uleb128 0x13
+ 629 00b4 00       		.byte	0
+ 630 00b5 00       		.byte	0
+ 631 00b6 0E       		.uleb128 0xe
+ 632 00b7 2E       		.uleb128 0x2e
+ 633 00b8 01       		.byte	0x1
+ 634 00b9 3F       		.uleb128 0x3f
+ 635 00ba 19       		.uleb128 0x19
+ 636 00bb 03       		.uleb128 0x3
+ 637 00bc 0E       		.uleb128 0xe
+ 638 00bd 3A       		.uleb128 0x3a
+ 639 00be 0B       		.uleb128 0xb
+ 640 00bf 3B       		.uleb128 0x3b
+ 641 00c0 0B       		.uleb128 0xb
+ 642 00c1 27       		.uleb128 0x27
+ 643 00c2 19       		.uleb128 0x19
+ 644 00c3 11       		.uleb128 0x11
+ 645 00c4 01       		.uleb128 0x1
+ 646 00c5 12       		.uleb128 0x12
+ 647 00c6 06       		.uleb128 0x6
+ 648 00c7 40       		.uleb128 0x40
+ 649 00c8 18       		.uleb128 0x18
+ 650 00c9 9742     		.uleb128 0x2117
+ARM GAS  C:\Users\Reza\AppData\Local\Temp\ccPnZxAV.s 			page 15
+
+
+ 651 00cb 19       		.uleb128 0x19
+ 652 00cc 01       		.uleb128 0x1
+ 653 00cd 13       		.uleb128 0x13
+ 654 00ce 00       		.byte	0
+ 655 00cf 00       		.byte	0
+ 656 00d0 0F       		.uleb128 0xf
+ 657 00d1 05       		.uleb128 0x5
+ 658 00d2 00       		.byte	0
+ 659 00d3 03       		.uleb128 0x3
+ 660 00d4 08       		.uleb128 0x8
+ 661 00d5 3A       		.uleb128 0x3a
+ 662 00d6 0B       		.uleb128 0xb
+ 663 00d7 3B       		.uleb128 0x3b
+ 664 00d8 0B       		.uleb128 0xb
+ 665 00d9 49       		.uleb128 0x49
+ 666 00da 13       		.uleb128 0x13
+ 667 00db 02       		.uleb128 0x2
+ 668 00dc 18       		.uleb128 0x18
+ 669 00dd 00       		.byte	0
+ 670 00de 00       		.byte	0
+ 671 00df 10       		.uleb128 0x10
+ 672 00e0 2E       		.uleb128 0x2e
+ 673 00e1 00       		.byte	0
+ 674 00e2 3F       		.uleb128 0x3f
+ 675 00e3 19       		.uleb128 0x19
+ 676 00e4 03       		.uleb128 0x3
+ 677 00e5 0E       		.uleb128 0xe
+ 678 00e6 3A       		.uleb128 0x3a
+ 679 00e7 0B       		.uleb128 0xb
+ 680 00e8 3B       		.uleb128 0x3b
+ 681 00e9 0B       		.uleb128 0xb
+ 682 00ea 27       		.uleb128 0x27
+ 683 00eb 19       		.uleb128 0x19
+ 684 00ec 11       		.uleb128 0x11
+ 685 00ed 01       		.uleb128 0x1
+ 686 00ee 12       		.uleb128 0x12
+ 687 00ef 06       		.uleb128 0x6
+ 688 00f0 40       		.uleb128 0x40
+ 689 00f1 18       		.uleb128 0x18
+ 690 00f2 9742     		.uleb128 0x2117
+ 691 00f4 19       		.uleb128 0x19
+ 692 00f5 00       		.byte	0
+ 693 00f6 00       		.byte	0
+ 694 00f7 11       		.uleb128 0x11
+ 695 00f8 2E       		.uleb128 0x2e
+ 696 00f9 00       		.byte	0
+ 697 00fa 3F       		.uleb128 0x3f
+ 698 00fb 19       		.uleb128 0x19
+ 699 00fc 03       		.uleb128 0x3
+ 700 00fd 0E       		.uleb128 0xe
+ 701 00fe 3A       		.uleb128 0x3a
+ 702 00ff 0B       		.uleb128 0xb
+ 703 0100 3B       		.uleb128 0x3b
+ 704 0101 0B       		.uleb128 0xb
+ 705 0102 27       		.uleb128 0x27
+ 706 0103 19       		.uleb128 0x19
+ 707 0104 49       		.uleb128 0x49
+ARM GAS  C:\Users\Reza\AppData\Local\Temp\ccPnZxAV.s 			page 16
+
+
+ 708 0105 13       		.uleb128 0x13
+ 709 0106 11       		.uleb128 0x11
+ 710 0107 01       		.uleb128 0x1
+ 711 0108 12       		.uleb128 0x12
+ 712 0109 06       		.uleb128 0x6
+ 713 010a 40       		.uleb128 0x40
+ 714 010b 18       		.uleb128 0x18
+ 715 010c 9742     		.uleb128 0x2117
+ 716 010e 19       		.uleb128 0x19
+ 717 010f 00       		.byte	0
+ 718 0110 00       		.byte	0
+ 719 0111 12       		.uleb128 0x12
+ 720 0112 01       		.uleb128 0x1
+ 721 0113 01       		.byte	0x1
+ 722 0114 49       		.uleb128 0x49
+ 723 0115 13       		.uleb128 0x13
+ 724 0116 01       		.uleb128 0x1
+ 725 0117 13       		.uleb128 0x13
+ 726 0118 00       		.byte	0
+ 727 0119 00       		.byte	0
+ 728 011a 13       		.uleb128 0x13
+ 729 011b 21       		.uleb128 0x21
+ 730 011c 00       		.byte	0
+ 731 011d 49       		.uleb128 0x49
+ 732 011e 13       		.uleb128 0x13
+ 733 011f 2F       		.uleb128 0x2f
+ 734 0120 05       		.uleb128 0x5
+ 735 0121 00       		.byte	0
+ 736 0122 00       		.byte	0
+ 737 0123 14       		.uleb128 0x14
+ 738 0124 34       		.uleb128 0x34
+ 739 0125 00       		.byte	0
+ 740 0126 03       		.uleb128 0x3
+ 741 0127 0E       		.uleb128 0xe
+ 742 0128 3A       		.uleb128 0x3a
+ 743 0129 0B       		.uleb128 0xb
+ 744 012a 3B       		.uleb128 0x3b
+ 745 012b 05       		.uleb128 0x5
+ 746 012c 49       		.uleb128 0x49
+ 747 012d 13       		.uleb128 0x13
+ 748 012e 3F       		.uleb128 0x3f
+ 749 012f 19       		.uleb128 0x19
+ 750 0130 3C       		.uleb128 0x3c
+ 751 0131 19       		.uleb128 0x19
+ 752 0132 00       		.byte	0
+ 753 0133 00       		.byte	0
+ 754 0134 15       		.uleb128 0x15
+ 755 0135 35       		.uleb128 0x35
+ 756 0136 00       		.byte	0
+ 757 0137 49       		.uleb128 0x49
+ 758 0138 13       		.uleb128 0x13
+ 759 0139 00       		.byte	0
+ 760 013a 00       		.byte	0
+ 761 013b 16       		.uleb128 0x16
+ 762 013c 2E       		.uleb128 0x2e
+ 763 013d 00       		.byte	0
+ 764 013e 3F       		.uleb128 0x3f
+ARM GAS  C:\Users\Reza\AppData\Local\Temp\ccPnZxAV.s 			page 17
+
+
+ 765 013f 19       		.uleb128 0x19
+ 766 0140 3C       		.uleb128 0x3c
+ 767 0141 19       		.uleb128 0x19
+ 768 0142 6E       		.uleb128 0x6e
+ 769 0143 0E       		.uleb128 0xe
+ 770 0144 03       		.uleb128 0x3
+ 771 0145 0E       		.uleb128 0xe
+ 772 0146 3A       		.uleb128 0x3a
+ 773 0147 0B       		.uleb128 0xb
+ 774 0148 3B       		.uleb128 0x3b
+ 775 0149 0B       		.uleb128 0xb
+ 776 014a 00       		.byte	0
+ 777 014b 00       		.byte	0
+ 778 014c 17       		.uleb128 0x17
+ 779 014d 2E       		.uleb128 0x2e
+ 780 014e 00       		.byte	0
+ 781 014f 3F       		.uleb128 0x3f
+ 782 0150 19       		.uleb128 0x19
+ 783 0151 3C       		.uleb128 0x3c
+ 784 0152 19       		.uleb128 0x19
+ 785 0153 6E       		.uleb128 0x6e
+ 786 0154 0E       		.uleb128 0xe
+ 787 0155 03       		.uleb128 0x3
+ 788 0156 0E       		.uleb128 0xe
+ 789 0157 3A       		.uleb128 0x3a
+ 790 0158 0B       		.uleb128 0xb
+ 791 0159 3B       		.uleb128 0x3b
+ 792 015a 05       		.uleb128 0x5
+ 793 015b 00       		.byte	0
+ 794 015c 00       		.byte	0
+ 795 015d 00       		.byte	0
+ 796              		.section	.debug_loc,"",%progbits
+ 797              	.Ldebug_loc0:
+ 798              	.LLST0:
+ 799 0000 00000000 		.4byte	.LVL0
+ 800 0004 10000000 		.4byte	.LVL2
+ 801 0008 0100     		.2byte	0x1
+ 802 000a 50       		.byte	0x50
+ 803 000b 10000000 		.4byte	.LVL2
+ 804 000f 2E000000 		.4byte	.LVL4
+ 805 0013 0100     		.2byte	0x1
+ 806 0015 54       		.byte	0x54
+ 807 0016 00000000 		.4byte	0
+ 808 001a 00000000 		.4byte	0
+ 809              	.LLST1:
+ 810 001e 04000000 		.4byte	.LVL1
+ 811 0022 40000000 		.4byte	.LVL5
+ 812 0026 0200     		.2byte	0x2
+ 813 0028 30       		.byte	0x30
+ 814 0029 9F       		.byte	0x9f
+ 815 002a 40000000 		.4byte	.LVL5
+ 816 002e 48000000 		.4byte	.LVL6
+ 817 0032 0100     		.2byte	0x1
+ 818 0034 55       		.byte	0x55
+ 819 0035 48000000 		.4byte	.LVL6
+ 820 0039 4E000000 		.4byte	.LVL7
+ 821 003d 0200     		.2byte	0x2
+ARM GAS  C:\Users\Reza\AppData\Local\Temp\ccPnZxAV.s 			page 18
+
+
+ 822 003f 30       		.byte	0x30
+ 823 0040 9F       		.byte	0x9f
+ 824 0041 4E000000 		.4byte	.LVL7
+ 825 0045 5C000000 		.4byte	.LVL10
+ 826 0049 0100     		.2byte	0x1
+ 827 004b 55       		.byte	0x55
+ 828 004c 5C000000 		.4byte	.LVL10
+ 829 0050 64000000 		.4byte	.LFE68
+ 830 0054 0100     		.2byte	0x1
+ 831 0056 50       		.byte	0x50
+ 832 0057 00000000 		.4byte	0
+ 833 005b 00000000 		.4byte	0
+ 834              		.section	.debug_aranges,"",%progbits
+ 835 0000 34000000 		.4byte	0x34
+ 836 0004 0200     		.2byte	0x2
+ 837 0006 00000000 		.4byte	.Ldebug_info0
+ 838 000a 04       		.byte	0x4
+ 839 000b 00       		.byte	0
+ 840 000c 0000     		.2byte	0
+ 841 000e 0000     		.2byte	0
+ 842 0010 00000000 		.4byte	.LFB68
+ 843 0014 64000000 		.4byte	.LFE68-.LFB68
+ 844 0018 00000000 		.4byte	.LFB69
+ 845 001c 02000000 		.4byte	.LFE69-.LFB69
+ 846 0020 00000000 		.4byte	.LFB70
+ 847 0024 10000000 		.4byte	.LFE70-.LFB70
+ 848 0028 00000000 		.4byte	.LFB71
+ 849 002c 14000000 		.4byte	.LFE71-.LFB71
+ 850 0030 00000000 		.4byte	0
+ 851 0034 00000000 		.4byte	0
+ 852              		.section	.debug_ranges,"",%progbits
+ 853              	.Ldebug_ranges0:
+ 854 0000 00000000 		.4byte	.LFB68
+ 855 0004 64000000 		.4byte	.LFE68
+ 856 0008 00000000 		.4byte	.LFB69
+ 857 000c 02000000 		.4byte	.LFE69
+ 858 0010 00000000 		.4byte	.LFB70
+ 859 0014 10000000 		.4byte	.LFE70
+ 860 0018 00000000 		.4byte	.LFB71
+ 861 001c 14000000 		.4byte	.LFE71
+ 862 0020 00000000 		.4byte	0
+ 863 0024 00000000 		.4byte	0
+ 864              		.section	.debug_line,"",%progbits
+ 865              	.Ldebug_line0:
+ 866 0000 64020000 		.section	.debug_str,"MS",%progbits,1
+ 866      02000302 
+ 866      00000201 
+ 866      FB0E0D00 
+ 866      01010101 
+ 867              	.LASF5:
+ 868 0000 5F5F7569 		.ascii	"__uint8_t\000"
+ 868      6E74385F 
+ 868      7400
+ 869              	.LASF4:
+ 870 000a 73697A65 		.ascii	"size_t\000"
+ 870      5F7400
+ 871              	.LASF27:
+ARM GAS  C:\Users\Reza\AppData\Local\Temp\ccPnZxAV.s 			page 19
+
+
+ 872 0011 76546173 		.ascii	"vTaskSuspendAll\000"
+ 872      6B537573 
+ 872      70656E64 
+ 872      416C6C00 
+ 873              	.LASF9:
+ 874 0021 5F5F696E 		.ascii	"__int32_t\000"
+ 874      7433325F 
+ 874      7400
+ 875              	.LASF35:
+ 876 002b 78506F72 		.ascii	"xPortGetFreeHeapSize\000"
+ 876      74476574 
+ 876      46726565 
+ 876      48656170 
+ 876      53697A65 
+ 877              	.LASF28:
+ 878 0040 78546173 		.ascii	"xTaskResumeAll\000"
+ 878      6B526573 
+ 878      756D6541 
+ 878      6C6C00
+ 879              	.LASF30:
+ 880 004f 536F7572 		.ascii	"Source\\bsw\\FreeRTOS\\src\\heap_1.c\000"
+ 880      63655C62 
+ 880      73775C46 
+ 880      72656552 
+ 880      544F535C 
+ 881              	.LASF19:
+ 882 0070 666C6F61 		.ascii	"float\000"
+ 882      7400
+ 883              	.LASF6:
+ 884 0076 756E7369 		.ascii	"unsigned char\000"
+ 884      676E6564 
+ 884      20636861 
+ 884      7200
+ 885              	.LASF29:
+ 886 0084 474E5520 		.ascii	"GNU C11 5.4.1 20160609 (release) [ARM/embedded-5-br"
+ 886      43313120 
+ 886      352E342E 
+ 886      31203230 
+ 886      31363036 
+ 887 00b7 616E6368 		.ascii	"anch revision 237715] -mcpu=cortex-m3 -mthumb -g -O"
+ 887      20726576 
+ 887      6973696F 
+ 887      6E203233 
+ 887      37373135 
+ 888 00ea 67202D66 		.ascii	"g -ffunction-sections -ffat-lto-objects\000"
+ 888      66756E63 
+ 888      74696F6E 
+ 888      2D736563 
+ 888      74696F6E 
+ 889              	.LASF12:
+ 890 0112 6C6F6E67 		.ascii	"long unsigned int\000"
+ 890      20756E73 
+ 890      69676E65 
+ 890      6420696E 
+ 890      7400
+ 891              	.LASF8:
+ 892 0124 73686F72 		.ascii	"short unsigned int\000"
+ARM GAS  C:\Users\Reza\AppData\Local\Temp\ccPnZxAV.s 			page 20
+
+
+ 892      7420756E 
+ 892      7369676E 
+ 892      65642069 
+ 892      6E7400
+ 893              	.LASF36:
+ 894 0137 49544D5F 		.ascii	"ITM_RxBuffer\000"
+ 894      52784275 
+ 894      66666572 
+ 894      00
+ 895              	.LASF20:
+ 896 0144 646F7562 		.ascii	"double\000"
+ 896      6C6500
+ 897              	.LASF11:
+ 898 014b 5F5F7569 		.ascii	"__uint32_t\000"
+ 898      6E743332 
+ 898      5F7400
+ 899              	.LASF21:
+ 900 0156 70765265 		.ascii	"pvReturn\000"
+ 900      7475726E 
+ 900      00
+ 901              	.LASF24:
+ 902 015f 75634865 		.ascii	"ucHeap\000"
+ 902      617000
+ 903              	.LASF34:
+ 904 0166 76506F72 		.ascii	"vPortInitialiseBlocks\000"
+ 904      74496E69 
+ 904      7469616C 
+ 904      69736542 
+ 904      6C6F636B 
+ 905              	.LASF0:
+ 906 017c 756E7369 		.ascii	"unsigned int\000"
+ 906      676E6564 
+ 906      20696E74 
+ 906      00
+ 907              	.LASF13:
+ 908 0189 6C6F6E67 		.ascii	"long long unsigned int\000"
+ 908      206C6F6E 
+ 908      6720756E 
+ 908      7369676E 
+ 908      65642069 
+ 909              	.LASF16:
+ 910 01a0 75696E74 		.ascii	"uint8_t\000"
+ 910      385F7400 
+ 911              	.LASF26:
+ 912 01a8 76417070 		.ascii	"vApplicationMallocFailedHook\000"
+ 912      6C696361 
+ 912      74696F6E 
+ 912      4D616C6C 
+ 912      6F634661 
+ 913              	.LASF17:
+ 914 01c5 696E7433 		.ascii	"int32_t\000"
+ 914      325F7400 
+ 915              	.LASF14:
+ 916 01cd 73697A65 		.ascii	"sizetype\000"
+ 916      74797065 
+ 916      00
+ 917              	.LASF1:
+ARM GAS  C:\Users\Reza\AppData\Local\Temp\ccPnZxAV.s 			page 21
+
+
+ 918 01d6 6C6F6E67 		.ascii	"long long int\000"
+ 918      206C6F6E 
+ 918      6720696E 
+ 918      7400
+ 919              	.LASF23:
+ 920 01e4 7857616E 		.ascii	"xWantedSize\000"
+ 920      74656453 
+ 920      697A6500 
+ 921              	.LASF15:
+ 922 01f0 63686172 		.ascii	"char\000"
+ 922      00
+ 923              	.LASF31:
+ 924 01f5 433A5C55 		.ascii	"C:\\Users\\Reza\\Documents\\PSoC Creator\\CAN_Appli"
+ 924      73657273 
+ 924      5C52657A 
+ 924      615C446F 
+ 924      63756D65 
+ 925 0223 63617469 		.ascii	"cation_01\\Design01_Tx.cydsn\000"
+ 925      6F6E5F30 
+ 925      315C4465 
+ 925      7369676E 
+ 925      30315F54 
+ 926              	.LASF22:
+ 927 023f 70756341 		.ascii	"pucAlignedHeap\000"
+ 927      6C69676E 
+ 927      65644865 
+ 927      617000
+ 928              	.LASF32:
+ 929 024e 7076506F 		.ascii	"pvPortMalloc\000"
+ 929      72744D61 
+ 929      6C6C6F63 
+ 929      00
+ 930              	.LASF7:
+ 931 025b 73686F72 		.ascii	"short int\000"
+ 931      7420696E 
+ 931      7400
+ 932              	.LASF33:
+ 933 0265 76506F72 		.ascii	"vPortFree\000"
+ 933      74467265 
+ 933      6500
+ 934              	.LASF18:
+ 935 026f 75696E74 		.ascii	"uint32_t\000"
+ 935      33325F74 
+ 935      00
+ 936              	.LASF10:
+ 937 0278 6C6F6E67 		.ascii	"long int\000"
+ 937      20696E74 
+ 937      00
+ 938              	.LASF2:
+ 939 0281 6C6F6E67 		.ascii	"long double\000"
+ 939      20646F75 
+ 939      626C6500 
+ 940              	.LASF3:
+ 941 028d 7369676E 		.ascii	"signed char\000"
+ 941      65642063 
+ 941      68617200 
+ 942              	.LASF25:
+ARM GAS  C:\Users\Reza\AppData\Local\Temp\ccPnZxAV.s 			page 22
+
+
+ 943 0299 784E6578 		.ascii	"xNextFreeByte\000"
+ 943      74467265 
+ 943      65427974 
+ 943      6500
+ 944              		.ident	"GCC: (GNU Tools for ARM Embedded Processors) 5.4.1 20160609 (release) [ARM/embedded-5-bran

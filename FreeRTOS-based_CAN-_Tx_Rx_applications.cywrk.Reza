@@ -1,0 +1,440 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CyXmlSerializer>
+<!--This file is machine generated and read. It is not intended to be edited by hand.-->
+<!--Due to this, there is no schema for this file.-->
+<CyGuid_843a90a4-0c4b-4e44-991d-05e7fb117a21 type_name="CyDesigner.Common.ProjMgmt.Model.CyPrjMgmtWrkspcCustomData" version="4">
+<CyGuid_fdba8dfd-b15b-4469-9bbb-9e40c3e70997 type_name="CyDesigner.Common.Base.CyCustomData" version="2">
+<userData>
+<dataGuid v="1b906a0f-a7b6-4e4d-a428-82f98b53cb35">
+<CyGuid_1b906a0f-a7b6-4e4d-a428-82f98b53cb35 type_name="CyDesigner.Common.ProjMgmt.GUI.CyExplorerWindow+CyExplorerWindowState" version="3" SelectedTab="Source">
+<TreeKeys>
+<v>Source</v>
+<v>Components</v>
+<v>Output</v>
+</TreeKeys>
+<TreeStates>
+<CyGuid_2a325b3b-c96a-4e9f-b7a0-2c44ecb5f237 type_name="CyDesigner.Common.Base.Controls.CyTreeViewState" version="1" SelectedNodeId="CAN_Application_01\Design01_Tx">
+<ExpandedNodeIds>
+<v>CAN_Application_01</v>
+<v>CAN_Application_01\Design01_Rx</v>
+<v>CAN_Application_01\Design01_Rx\TopDesign</v>
+<v>CAN_Application_01\Design01_Rx\Design01_Rx.cydwr</v>
+<v>CAN_Application_01\Design01_Rx\Design01_Rx.cydwr\Pins</v>
+<v>CAN_Application_01\Design01_Rx\Design01_Rx.cydwr\Analog</v>
+<v>CAN_Application_01\Design01_Rx\Design01_Rx.cydwr\Clocks</v>
+<v>CAN_Application_01\Design01_Rx\Design01_Rx.cydwr\Interrupts</v>
+<v>CAN_Application_01\Design01_Rx\Design01_Rx.cydwr\DMA</v>
+<v>CAN_Application_01\Design01_Rx\Design01_Rx.cydwr\System</v>
+<v>CAN_Application_01\Design01_Rx\Design01_Rx.cydwr\Directives</v>
+<v>CAN_Application_01\Design01_Rx\Design01_Rx.cydwr\Flash Security</v>
+<v>CAN_Application_01\Design01_Rx\Design01_Rx.cydwr\EEPROM</v>
+<v>CAN_Application_01\Design01_Rx\asw</v>
+<v>CAN_Application_01\Design01_Rx\asw\cyapicallbacks.h</v>
+<v>CAN_Application_01\Design01_Rx\asw\FreeRTOSConfig.h</v>
+<v>CAN_Application_01\Design01_Rx\asw\main.c</v>
+<v>CAN_Application_01\Design01_Rx\bsw</v>
+<v>CAN_Application_01\Design01_Rx\bsw\CAN_packet.h</v>
+<v>CAN_Application_01\Design01_Rx\bsw\derivate.h</v>
+<v>CAN_Application_01\Design01_Rx\bsw\global.h</v>
+<v>CAN_Application_01\Design01_Rx\bsw\seven.c</v>
+<v>CAN_Application_01\Design01_Rx\bsw\seven.h</v>
+<v>CAN_Application_01\Design01_Rx\FreeRTOS\include</v>
+<v>CAN_Application_01\Design01_Rx\FreeRTOS\include\atomic.h</v>
+<v>CAN_Application_01\Design01_Rx\FreeRTOS\include\croutine.h</v>
+<v>CAN_Application_01\Design01_Rx\FreeRTOS\include\deprecated_definitions.h</v>
+<v>CAN_Application_01\Design01_Rx\FreeRTOS\include\event_groups.h</v>
+<v>CAN_Application_01\Design01_Rx\FreeRTOS\include\FreeRTOS.h</v>
+<v>CAN_Application_01\Design01_Rx\FreeRTOS\include\list.h</v>
+<v>CAN_Application_01\Design01_Rx\FreeRTOS\include\message_buffer.h</v>
+<v>CAN_Application_01\Design01_Rx\FreeRTOS\include\mpu_prototypes.h</v>
+<v>CAN_Application_01\Design01_Rx\FreeRTOS\include\mpu_wrappers.h</v>
+<v>CAN_Application_01\Design01_Rx\FreeRTOS\include\portable.h</v>
+<v>CAN_Application_01\Design01_Rx\FreeRTOS\include\portmacro.h</v>
+<v>CAN_Application_01\Design01_Rx\FreeRTOS\include\projdefs.h</v>
+<v>CAN_Application_01\Design01_Rx\FreeRTOS\include\queue.h</v>
+<v>CAN_Application_01\Design01_Rx\FreeRTOS\include\semphr.h</v>
+<v>CAN_Application_01\Design01_Rx\FreeRTOS\include\stack_macros.h</v>
+<v>CAN_Application_01\Design01_Rx\FreeRTOS\include\StackMacros.h</v>
+<v>CAN_Application_01\Design01_Rx\FreeRTOS\include\stream_buffer.h</v>
+<v>CAN_Application_01\Design01_Rx\FreeRTOS\include\task.h</v>
+<v>CAN_Application_01\Design01_Rx\FreeRTOS\include\timers.h</v>
+<v>CAN_Application_01\Design01_Rx\FreeRTOS\source</v>
+<v>CAN_Application_01\Design01_Rx\FreeRTOS\source\croutine.c</v>
+<v>CAN_Application_01\Design01_Rx\FreeRTOS\source\event_groups.c</v>
+<v>CAN_Application_01\Design01_Rx\FreeRTOS\source\heap_1.c</v>
+<v>CAN_Application_01\Design01_Rx\FreeRTOS\source\list.c</v>
+<v>CAN_Application_01\Design01_Rx\FreeRTOS\source\mpu_wrappers.c</v>
+<v>CAN_Application_01\Design01_Rx\FreeRTOS\source\port.c</v>
+<v>CAN_Application_01\Design01_Rx\FreeRTOS\source\queue.c</v>
+<v>CAN_Application_01\Design01_Rx\FreeRTOS\source\stream_buffer.c</v>
+<v>CAN_Application_01\Design01_Rx\FreeRTOS\source\tasks.c</v>
+<v>CAN_Application_01\Design01_Rx\FreeRTOS\source\timers.c</v>
+<v>CAN_Application_01\Design01_Rx\LCD_Driver\ugui_st7735.c</v>
+<v>CAN_Application_01\Design01_Rx\LCD_Driver\ugui_st7735.h</v>
+<v>CAN_Application_01\Design01_Rx\LCD_Library</v>
+<v>CAN_Application_01\Design01_Rx\LCD_Library\ugui.c</v>
+<v>CAN_Application_01\Design01_Rx\LCD_Library\ugui.h</v>
+<v>CAN_Application_01\Design01_Rx\LCD_Library\ugui_config.h</v>
+<v>CAN_Application_01\Design01_Rx\Generated_Source</v>
+<v>CAN_Application_01\Design01_Rx\Generated_Source\PSoC5</v>
+<v>CAN_Application_01\Design01_Rx\Generated_Source\PSoC5\CAN_Rx</v>
+<v>CAN_Application_01\Design01_Tx\TopDesign</v>
+<v>CAN_Application_01\Design01_Tx\Design01_Tx.cydwr</v>
+<v>CAN_Application_01\Design01_Tx\Design01_Tx.cydwr\Pins</v>
+<v>CAN_Application_01\Design01_Tx\Design01_Tx.cydwr\Analog</v>
+<v>CAN_Application_01\Design01_Tx\Design01_Tx.cydwr\Clocks</v>
+<v>CAN_Application_01\Design01_Tx\Design01_Tx.cydwr\Interrupts</v>
+<v>CAN_Application_01\Design01_Tx\Design01_Tx.cydwr\DMA</v>
+<v>CAN_Application_01\Design01_Tx\Design01_Tx.cydwr\System</v>
+<v>CAN_Application_01\Design01_Tx\Design01_Tx.cydwr\Directives</v>
+<v>CAN_Application_01\Design01_Tx\Design01_Tx.cydwr\Flash Security</v>
+<v>CAN_Application_01\Design01_Tx\Design01_Tx.cydwr\EEPROM</v>
+<v>CAN_Application_01\Design01_Tx\asw</v>
+<v>CAN_Application_01\Design01_Tx\asw\cyapicallbacks.h</v>
+<v>CAN_Application_01\Design01_Tx\asw\FreeRTOSConfig.h</v>
+<v>CAN_Application_01\Design01_Tx\asw\main.c</v>
+<v>CAN_Application_01\Design01_Tx\bsw</v>
+<v>CAN_Application_01\Design01_Tx\bsw\CAN_packet.h</v>
+<v>CAN_Application_01\Design01_Tx\bsw\derivate.h</v>
+<v>CAN_Application_01\Design01_Tx\bsw\global.h</v>
+<v>CAN_Application_01\Design01_Tx\bsw\seven.c</v>
+<v>CAN_Application_01\Design01_Tx\bsw\seven.h</v>
+<v>CAN_Application_01\Design01_Tx\FreeRTOS\include\atomic.h</v>
+<v>CAN_Application_01\Design01_Tx\FreeRTOS\include\croutine.h</v>
+<v>CAN_Application_01\Design01_Tx\FreeRTOS\include\deprecated_definitions.h</v>
+<v>CAN_Application_01\Design01_Tx\FreeRTOS\include\event_groups.h</v>
+<v>CAN_Application_01\Design01_Tx\FreeRTOS\include\FreeRTOS.h</v>
+<v>CAN_Application_01\Design01_Tx\FreeRTOS\include\list.h</v>
+<v>CAN_Application_01\Design01_Tx\FreeRTOS\include\message_buffer.h</v>
+<v>CAN_Application_01\Design01_Tx\FreeRTOS\include\mpu_prototypes.h</v>
+<v>CAN_Application_01\Design01_Tx\FreeRTOS\include\mpu_wrappers.h</v>
+<v>CAN_Application_01\Design01_Tx\FreeRTOS\include\portable.h</v>
+<v>CAN_Application_01\Design01_Tx\FreeRTOS\include\portmacro.h</v>
+<v>CAN_Application_01\Design01_Tx\FreeRTOS\include\projdefs.h</v>
+<v>CAN_Application_01\Design01_Tx\FreeRTOS\include\queue.h</v>
+<v>CAN_Application_01\Design01_Tx\FreeRTOS\include\semphr.h</v>
+<v>CAN_Application_01\Design01_Tx\FreeRTOS\include\stack_macros.h</v>
+<v>CAN_Application_01\Design01_Tx\FreeRTOS\include\StackMacros.h</v>
+<v>CAN_Application_01\Design01_Tx\FreeRTOS\include\stream_buffer.h</v>
+<v>CAN_Application_01\Design01_Tx\FreeRTOS\include\task.h</v>
+<v>CAN_Application_01\Design01_Tx\FreeRTOS\include\timers.h</v>
+<v>CAN_Application_01\Design01_Tx\FreeRTOS\source\croutine.c</v>
+<v>CAN_Application_01\Design01_Tx\FreeRTOS\source\event_groups.c</v>
+<v>CAN_Application_01\Design01_Tx\FreeRTOS\source\heap_1.c</v>
+<v>CAN_Application_01\Design01_Tx\FreeRTOS\source\list.c</v>
+<v>CAN_Application_01\Design01_Tx\FreeRTOS\source\mpu_wrappers.c</v>
+<v>CAN_Application_01\Design01_Tx\FreeRTOS\source\port.c</v>
+<v>CAN_Application_01\Design01_Tx\FreeRTOS\source\queue.c</v>
+<v>CAN_Application_01\Design01_Tx\FreeRTOS\source\stream_buffer.c</v>
+<v>CAN_Application_01\Design01_Tx\FreeRTOS\source\tasks.c</v>
+<v>CAN_Application_01\Design01_Tx\FreeRTOS\source\timers.c</v>
+<v>CAN_Application_01\Design01_Tx\LCD_Driver</v>
+<v>CAN_Application_01\Design01_Tx\LCD_Driver\ugui_st7735.c</v>
+<v>CAN_Application_01\Design01_Tx\LCD_Driver\ugui_st7735.h</v>
+<v>CAN_Application_01\Design01_Tx\LCD_Library</v>
+<v>CAN_Application_01\Design01_Tx\LCD_Library\ugui.c</v>
+<v>CAN_Application_01\Design01_Tx\LCD_Library\ugui.h</v>
+<v>CAN_Application_01\Design01_Tx\LCD_Library\ugui_config.h</v>
+<v>CAN_Application_01\Design01_Tx\Generated_Source\PSoC5</v>
+<v>CAN_Application_01\Design01_Tx\Generated_Source\PSoC5\CAN_Tx</v>
+</ExpandedNodeIds>
+<VisibleNodeIds>
+<v>CAN_Application_01</v>
+<v>CAN_Application_01\Design01_Rx</v>
+<v>CAN_Application_01\Design01_Rx\TopDesign</v>
+<v>CAN_Application_01\Design01_Rx\Design01_Rx.cydwr</v>
+<v>CAN_Application_01\Design01_Rx\Design01_Rx.cydwr\Pins</v>
+<v>CAN_Application_01\Design01_Rx\Design01_Rx.cydwr\Analog</v>
+<v>CAN_Application_01\Design01_Rx\Design01_Rx.cydwr\Clocks</v>
+<v>CAN_Application_01\Design01_Rx\Design01_Rx.cydwr\Interrupts</v>
+<v>CAN_Application_01\Design01_Rx\Design01_Rx.cydwr\DMA</v>
+<v>CAN_Application_01\Design01_Rx\Design01_Rx.cydwr\System</v>
+<v>CAN_Application_01\Design01_Rx\Design01_Rx.cydwr\Directives</v>
+<v>CAN_Application_01\Design01_Rx\Design01_Rx.cydwr\Flash Security</v>
+<v>CAN_Application_01\Design01_Rx\Design01_Rx.cydwr\EEPROM</v>
+<v>CAN_Application_01\Design01_Rx\asw</v>
+<v>CAN_Application_01\Design01_Rx\asw\cyapicallbacks.h</v>
+<v>CAN_Application_01\Design01_Rx\asw\FreeRTOSConfig.h</v>
+<v>CAN_Application_01\Design01_Rx\asw\main.c</v>
+<v>CAN_Application_01\Design01_Rx\bsw</v>
+<v>CAN_Application_01\Design01_Rx\bsw\CAN_packet.h</v>
+<v>CAN_Application_01\Design01_Rx\bsw\derivate.h</v>
+<v>CAN_Application_01\Design01_Rx\bsw\global.h</v>
+<v>CAN_Application_01\Design01_Rx\bsw\seven.c</v>
+<v>CAN_Application_01\Design01_Rx\bsw\seven.h</v>
+<v>CAN_Application_01\Design01_Rx\FreeRTOS</v>
+<v>CAN_Application_01\Design01_Rx\LCD_Driver</v>
+<v>CAN_Application_01\Design01_Rx\LCD_Library</v>
+<v>CAN_Application_01\Design01_Rx\LCD_Library\ugui.c</v>
+<v>CAN_Application_01\Design01_Rx\LCD_Library\ugui.h</v>
+<v>CAN_Application_01\Design01_Rx\LCD_Library\ugui_config.h</v>
+<v>CAN_Application_01\Design01_Rx\Generated_Source</v>
+<v>CAN_Application_01\Design01_Rx\Generated_Source\PSoC5</v>
+</VisibleNodeIds>
+</CyGuid_2a325b3b-c96a-4e9f-b7a0-2c44ecb5f237>
+<CyGuid_2a325b3b-c96a-4e9f-b7a0-2c44ecb5f237 type_name="CyDesigner.Common.Base.Controls.CyTreeViewState" version="1" SelectedNodeId="">
+<ExpandedNodeIds>
+<v>CAN_Application_01</v>
+<v>CAN_Application_01\Design01_Rx</v>
+<v>CAN_Application_01\Design01_Rx\TopDesign</v>
+<v>CAN_Application_01\Design01_Rx\TopDesign\TopDesign.cysch</v>
+<v>CAN_Application_01\Design01_Tx</v>
+<v>CAN_Application_01\Design01_Tx\TopDesign</v>
+<v>CAN_Application_01\Design01_Tx\TopDesign\TopDesign.cysch</v>
+</ExpandedNodeIds>
+<VisibleNodeIds>
+<v>CAN_Application_01</v>
+<v>CAN_Application_01\Design01_Rx</v>
+<v>CAN_Application_01\Design01_Rx\TopDesign</v>
+<v>CAN_Application_01\Design01_Rx\TopDesign\TopDesign.cysch</v>
+<v>CAN_Application_01\Design01_Tx</v>
+<v>CAN_Application_01\Design01_Tx\TopDesign</v>
+<v>CAN_Application_01\Design01_Tx\TopDesign\TopDesign.cysch</v>
+</VisibleNodeIds>
+</CyGuid_2a325b3b-c96a-4e9f-b7a0-2c44ecb5f237>
+<CyGuid_2a325b3b-c96a-4e9f-b7a0-2c44ecb5f237 type_name="CyDesigner.Common.Base.Controls.CyTreeViewState" version="1" SelectedNodeId="">
+<ExpandedNodeIds>
+<v>CAN_Application_01</v>
+<v>CAN_Application_01\Design01_Rx</v>
+<v>CAN_Application_01\Design01_Rx\CortexM3</v>
+<v>CAN_Application_01\Design01_Rx\CortexM3\ARM_GCC_541</v>
+<v>CAN_Application_01\Design01_Rx\CortexM3\ARM_GCC_541\Debug</v>
+<v>CAN_Application_01\Design01_Rx\CortexM3\ARM_GCC_541\Debug\Listing Files</v>
+<v>CAN_Application_01\Design01_Rx\CortexM3\ARM_GCC_541\Debug\Listing Files\CAN_Rx.lst</v>
+<v>CAN_Application_01\Design01_Rx\CortexM3\ARM_GCC_541\Debug\Listing Files\CAN_Rx_INT.lst</v>
+<v>CAN_Application_01\Design01_Rx\CortexM3\ARM_GCC_541\Debug\Listing Files\CAN_Rx_PM.lst</v>
+<v>CAN_Application_01\Design01_Rx\CortexM3\ARM_GCC_541\Debug\Listing Files\CAN_Rx_TX_RX_func.lst</v>
+<v>CAN_Application_01\Design01_Rx\CortexM3\ARM_GCC_541\Debug\Listing Files\Clock_1.lst</v>
+<v>CAN_Application_01\Design01_Rx\CortexM3\ARM_GCC_541\Debug\Listing Files\Cm3Start.lst</v>
+<v>CAN_Application_01\Design01_Rx\CortexM3\ARM_GCC_541\Debug\Listing Files\croutine.lst</v>
+<v>CAN_Application_01\Design01_Rx\CortexM3\ARM_GCC_541\Debug\Listing Files\CS.lst</v>
+<v>CAN_Application_01\Design01_Rx\CortexM3\ARM_GCC_541\Debug\Listing Files\cy_em_eeprom.lst</v>
+<v>CAN_Application_01\Design01_Rx\CortexM3\ARM_GCC_541\Debug\Listing Files\CyBootAsmGnu.lst</v>
+<v>CAN_Application_01\Design01_Rx\CortexM3\ARM_GCC_541\Debug\Listing Files\CyDmac.lst</v>
+<v>CAN_Application_01\Design01_Rx\CortexM3\ARM_GCC_541\Debug\Listing Files\cyfitter_cfg.lst</v>
+<v>CAN_Application_01\Design01_Rx\CortexM3\ARM_GCC_541\Debug\Listing Files\CyFlash.lst</v>
+<v>CAN_Application_01\Design01_Rx\CortexM3\ARM_GCC_541\Debug\Listing Files\CyLib.lst</v>
+<v>CAN_Application_01\Design01_Rx\CortexM3\ARM_GCC_541\Debug\Listing Files\cymetadata.lst</v>
+<v>CAN_Application_01\Design01_Rx\CortexM3\ARM_GCC_541\Debug\Listing Files\cyPm.lst</v>
+<v>CAN_Application_01\Design01_Rx\CortexM3\ARM_GCC_541\Debug\Listing Files\CySpc.lst</v>
+<v>CAN_Application_01\Design01_Rx\CortexM3\ARM_GCC_541\Debug\Listing Files\cyutils.lst</v>
+<v>CAN_Application_01\Design01_Rx\CortexM3\ARM_GCC_541\Debug\Listing Files\event_groups.lst</v>
+<v>CAN_Application_01\Design01_Rx\CortexM3\ARM_GCC_541\Debug\Listing Files\GREEN_LED.lst</v>
+<v>CAN_Application_01\Design01_Rx\CortexM3\ARM_GCC_541\Debug\Listing Files\heap_1.lst</v>
+<v>CAN_Application_01\Design01_Rx\CortexM3\ARM_GCC_541\Debug\Listing Files\LED.lst</v>
+<v>CAN_Application_01\Design01_Rx\CortexM3\ARM_GCC_541\Debug\Listing Files\list.lst</v>
+<v>CAN_Application_01\Design01_Rx\CortexM3\ARM_GCC_541\Debug\Listing Files\main.lst</v>
+<v>CAN_Application_01\Design01_Rx\CortexM3\ARM_GCC_541\Debug\Listing Files\mpu_wrappers.lst</v>
+<v>CAN_Application_01\Design01_Rx\CortexM3\ARM_GCC_541\Debug\Listing Files\port.lst</v>
+<v>CAN_Application_01\Design01_Rx\CortexM3\ARM_GCC_541\Debug\Listing Files\queue.lst</v>
+<v>CAN_Application_01\Design01_Rx\CortexM3\ARM_GCC_541\Debug\Listing Files\RED_LED.lst</v>
+<v>CAN_Application_01\Design01_Rx\CortexM3\ARM_GCC_541\Debug\Listing Files\RS.lst</v>
+<v>CAN_Application_01\Design01_Rx\CortexM3\ARM_GCC_541\Debug\Listing Files\RST.lst</v>
+<v>CAN_Application_01\Design01_Rx\CortexM3\ARM_GCC_541\Debug\Listing Files\RX_1.lst</v>
+<v>CAN_Application_01\Design01_Rx\CortexM3\ARM_GCC_541\Debug\Listing Files\SCL.lst</v>
+<v>CAN_Application_01\Design01_Rx\CortexM3\ARM_GCC_541\Debug\Listing Files\seven.lst</v>
+<v>CAN_Application_01\Design01_Rx\CortexM3\ARM_GCC_541\Debug\Listing Files\SEVEN_A.lst</v>
+<v>CAN_Application_01\Design01_Rx\CortexM3\ARM_GCC_541\Debug\Listing Files\SEVEN_B.lst</v>
+<v>CAN_Application_01\Design01_Rx\CortexM3\ARM_GCC_541\Debug\Listing Files\SEVEN_C.lst</v>
+<v>CAN_Application_01\Design01_Rx\CortexM3\ARM_GCC_541\Debug\Listing Files\SEVEN_D.lst</v>
+<v>CAN_Application_01\Design01_Rx\CortexM3\ARM_GCC_541\Debug\Listing Files\SEVEN_DP.lst</v>
+<v>CAN_Application_01\Design01_Rx\CortexM3\ARM_GCC_541\Debug\Listing Files\SEVEN_E.lst</v>
+<v>CAN_Application_01\Design01_Rx\CortexM3\ARM_GCC_541\Debug\Listing Files\SEVEN_F.lst</v>
+<v>CAN_Application_01\Design01_Rx\CortexM3\ARM_GCC_541\Debug\Listing Files\SEVEN_G.lst</v>
+<v>CAN_Application_01\Design01_Rx\CortexM3\ARM_GCC_541\Debug\Listing Files\SEVEN_reg.lst</v>
+<v>CAN_Application_01\Design01_Rx\CortexM3\ARM_GCC_541\Debug\Listing Files\SEVEN_reg_PM.lst</v>
+<v>CAN_Application_01\Design01_Rx\CortexM3\ARM_GCC_541\Debug\Listing Files\SEVEN_SELECT.lst</v>
+<v>CAN_Application_01\Design01_Rx\CortexM3\ARM_GCC_541\Debug\Listing Files\SI.lst</v>
+<v>CAN_Application_01\Design01_Rx\CortexM3\ARM_GCC_541\Debug\Listing Files\SPIM.lst</v>
+<v>CAN_Application_01\Design01_Rx\CortexM3\ARM_GCC_541\Debug\Listing Files\SPIM_INT.lst</v>
+<v>CAN_Application_01\Design01_Rx\CortexM3\ARM_GCC_541\Debug\Listing Files\SPIM_PM.lst</v>
+<v>CAN_Application_01\Design01_Rx\CortexM3\ARM_GCC_541\Debug\Listing Files\stream_buffer.lst</v>
+<v>CAN_Application_01\Design01_Rx\CortexM3\ARM_GCC_541\Debug\Listing Files\tasks.lst</v>
+<v>CAN_Application_01\Design01_Rx\CortexM3\ARM_GCC_541\Debug\Listing Files\timers.lst</v>
+<v>CAN_Application_01\Design01_Rx\CortexM3\ARM_GCC_541\Debug\Listing Files\TX_1.lst</v>
+<v>CAN_Application_01\Design01_Rx\CortexM3\ARM_GCC_541\Debug\Listing Files\UART_LOG.lst</v>
+<v>CAN_Application_01\Design01_Rx\CortexM3\ARM_GCC_541\Debug\Listing Files\UART_LOG_BOOT.lst</v>
+<v>CAN_Application_01\Design01_Rx\CortexM3\ARM_GCC_541\Debug\Listing Files\UART_LOG_INT.lst</v>
+<v>CAN_Application_01\Design01_Rx\CortexM3\ARM_GCC_541\Debug\Listing Files\UART_LOG_IntClock.lst</v>
+<v>CAN_Application_01\Design01_Rx\CortexM3\ARM_GCC_541\Debug\Listing Files\UART_LOG_PM.lst</v>
+<v>CAN_Application_01\Design01_Rx\CortexM3\ARM_GCC_541\Debug\Listing Files\ugui.lst</v>
+<v>CAN_Application_01\Design01_Rx\CortexM3\ARM_GCC_541\Debug\Listing Files\ugui_st7735.lst</v>
+<v>CAN_Application_01\Design01_Rx\CortexM3\ARM_GCC_541\Debug\Listing Files\YELLOW_LED.lst</v>
+<v>CAN_Application_01\Design01_Rx\CortexM3\ARM_GCC_541\Debug\Design01_Rx.elf</v>
+<v>CAN_Application_01\Design01_Rx\CortexM3\ARM_GCC_541\Debug\Design01_Rx.hex</v>
+<v>CAN_Application_01\Design01_Rx\CortexM3\ARM_GCC_541\Debug\Design01_Rx.map</v>
+<v>CAN_Application_01\Design01_Rx\Design01_Rx.gpdsc</v>
+<v>CAN_Application_01\Design01_Rx\Design01_Rx.rpt</v>
+<v>CAN_Application_01\Design01_Rx\Design01_Rx_timing.html</v>
+<v>CAN_Application_01\Design01_Tx</v>
+<v>CAN_Application_01\Design01_Tx\CortexM3</v>
+<v>CAN_Application_01\Design01_Tx\CortexM3\ARM_GCC_541</v>
+<v>CAN_Application_01\Design01_Tx\CortexM3\ARM_GCC_541\Debug</v>
+<v>CAN_Application_01\Design01_Tx\CortexM3\ARM_GCC_541\Debug\Listing Files</v>
+<v>CAN_Application_01\Design01_Tx\CortexM3\ARM_GCC_541\Debug\Listing Files\CAN_Tx.lst</v>
+<v>CAN_Application_01\Design01_Tx\CortexM3\ARM_GCC_541\Debug\Listing Files\CAN_Tx_INT.lst</v>
+<v>CAN_Application_01\Design01_Tx\CortexM3\ARM_GCC_541\Debug\Listing Files\CAN_Tx_PM.lst</v>
+<v>CAN_Application_01\Design01_Tx\CortexM3\ARM_GCC_541\Debug\Listing Files\CAN_Tx_TX_RX_func.lst</v>
+<v>CAN_Application_01\Design01_Tx\CortexM3\ARM_GCC_541\Debug\Listing Files\Cm3Start.lst</v>
+<v>CAN_Application_01\Design01_Tx\CortexM3\ARM_GCC_541\Debug\Listing Files\croutine.lst</v>
+<v>CAN_Application_01\Design01_Tx\CortexM3\ARM_GCC_541\Debug\Listing Files\cy_em_eeprom.lst</v>
+<v>CAN_Application_01\Design01_Tx\CortexM3\ARM_GCC_541\Debug\Listing Files\CyBootAsmGnu.lst</v>
+<v>CAN_Application_01\Design01_Tx\CortexM3\ARM_GCC_541\Debug\Listing Files\CyDmac.lst</v>
+<v>CAN_Application_01\Design01_Tx\CortexM3\ARM_GCC_541\Debug\Listing Files\cyfitter_cfg.lst</v>
+<v>CAN_Application_01\Design01_Tx\CortexM3\ARM_GCC_541\Debug\Listing Files\CyFlash.lst</v>
+<v>CAN_Application_01\Design01_Tx\CortexM3\ARM_GCC_541\Debug\Listing Files\CyLib.lst</v>
+<v>CAN_Application_01\Design01_Tx\CortexM3\ARM_GCC_541\Debug\Listing Files\cymetadata.lst</v>
+<v>CAN_Application_01\Design01_Tx\CortexM3\ARM_GCC_541\Debug\Listing Files\cyPm.lst</v>
+<v>CAN_Application_01\Design01_Tx\CortexM3\ARM_GCC_541\Debug\Listing Files\CySpc.lst</v>
+<v>CAN_Application_01\Design01_Tx\CortexM3\ARM_GCC_541\Debug\Listing Files\cyutils.lst</v>
+<v>CAN_Application_01\Design01_Tx\CortexM3\ARM_GCC_541\Debug\Listing Files\event_groups.lst</v>
+<v>CAN_Application_01\Design01_Tx\CortexM3\ARM_GCC_541\Debug\Listing Files\heap_1.lst</v>
+<v>CAN_Application_01\Design01_Tx\CortexM3\ARM_GCC_541\Debug\Listing Files\list.lst</v>
+<v>CAN_Application_01\Design01_Tx\CortexM3\ARM_GCC_541\Debug\Listing Files\main.lst</v>
+<v>CAN_Application_01\Design01_Tx\CortexM3\ARM_GCC_541\Debug\Listing Files\mpu_wrappers.lst</v>
+<v>CAN_Application_01\Design01_Tx\CortexM3\ARM_GCC_541\Debug\Listing Files\port.lst</v>
+<v>CAN_Application_01\Design01_Tx\CortexM3\ARM_GCC_541\Debug\Listing Files\queue.lst</v>
+<v>CAN_Application_01\Design01_Tx\CortexM3\ARM_GCC_541\Debug\Listing Files\Red_Led.lst</v>
+<v>CAN_Application_01\Design01_Tx\CortexM3\ARM_GCC_541\Debug\Listing Files\RX_1.lst</v>
+<v>CAN_Application_01\Design01_Tx\CortexM3\ARM_GCC_541\Debug\Listing Files\seven.lst</v>
+<v>CAN_Application_01\Design01_Tx\CortexM3\ARM_GCC_541\Debug\Listing Files\stream_buffer.lst</v>
+<v>CAN_Application_01\Design01_Tx\CortexM3\ARM_GCC_541\Debug\Listing Files\tasks.lst</v>
+<v>CAN_Application_01\Design01_Tx\CortexM3\ARM_GCC_541\Debug\Listing Files\timers.lst</v>
+<v>CAN_Application_01\Design01_Tx\CortexM3\ARM_GCC_541\Debug\Listing Files\TX_1.lst</v>
+<v>CAN_Application_01\Design01_Tx\CortexM3\ARM_GCC_541\Debug\Listing Files\UART_LOG.lst</v>
+<v>CAN_Application_01\Design01_Tx\CortexM3\ARM_GCC_541\Debug\Listing Files\UART_LOG_BOOT.lst</v>
+<v>CAN_Application_01\Design01_Tx\CortexM3\ARM_GCC_541\Debug\Listing Files\UART_LOG_INT.lst</v>
+<v>CAN_Application_01\Design01_Tx\CortexM3\ARM_GCC_541\Debug\Listing Files\UART_LOG_IntClock.lst</v>
+<v>CAN_Application_01\Design01_Tx\CortexM3\ARM_GCC_541\Debug\Listing Files\UART_LOG_PM.lst</v>
+<v>CAN_Application_01\Design01_Tx\CortexM3\ARM_GCC_541\Debug\Listing Files\ugui.lst</v>
+<v>CAN_Application_01\Design01_Tx\CortexM3\ARM_GCC_541\Debug\Listing Files\ugui_st7735.lst</v>
+<v>CAN_Application_01\Design01_Tx\CortexM3\ARM_GCC_541\Debug\Design01_Tx.elf</v>
+<v>CAN_Application_01\Design01_Tx\CortexM3\ARM_GCC_541\Debug\Design01_Tx.hex</v>
+<v>CAN_Application_01\Design01_Tx\CortexM3\ARM_GCC_541\Debug\Design01_Tx.map</v>
+<v>CAN_Application_01\Design01_Tx\Design01_Tx.gpdsc</v>
+<v>CAN_Application_01\Design01_Tx\Design01_Tx.rpt</v>
+<v>CAN_Application_01\Design01_Tx\Design01_Tx_timing.html</v>
+</ExpandedNodeIds>
+<VisibleNodeIds>
+<v>CAN_Application_01</v>
+<v>CAN_Application_01\Design01_Rx</v>
+<v>CAN_Application_01\Design01_Rx\CortexM3</v>
+<v>CAN_Application_01\Design01_Rx\CortexM3\ARM_GCC_541</v>
+<v>CAN_Application_01\Design01_Rx\CortexM3\ARM_GCC_541\Debug</v>
+<v>CAN_Application_01\Design01_Rx\CortexM3\ARM_GCC_541\Debug\Listing Files</v>
+<v>CAN_Application_01\Design01_Rx\CortexM3\ARM_GCC_541\Debug\Listing Files\CAN_Rx.lst</v>
+<v>CAN_Application_01\Design01_Rx\CortexM3\ARM_GCC_541\Debug\Listing Files\CAN_Rx_INT.lst</v>
+<v>CAN_Application_01\Design01_Rx\CortexM3\ARM_GCC_541\Debug\Listing Files\CAN_Rx_PM.lst</v>
+<v>CAN_Application_01\Design01_Rx\CortexM3\ARM_GCC_541\Debug\Listing Files\CAN_Rx_TX_RX_func.lst</v>
+<v>CAN_Application_01\Design01_Rx\CortexM3\ARM_GCC_541\Debug\Listing Files\Clock_1.lst</v>
+<v>CAN_Application_01\Design01_Rx\CortexM3\ARM_GCC_541\Debug\Listing Files\Cm3Start.lst</v>
+<v>CAN_Application_01\Design01_Rx\CortexM3\ARM_GCC_541\Debug\Listing Files\croutine.lst</v>
+<v>CAN_Application_01\Design01_Rx\CortexM3\ARM_GCC_541\Debug\Listing Files\CS.lst</v>
+<v>CAN_Application_01\Design01_Rx\CortexM3\ARM_GCC_541\Debug\Listing Files\cy_em_eeprom.lst</v>
+<v>CAN_Application_01\Design01_Rx\CortexM3\ARM_GCC_541\Debug\Listing Files\CyBootAsmGnu.lst</v>
+<v>CAN_Application_01\Design01_Rx\CortexM3\ARM_GCC_541\Debug\Listing Files\CyDmac.lst</v>
+<v>CAN_Application_01\Design01_Rx\CortexM3\ARM_GCC_541\Debug\Listing Files\cyfitter_cfg.lst</v>
+<v>CAN_Application_01\Design01_Rx\CortexM3\ARM_GCC_541\Debug\Listing Files\CyFlash.lst</v>
+<v>CAN_Application_01\Design01_Rx\CortexM3\ARM_GCC_541\Debug\Listing Files\CyLib.lst</v>
+<v>CAN_Application_01\Design01_Rx\CortexM3\ARM_GCC_541\Debug\Listing Files\cymetadata.lst</v>
+<v>CAN_Application_01\Design01_Rx\CortexM3\ARM_GCC_541\Debug\Listing Files\cyPm.lst</v>
+<v>CAN_Application_01\Design01_Rx\CortexM3\ARM_GCC_541\Debug\Listing Files\CySpc.lst</v>
+<v>CAN_Application_01\Design01_Rx\CortexM3\ARM_GCC_541\Debug\Listing Files\cyutils.lst</v>
+<v>CAN_Application_01\Design01_Rx\CortexM3\ARM_GCC_541\Debug\Listing Files\event_groups.lst</v>
+<v>CAN_Application_01\Design01_Rx\CortexM3\ARM_GCC_541\Debug\Listing Files\GREEN_LED.lst</v>
+<v>CAN_Application_01\Design01_Rx\CortexM3\ARM_GCC_541\Debug\Listing Files\heap_1.lst</v>
+<v>CAN_Application_01\Design01_Rx\CortexM3\ARM_GCC_541\Debug\Listing Files\LED.lst</v>
+<v>CAN_Application_01\Design01_Rx\CortexM3\ARM_GCC_541\Debug\Listing Files\list.lst</v>
+<v>CAN_Application_01\Design01_Rx\CortexM3\ARM_GCC_541\Debug\Listing Files\main.lst</v>
+<v>CAN_Application_01\Design01_Rx\CortexM3\ARM_GCC_541\Debug\Listing Files\mpu_wrappers.lst</v>
+</VisibleNodeIds>
+</CyGuid_2a325b3b-c96a-4e9f-b7a0-2c44ecb5f237>
+</TreeStates>
+<TreeKeysV2>
+<v>Datasheet</v>
+</TreeKeysV2>
+<TreeStatesV2>
+<CyGuid_2a325b3b-c96a-4e9f-b7a0-2c44ecb5f237 type_name="CyDesigner.Common.Base.Controls.CyTreeViewState" version="1" SelectedNodeId="">
+<ExpandedNodeIds>
+<v>CAN_Application_01</v>
+<v>CAN_Application_01\Design01_Rx</v>
+<v>CAN_Application_01\Design01_Rx\PSoC 5LP Architecture TRM</v>
+<v>CAN_Application_01\Design01_Rx\CY8C58LP Family Datasheet</v>
+<v>CAN_Application_01\Design01_Rx\System Reference Guides</v>
+<v>CAN_Application_01\Design01_Rx\System Reference Guides\cy_boot_v5_80</v>
+<v>CAN_Application_01\Design01_Rx\CAN_v3_0.pdf</v>
+<v>CAN_Application_01\Design01_Rx\cy_clock_v2_20.pdf</v>
+<v>CAN_Application_01\Design01_Rx\cy_constant_v1_0.pdf</v>
+<v>CAN_Application_01\Design01_Rx\cy_pins_v2_10</v>
+<v>CAN_Application_01\Design01_Rx\cy_pins_v2_10\cy_pins_v2_10.pdf</v>
+<v>CAN_Application_01\Design01_Rx\cy_pins_v2_20</v>
+<v>CAN_Application_01\Design01_Rx\cy_pins_v2_20\cy_pins_v2_20.pdf</v>
+<v>CAN_Application_01\Design01_Rx\CyControlReg_v1_80.pdf</v>
+<v>CAN_Application_01\Design01_Rx\SPI_Master_v2_50.pdf</v>
+<v>CAN_Application_01\Design01_Rx\UART_v2_50.pdf</v>
+<v>CAN_Application_01\Design01_Tx</v>
+<v>CAN_Application_01\Design01_Tx\PSoC 5LP Architecture TRM</v>
+<v>CAN_Application_01\Design01_Tx\CY8C58LP Family Datasheet</v>
+<v>CAN_Application_01\Design01_Tx\System Reference Guides</v>
+<v>CAN_Application_01\Design01_Tx\System Reference Guides\cy_boot_v5_80</v>
+<v>CAN_Application_01\Design01_Tx\CAN_v3_0.pdf</v>
+<v>CAN_Application_01\Design01_Tx\cy_pins_v2_20</v>
+<v>CAN_Application_01\Design01_Tx\cy_pins_v2_20\cy_pins_v2_20.pdf</v>
+<v>CAN_Application_01\Design01_Tx\UART_v2_50.pdf</v>
+</ExpandedNodeIds>
+<VisibleNodeIds>
+<v>CAN_Application_01</v>
+<v>CAN_Application_01\Design01_Rx</v>
+<v>CAN_Application_01\Design01_Rx\PSoC 5LP Architecture TRM</v>
+<v>CAN_Application_01\Design01_Rx\CY8C58LP Family Datasheet</v>
+<v>CAN_Application_01\Design01_Rx\System Reference Guides</v>
+<v>CAN_Application_01\Design01_Rx\System Reference Guides\cy_boot_v5_80</v>
+<v>CAN_Application_01\Design01_Rx\CAN_v3_0.pdf</v>
+<v>CAN_Application_01\Design01_Rx\cy_clock_v2_20.pdf</v>
+<v>CAN_Application_01\Design01_Rx\cy_constant_v1_0.pdf</v>
+<v>CAN_Application_01\Design01_Rx\cy_pins_v2_10</v>
+<v>CAN_Application_01\Design01_Rx\cy_pins_v2_10\cy_pins_v2_10.pdf</v>
+<v>CAN_Application_01\Design01_Rx\cy_pins_v2_20</v>
+<v>CAN_Application_01\Design01_Rx\cy_pins_v2_20\cy_pins_v2_20.pdf</v>
+<v>CAN_Application_01\Design01_Rx\CyControlReg_v1_80.pdf</v>
+<v>CAN_Application_01\Design01_Rx\SPI_Master_v2_50.pdf</v>
+<v>CAN_Application_01\Design01_Rx\UART_v2_50.pdf</v>
+<v>CAN_Application_01\Design01_Tx</v>
+<v>CAN_Application_01\Design01_Tx\PSoC 5LP Architecture TRM</v>
+<v>CAN_Application_01\Design01_Tx\CY8C58LP Family Datasheet</v>
+<v>CAN_Application_01\Design01_Tx\System Reference Guides</v>
+<v>CAN_Application_01\Design01_Tx\System Reference Guides\cy_boot_v5_80</v>
+<v>CAN_Application_01\Design01_Tx\CAN_v3_0.pdf</v>
+<v>CAN_Application_01\Design01_Tx\cy_pins_v2_20</v>
+<v>CAN_Application_01\Design01_Tx\cy_pins_v2_20\cy_pins_v2_20.pdf</v>
+<v>CAN_Application_01\Design01_Tx\UART_v2_50.pdf</v>
+</VisibleNodeIds>
+</CyGuid_2a325b3b-c96a-4e9f-b7a0-2c44ecb5f237>
+</TreeStatesV2>
+</CyGuid_1b906a0f-a7b6-4e4d-a428-82f98b53cb35>
+</dataGuid>
+<dataGuid v="5f2be1a5-0687-4501-bb8c-cf21cb8211bf">
+<CyGuid_5f2be1a5-0687-4501-bb8c-cf21cb8211bf type_name="CyDesigner.Common.ProjMgmt.GUI.CyBookmarkData" version="1">
+<indicators />
+</CyGuid_5f2be1a5-0687-4501-bb8c-cf21cb8211bf>
+</dataGuid>
+</userData>
+</CyGuid_fdba8dfd-b15b-4469-9bbb-9e40c3e70997>
+<Unloaded />
+<OpenDocs>
+<name v=".\Design01_Tx.cydsn\Source\asw\FreeRTOSConfig.h" />
+<name v=".\Design01_Tx.cydsn\Source\asw\main.c" />
+<name v=".\Design01_Tx.cydsn\Source\bsw\CAN_packet.h" />
+<name v=".\Design01_Rx.cydsn\Source\asw\main.c" />
+</OpenDocs>
+<OpenDocsLayout><![CDATA[<?xml version="1.0"?><!--
+
+  Actipro Docking/MDI for WinForms
+  Copyright (c) 2001-2016 Actipro Software LLC.  All rights reserved.
+  http://www.actiprosoftware.com
+
+--><DocumentLayout Version="1.0"><LayoutData><TabbedMdiRootContainer Orientation="Horizontal"><TabbedMdiContainer Size="810, 399" SelectedTabbedMdiWindow="11b75020-fd33-493f-82ee-b6a971452cc5"><ToolWindow Key="Start Page:bd4649ab-da6b-4d04-a663-c722b8bf99db:Start Page" Guid="94b159e5-b8e2-4066-9fc0-08ec1e5ec392" /><DocumentWindow Key="F:\New Dell Latitude-Drive C\Documents\PSoC Creator\CAN_Application_01\Design01_Tx.cydsn\Source\asw\FreeRTOSConfig.h" Guid="3682a6d6-5d29-455a-9a73-ed061f84256d" /><DocumentWindow Key="F:\New Dell Latitude-Drive C\Documents\PSoC Creator\CAN_Application_01\Design01_Tx.cydsn\Source\asw\main.c" Guid="bc01fc3f-bfe3-4afe-8785-915c01cee854" /><DocumentWindow Key="F:\New Dell Latitude-Drive C\Documents\PSoC Creator\CAN_Application_01\Design01_Tx.cydsn\Source\bsw\CAN_packet.h" Guid="876ea22b-6b0f-41ea-aa44-58f40effadd7" /><DocumentWindow Key="F:\New Dell Latitude-Drive C\Documents\PSoC Creator\CAN_Application_01\Design01_Rx.cydsn\Source\asw\main.c" Guid="11b75020-fd33-493f-82ee-b6a971452cc5" /></TabbedMdiContainer></TabbedMdiRootContainer><FloatingContainers /></LayoutData></DocumentLayout>]]></OpenDocsLayout>
+<config v="" />
+<AutoUpdate v="true" />
+</CyGuid_843a90a4-0c4b-4e44-991d-05e7fb117a21>
+</CyXmlSerializer>

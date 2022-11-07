@@ -1,0 +1,7 @@
+C:\Users\Reza\Documents\PSoC Creator\CAN_Application_01\Design01_Tx.cydsn\Design01_Tx.cyprj|d2070fb6-c4f2-4c50-9033-7b6c5db01e3f
+C:\Program Files (x86)\Cypress\PSoC Creator\4.2\PSoC Creator\psoc\content\default\CyAnnotationLibrary\CyAnnotationLibrary.cylib\CyAnnotationLibrary.cyprj|40f6748f-3cd9-4848-89f8-5b2fca985542
+C:\Users\Reza\Documents\PSoC Creator\4.2\Downloads ( 4.2).cylib\Downloads ( 4.2).cyprj|a1f3394f-7458-4b10-a4fd-7176840a8033
+C:\Program Files (x86)\Cypress\PSoC Creator\4.2\PSoC Creator\psoc\content\cycomponentlibraryupdates\CyComponentLibraryUpdates.cylib\CyComponentLibraryUpdates.cyprj|1646149c-9028-43cf-9cd9-23d456090907
+C:\Program Files (x86)\Cypress\PSoC Creator\4.2\PSoC Creator\psoc\content\cycomponentlibrary\CyComponentLibrary.cylib\CyComponentLibrary.cyprj|c3c7c0ee-d4d3-4a96-a2b1-530161c6b106
+C:\Program Files (x86)\Cypress\PSoC Creator\4.2\PSoC Creator\psoc\content\cyprimitives\CyPrimitives.cylib\CyPrimitives.cyprj|2fb72116-644a-442e-86f3-4907cde6a182
+C:\Users\Reza\Documents\PSoC Creator\CAN_Application_01\Design01_Rx.cydsn\Design01_Rx.cyprj|1c10529c-216e-443e-b813-df44e73ac14f
